@@ -786,7 +786,7 @@ function render(){
       </div>
 `;
 
-    card.querySelector(".action").addEventListener("click", ()=>{
+    card.addEventListener("click", ()=>{
       if(isOwned) owned.delete(country);
       else owned.add(country);
       save();
