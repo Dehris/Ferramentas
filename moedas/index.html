@@ -38,11 +38,18 @@ h1{margin:0;font-size:22px;line-height:1}
 .tab.active{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
 .search{width:100%;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:9px;padding:10px 11px;outline:none;font-size:14px}
 .scan-open{width:100%;margin-top:7px;background:var(--accent);border-color:var(--accent);color:var(--accent-dark)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
-.card{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px;min-height:108px;display:flex;flex-direction:column;justify-content:space-between;gap:8px}
-.country{font-size:14px;font-weight:800;line-height:1.15}
-.currency{font-size:12px;color:var(--muted);line-height:1.25;margin-top:3px}
-.action{width:100%;border:0;border-radius:8px;padding:8px 6px;font-size:12px;font-weight:800;cursor:pointer;background:var(--accent);color:var(--accent-dark)}
+
+.backup-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.backup-btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:9px;padding:9px 7px;font-size:11px;font-weight:800;cursor:pointer;text-align:center}
+.backup-btn:hover{border-color:var(--accent)}
+.backup-btn input{display:none}
+.backup-note{font-size:10px;color:var(--muted);text-align:center;margin:6px 0 0}
+
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 6px;min-height:105px;display:flex;flex-direction:column;justify-content:space-between;gap:7px;text-align:center;align-items:stretch}
+.country{font-size:12px;font-weight:800;line-height:1.15;text-align:center;overflow-wrap:anywhere}
+.currency{font-size:10.5px;color:var(--muted);line-height:1.2;margin-top:4px;text-align:center;overflow-wrap:anywhere}
+.action{width:100%;border:0;border-radius:8px;padding:7px 4px;font-size:10.5px;font-weight:800;cursor:pointer;background:var(--accent);color:var(--accent-dark)}
 .owned .action{background:var(--panel2);color:#ddd;border:1px solid var(--line)}
 .empty{color:var(--muted);text-align:center;padding:34px 10px;font-size:13px}
 .reset{width:100%;margin-top:14px;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:9px;padding:9px;cursor:pointer;font-size:12px}
@@ -78,7 +85,10 @@ h1{margin:0;font-size:22px;line-height:1}
 .error{color:#e6a0a0}
 .ok{color:#8ed3a7}
 @media(min-width:600px){
-  .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .country{font-size:14px}
+  .currency{font-size:12px}
+  .action{font-size:12px}
   .modal-backdrop{align-items:center;padding:16px}
   .modal{border-radius:18px}
 }
@@ -98,6 +108,14 @@ h1{margin:0;font-size:22px;line-height:1}
     </div>
     <input id="search" class="search" type="search" placeholder="Buscar país ou moeda">
     <button id="scanOpen" class="scan-open">Identificar moeda com IA</button>
+    <div class="backup-row">
+      <button id="exportBtn" class="backup-btn" type="button">Exportar coleção</button>
+      <label class="backup-btn">
+        Importar coleção
+        <input id="importInput" type="file" accept=".json,application/json">
+      </label>
+    </div>
+    <div class="backup-note">Backup para trocar de celular ou recuperar a coleção.</div>
   </div>
 
   <div id="grid" class="grid"></div>
@@ -394,6 +412,55 @@ function save(){
   localStorage.setItem(KEY, JSON.stringify([...owned]));
 }
 
+function downloadBackup(){
+  const data = {
+    app: "colecao-moedas",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    owned: [...owned]
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const date = new Date().toISOString().slice(0,10);
+
+  a.href = url;
+  a.download = `colecao-moedas-backup-${date}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+
+async function importBackup(file){
+  if(!file) return;
+
+  try{
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+
+    const imported = Array.isArray(parsed) ? parsed : parsed?.owned;
+    if(!Array.isArray(imported)){
+      throw new Error("Arquivo de backup inválido.");
+    }
+
+    const cleaned = [...new Set(imported.filter(item => typeof item === "string" && item.trim()))];
+
+    if(!confirm(`Importar ${cleaned.length} itens e substituir a coleção salva neste aparelho?`)){
+      return;
+    }
+
+    owned = new Set(cleaned);
+    save();
+    render();
+    alert(`Coleção importada com sucesso: ${owned.size} itens.`);
+  }catch(err){
+    alert(err?.message || "Não foi possível importar esse backup.");
+  }
+}
+
 function render(){
   const term = search.value.trim().toLocaleLowerCase("pt-BR");
 
@@ -445,6 +512,13 @@ document.querySelectorAll(".tab").forEach(btn=>{
 });
 
 search.addEventListener("input", render);
+
+document.getElementById("exportBtn").addEventListener("click", downloadBackup);
+
+document.getElementById("importInput").addEventListener("change", async (e)=>{
+  await importBackup(e.target.files[0]);
+  e.target.value = "";
+});
 
 document.getElementById("reset").addEventListener("click", ()=>{
   if(confirm("Limpar toda a coleção?")){
