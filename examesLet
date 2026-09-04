@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Avaliador de Bundles Pokémon GO</title>
+<style>
+:root{
+--bg:#0b1020;--card:#171d33;--card2:#202845;--line:#313b63;
+--text:#eef2ff;--muted:#aab4da;--accent:#7b61ff;--green:#31d0aa;--red:#ff7185;--gold:#ffd166;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(135deg,#0b1020,#141b34);font-family:Segoe UI,Arial,sans-serif;color:var(--text)}
+.wrap{max-width:980px;margin:30px auto;padding:0 20px}
+h1{margin:0 0 8px}.sub{color:var(--muted);margin-bottom:20px}
+.grid{display:flex;flex-direction:column;gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 15px 40px rgba(0,0,0,.25)}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+button{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer}
+button.secondary{background:var(--card2);border:1px solid var(--line)}
+button.delete{background:transparent;color:var(--red);padding:6px 9px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th,td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}
+th:nth-child(1){width:31%}
+th:nth-child(2){width:8%}
+th:nth-child(3){width:12%}
+th:nth-child(4){width:18%}
+th:nth-child(5){width:12%}
+th:nth-child(6){width:11%}
+th:nth-child(7){width:8%}
+td select{font-size:12px;padding:7px 6px}
+td .qty{max-width:none;padding:7px 5px}
+button.delete{font-size:0;padding:6px 8px}
+button.delete::after{content:"×";font-size:18px;line-height:1}
+th{color:var(--muted);font-size:12px;text-transform:uppercase}
+select,input{width:100%;background:#10162a;color:#fff;border:1px solid var(--line);border-radius:8px;padding:8px}
+.qty{max-width:95px}.metric{background:var(--card2);border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid var(--line)}
+.metric span{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}.metric strong{font-size:24px}
+.small{font-size:12px;color:var(--muted);line-height:1.5}.section{margin-top:16px;padding-top:15px;border-top:1px solid var(--line)}
+.section h3{font-size:15px;margin:0 0 10px}.inline{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.tag{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:700}
+.bundle{color:var(--green);background:#31d0aa18;border:1px solid #31d0aa55}
+.normal{color:var(--muted);background:#ffffff08;border:1px solid var(--line)}
+.estimate{color:var(--gold);background:#ffd16616;border:1px solid #ffd16655}
+.good{color:var(--green)}.bad{color:var(--red)}
+@media(max-width:930px){.wrap{padding:0 12px}.card{padding:14px}.inline{grid-template-columns:1fr}.price-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.results-grid{grid-template-columns:1fr}.table-wrap{margin:0 -4px;padding:0 4px}
+table{table-layout:auto}
+th:nth-child(3),td:nth-child(3),th:nth-child(4),td:nth-child(4){display:none}
+th:nth-child(1){width:48%}th:nth-child(2){width:12%}th:nth-child(5){width:15%}th:nth-child(6){width:17%}th:nth-child(7){width:8%}
+}@media(max-width:560px){.price-grid{grid-template-columns:1fr}}
+
+
+.results-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.result-main{grid-column:1/-1}
+.price-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.step-title{margin:0 0 12px;font-size:18px}
+.step-note{margin:0 0 14px;color:var(--muted);font-size:12px;line-height:1.5}
+
+.storage-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.storage-card{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.storage-card h4{margin:0 0 10px;font-size:14px}
+.storage-result{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}
+.storage-result strong{color:var(--text)}
+@media(max-width:600px){.storage-grid{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Avaliador de Bundles Pokémon GO</h1>
+<div class="sub">Itens e recompensas em uma única tabela, com aplicação automática dos bundles.</div>
+
+<div class="grid">
+
+<div class="card">
+<h2 class="step-title">1. Itens do pacote</h2>
+<div class="toolbar">
+<button onclick="addRow()">+ Adicionar linha</button>
+<button class="secondary" onclick="clearRows()">Limpar</button>
+</div>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>Item / Recompensa</th><th>Qtd.</th><th>Valor-base</th><th>Regra aplicada</th><th>Total moedas</th><th>Total R$</th><th></th></tr>
+</thead>
+<tbody id="tb"></tbody>
+</table>
+</div>
+</div>
+
+<div class="card">
+<h2 class="step-title">2. Preço do pacote</h2>
+<p class="step-note">Preencha em moedas ou em reais. Se preencher os dois, o valor em reais tem prioridade.</p>
+<div class="price-grid">
+<label class="small">Preço do pacote em moedas
+<input id="bundleCoins" type="number" min="0" value="0" oninput="calc()">
+</label>
+<label class="small">Valor em reais
+<input id="bundleBRL" type="number" min="0" step="0.01" value="0" oninput="calc()">
+</label>
+<label class="small">Conversão — valor de 100 moedas
+<input id="hundredCoins" type="number" step="0.01" min="0" value="1.90" oninput="calc()">
+</label>
+</div>
+</div>
+
+<div class="card">
+<h2 class="step-title">3. Resultado</h2>
+<div class="results-grid">
+<div class="metric result-main"><span>Valor calculado dos itens</span><strong id="total">R$ 0,00</strong></div>
+<div class="metric"><span>Custo considerado</span><strong id="cost">R$ 0,00</strong></div>
+<div class="metric"><span>Economia / prejuízo</span><strong id="eco">R$ 0,00</strong></div>
+<div class="metric"><span>Desconto estimado</span><strong id="discount">0%</strong></div>
+</div>
+</div>
+
+<div class="card">
+<h2 class="step-title">Calculadora de armazenamento</h2>
+<p class="step-note">O cálculo é o mesmo para Bolsa de Itens e Armazenamento Pokémon.</p>
+<div class="storage-grid">
+<label class="small">Espaço atual
+<input id="storageCurrent" type="number" min="0" step="50" value="0" oninput="calcStorage()">
+</label>
+<label class="small">Quero chegar em
+<input id="storageTarget" type="number" min="0" step="50" value="0" oninput="calcStorage()">
+</label>
+</div>
+<div id="storageResult" class="storage-result">—</div>
+<p class="small" style="margin-top:10px">Cada upgrade adiciona 50 espaços e custa 200 PokéMoedas.</p>
+</div>
+
+<div class="card">
+<div class="small">
+<strong>Valores pessoais:</strong><br>
+1.000 XP = R$ 0,01<br>
+1.000 Poeira = R$ 0,10<br>
+100 Doces = R$ 0,10<br>
+100 Frutas comuns = R$ 0,01<br>
+Fruta Dourada/Prateada = R$ 0,01 cada
+</div>
+
+<div class="section small">
+O Módulo Atrair Dourado usa 180 moedas como referência estimada. Ele não possui preço oficial de loja.
+</div>
+</div>
+
+</div>
+</div>
+
+<script>
+const db={
+"Passe de Reide Remoto":{coin:195,bundles:{3:525}},
+"Passe de Batalha Premium":{coin:100,bundles:{3:250}},
+"Incubadora":{coin:150},
+"Superincubadora":{coin:200},
+"Ovo da Sorte":{coin:80},
+"Pedaço de Estrela":{coin:100},
+"Incenso":{coin:40},
+"Poffin":{coin:100},
+"Radar Rocket":{coin:200},
+"Expansão Bolsa de Itens":{coin:200},
+"Expansão Armazenamento Pokémon":{coin:200},
+"PokéMoedas (bônus)":{coin:1},
+
+"Módulo Atrair Normal":{coin:100,bundles:{8:680}},
+"Módulo Atrair Glacial":{coin:180},
+"Módulo Atrair Musgoso":{coin:180},
+"Módulo Atrair Magnético":{coin:180},
+"Módulo Atrair Chuvoso":{coin:180},
+"Módulo Atrair Dourado":{coin:180,estimate:true},
+
+"Cargas de Conexão":{coin:0.5,bundles:{200:100,600:250}},
+"Pacote de Partículas Max":{coin:150,bundles:{3:425}},
+
+"Poké Bola":{coin:5,bundles:{20:100,100:460,200:800}},
+"Grande Bola":{coin:6,bundles:{20:120,100:552,200:960}},
+"Ultra Bola":{coin:10,bundles:{20:200,100:920,200:1600}},
+
+"Reviver":{coin:30,bundles:{6:180}},
+"Poção Máxima":{coin:20,bundles:{10:200}},
+
+"1.000 XP":{fixed:0.01,label:"por 1.000"},
+"1.000 Poeira Estelar":{fixed:0.10,label:"por 1.000"},
+"100 Doces":{fixed:0.10,label:"por 100"},
+"100 Frutas comuns":{fixed:0.01,label:"por 100"},
+"Fruta Frambo Dourada":{fixed:0.01,label:"por unidade"},
+"Fruta Caxí Prateada":{fixed:0.01,label:"por unidade"},
+"Encontro comum":{fixed:0,label:"sem valor definido"},
+"Encontro raro":{fixed:0,label:"sem valor definido"},
+"Encontro lendário":{fixed:0,label:"sem valor definido"},
+"Encontro shiny":{fixed:0,label:"sem valor definido"}
+};
+
+const tb=document.getElementById("tb");
+const totalEl=document.getElementById("total");
+const br=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const opts=(s="")=>Object.keys(db).map(k=>`<option ${k===s?"selected":""}>${k}</option>`).join("");
+
+function addRow(name="Passe de Reide Remoto",q=1){
+ tb.insertAdjacentHTML("beforeend",`<tr>
+ <td><select onchange="calc()">${opts(name)}</select></td>
+ <td><input class="qty" type="number" min="0" value="${q}" oninput="calc()"></td>
+ <td class="base"></td><td class="rule"></td><td class="coins"></td><td class="money"></td>
+ <td><button class="delete" onclick="this.closest('tr').remove();calc()">Excluir</button></td>
+ </tr>`);
+ calc();
+}
+
+function clearRows(){tb.innerHTML="";addRow()}
+
+
+function calcStorage(){
+  const current=Number(document.getElementById("storageCurrent").value)||0;
+  const target=Number(document.getElementById("storageTarget").value)||0;
+  const el=document.getElementById("storageResult");
+  if(target<=current || target<=0){
+    el.innerHTML="—";
+    return;
+  }
+  const diff=target-current;
+  const upgrades=Math.ceil(diff/50);
+  const finalSpace=current+(upgrades*50);
+  const coins=upgrades*200;
+  const rate=(Number(document.getElementById("hundredCoins").value)||0)/100;
+  const reais=coins*rate;
+  el.innerHTML=`<strong>${upgrades} upgrade${upgrades!==1?"s":""}</strong><br>
+  +${upgrades*50} espaços → ${finalSpace}<br>
+  ${coins.toLocaleString("pt-BR")} moedas<br>
+  <strong>${br(reais)}</strong>`;
+}
+
+function calc(){
+ const rate=(Number(document.getElementById("hundredCoins").value)||0)/100;
+ let totalBRL=0;
+
+ [...tb.rows].forEach(r=>{
+  const name=r.cells[0].querySelector("select").value;
+  const q=Number(r.cells[1].querySelector("input").value)||0;
+  const d=db[name];
+  let coins=0,value=0,base="",rule="";
+
+  if(d.coin!==undefined){
+    coins=d.coin*q;
+    base=`${d.coin.toLocaleString("pt-BR")} moedas/un.`;
+
+    if(d.bundles && d.bundles[q]!==undefined){
+      coins=d.bundles[q];
+      rule=`<span class="tag bundle">Bundle ${q} por ${coins}</span>`;
+    }else if(d.estimate){
+      rule=`<span class="tag estimate">Valor estimado</span>`;
+    }else{
+      rule=`<span class="tag normal">Preço unitário</span>`;
+    }
+    value=coins*rate;
+  }else{
+    value=q*d.fixed;
+    base=br(d.fixed);
+    rule=`<span class="tag normal">${d.label}</span>`;
+  }
+
+  r.querySelector(".base").textContent=base;
+  r.querySelector(".rule").innerHTML=rule;
+  r.querySelector(".coins").textContent=coins?coins.toLocaleString("pt-BR")+" moedas":"—";
+  r.querySelector(".money").textContent=br(value);
+  totalBRL+=value;
+ });
+
+ const packBRL=Number(document.getElementById("bundleBRL").value)||0;
+ const packCoins=Number(document.getElementById("bundleCoins").value)||0;
+ const cost=packBRL>0?packBRL:packCoins*rate;
+ const diff=totalBRL-cost;
+ const pct=totalBRL>0?(diff/totalBRL)*100:0;
+
+ totalEl.textContent=br(totalBRL);
+ document.getElementById("cost").textContent=br(cost);
+
+ const eco=document.getElementById("eco");
+ eco.textContent=(diff>=0?"+":"")+br(diff);
+ eco.className=diff>0?"good":diff<0?"bad":"";
+
+ const discount=document.getElementById("discount");
+ discount.textContent=pct.toFixed(1).replace(".",",")+"%";
+ discount.className=pct>0?"good":pct<0?"bad":"";
+ calcStorage();
+}
+
+addRow("Passe de Reide Remoto",3);
+addRow("Módulo Atrair Normal",8);
+</script>
+</body>
+</html>
