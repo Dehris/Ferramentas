@@ -3,183 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f1115">
 <title>Coleção de Moedas</title>
 <style>
-  :root{
-    --bg:#0f1115;
-    --panel:#171a21;
-    --panel2:#1f242d;
-    --text:#f5f7fa;
-    --muted:#9ca3af;
-    --line:#2a3039;
-    --accent:#d6b25e;
-    --accent-dark:#17120a;
-    --danger:#b86a6a;
-  }
+:root{
+  --bg:#0f1115;
+  --panel:#171a21;
+  --panel2:#1f242d;
+  --text:#f5f7fa;
+  --muted:#9ca3af;
+  --line:#2a3039;
+  --accent:#d6b25e;
+  --accent-dark:#17120a;
+  --danger:#b86a6a;
+  --ok:#69b584;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; background:var(--bg); color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+button,input{font:inherit}
+.wrap{max-width:900px;margin:auto;padding:16px 12px 40px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px}
+h1{margin:0;font-size:22px;line-height:1}
+.count{font-size:13px;color:var(--muted);white-space:nowrap}
+.count strong{color:var(--accent);font-size:18px}
+.toolbar{position:sticky;top:0;z-index:10;background:rgba(15,17,21,.96);padding:7px 0 9px;backdrop-filter:blur(8px)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:7px}
+.tab,.scan-open{
+  border:1px solid var(--line);background:var(--panel);color:var(--muted);
+  border-radius:9px;padding:9px 8px;font-weight:800;cursor:pointer
+}
+.tab.active{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
+.search{width:100%;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:9px;padding:10px 11px;outline:none;font-size:14px}
+.scan-open{width:100%;margin-top:7px;background:var(--accent);border-color:var(--accent);color:var(--accent-dark)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:10px;min-height:108px;display:flex;flex-direction:column;justify-content:space-between;gap:8px}
+.country{font-size:14px;font-weight:800;line-height:1.15}
+.currency{font-size:12px;color:var(--muted);line-height:1.25;margin-top:3px}
+.action{width:100%;border:0;border-radius:8px;padding:8px 6px;font-size:12px;font-weight:800;cursor:pointer;background:var(--accent);color:var(--accent-dark)}
+.owned .action{background:var(--panel2);color:#ddd;border:1px solid var(--line)}
+.empty{color:var(--muted);text-align:center;padding:34px 10px;font-size:13px}
+.reset{width:100%;margin-top:14px;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:9px;padding:9px;cursor:pointer;font-size:12px}
 
-  *{box-sizing:border-box}
-
-  body{
-    margin:0;
-    min-height:100vh;
-    background:var(--bg);
-    color:var(--text);
-    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  }
-
-  .wrap{
-    max-width:900px;
-    margin:auto;
-    padding:18px 12px 40px;
-  }
-
-  header{
-    display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
-    gap:12px;
-    margin-bottom:14px;
-  }
-
-  h1{
-    margin:0;
-    font-size:22px;
-    line-height:1;
-  }
-
-  .count{
-    font-size:13px;
-    color:var(--muted);
-    white-space:nowrap;
-  }
-
-  .count strong{
-    color:var(--accent);
-    font-size:18px;
-  }
-
-  .toolbar{
-    position:sticky;
-    top:0;
-    z-index:10;
-    background:rgba(15,17,21,.96);
-    padding:8px 0 10px;
-  }
-
-  .tabs{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:6px;
-    margin-bottom:8px;
-  }
-
-  .tab{
-    border:1px solid var(--line);
-    background:var(--panel);
-    color:var(--muted);
-    border-radius:9px;
-    padding:9px 8px;
-    font-weight:700;
-    cursor:pointer;
-  }
-
-  .tab.active{
-    background:var(--accent);
-    color:var(--accent-dark);
-    border-color:var(--accent);
-  }
-
-  .search{
-    width:100%;
-    border:1px solid var(--line);
-    background:var(--panel);
-    color:var(--text);
-    border-radius:9px;
-    padding:10px 11px;
-    outline:none;
-    font-size:14px;
-  }
-
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px;
-    margin-top:8px;
-  }
-
-  .card{
-    border:1px solid var(--line);
-    background:var(--panel);
-    border-radius:10px;
-    padding:10px;
-    min-height:108px;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    gap:8px;
-  }
-
-  .country{
-    font-size:14px;
-    font-weight:800;
-    line-height:1.15;
-  }
-
-  .currency{
-    font-size:12px;
-    color:var(--muted);
-    line-height:1.25;
-    margin-top:3px;
-  }
-
-  .action{
-    width:100%;
-    border:0;
-    border-radius:8px;
-    padding:8px 6px;
-    font-size:12px;
-    font-weight:800;
-    cursor:pointer;
-    background:var(--accent);
-    color:var(--accent-dark);
-  }
-
-  .owned .action{
-    background:var(--panel2);
-    color:#ddd;
-    border:1px solid var(--line);
-  }
-
-  .empty{
-    color:var(--muted);
-    text-align:center;
-    padding:34px 10px;
-    font-size:13px;
-  }
-
-  .reset{
-    width:100%;
-    margin-top:14px;
-    border:1px solid var(--line);
-    background:transparent;
-    color:var(--muted);
-    border-radius:9px;
-    padding:9px;
-    cursor:pointer;
-    font-size:12px;
-  }
-
-  @media(min-width:600px){
-    .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-  }
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:50;display:none;align-items:flex-end;justify-content:center}
+.modal-backdrop.open{display:flex}
+.modal{width:100%;max-width:620px;max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px 18px 0 0;padding:14px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.modal-title{font-size:17px;font-weight:900}
+.close{border:0;background:var(--panel2);color:var(--text);width:34px;height:34px;border-radius:9px;font-size:20px;cursor:pointer}
+.scanner-note{font-size:12px;color:var(--muted);line-height:1.4;margin:0 0 10px}
+.capture-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.capture-btn{display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:11px 8px;font-weight:800;font-size:13px;cursor:pointer;text-align:center}
+.capture-btn.primary{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
+.capture-btn input{display:none}
+.preview-wrap{margin-top:10px;display:none}
+.preview-wrap.show{display:block}
+.preview{display:block;width:100%;max-height:300px;object-fit:contain;background:#0b0d10;border:1px solid var(--line);border-radius:12px}
+.analyze{width:100%;margin-top:8px;border:0;border-radius:10px;padding:11px;font-weight:900;background:var(--accent);color:var(--accent-dark);cursor:pointer}
+.analyze:disabled{opacity:.55;cursor:wait}
+.status{font-size:12px;color:var(--muted);margin-top:8px;min-height:17px}
+.result{display:none;margin-top:10px;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:11px}
+.result.show{display:block}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.result-item{background:var(--panel);border-radius:9px;padding:8px}
+.result-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.result-value{font-size:13px;font-weight:800;margin-top:3px;word-break:break-word}
+.result-wide{grid-column:1/-1}
+.confidence{display:inline-block;padding:3px 7px;border-radius:999px;background:var(--panel2);font-size:11px}
+.match-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+.match-actions button{border:1px solid var(--line);border-radius:9px;padding:9px;font-weight:800;cursor:pointer;background:var(--panel2);color:var(--text)}
+.match-actions .add-match{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
+.error{color:#e6a0a0}
+.ok{color:#8ed3a7}
+@media(min-width:600px){
+  .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .modal-backdrop{align-items:center;padding:16px}
+  .modal{border-radius:18px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div>
-      <h1>Moedas</h1>
-    </div>
+    <div><h1>Moedas</h1></div>
     <div class="count"><strong id="count">0</strong> / <span id="total">0</span></div>
   </header>
 
@@ -188,14 +96,85 @@
       <button class="tab active" data-tab="missing">Faltam</button>
       <button class="tab" data-tab="owned">Já tenho</button>
     </div>
-
     <input id="search" class="search" type="search" placeholder="Buscar país ou moeda">
+    <button id="scanOpen" class="scan-open">Identificar moeda com IA</button>
   </div>
 
   <div id="grid" class="grid"></div>
   <div id="empty" class="empty" hidden>Nenhum item encontrado.</div>
-
   <button id="reset" class="reset">Limpar coleção</button>
+</div>
+
+<div id="scannerModal" class="modal-backdrop" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Identificar moeda com IA</div>
+      <button id="scannerClose" class="close" aria-label="Fechar">×</button>
+    </div>
+    <p class="scanner-note">
+      Fotografe a moeda com boa luz e o mais reto possível. Se puder, faça primeiro a face que tenha
+      nome do país, ano ou inscrições. Para moedas difíceis, uma segunda foto do outro lado ajuda.
+    </p>
+
+    <div class="capture-row">
+      <label class="capture-btn primary">
+        Usar câmera
+        <input id="cameraInput" type="file" accept="image/*" capture="environment">
+      </label>
+      <label class="capture-btn">
+        Escolher foto
+        <input id="galleryInput" type="file" accept="image/*">
+      </label>
+    </div>
+
+    <div id="previewWrap" class="preview-wrap">
+      <img id="preview" class="preview" alt="Foto da moeda">
+      <button id="analyzeBtn" class="analyze">Analisar com IA</button>
+    </div>
+
+    <div id="scanStatus" class="status"></div>
+
+    <div id="scanResult" class="result">
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="result-label">País / território</div>
+          <div id="rCountry" class="result-value">—</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Moeda</div>
+          <div id="rCurrency" class="result-value">—</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Valor</div>
+          <div id="rDenomination" class="result-value">—</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Ano</div>
+          <div id="rYear" class="result-value">—</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Confiança</div>
+          <div id="rConfidence" class="result-value"><span class="confidence">—</span></div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Combina com sua lista</div>
+          <div id="rMatch" class="result-value">—</div>
+        </div>
+        <div class="result-item result-wide">
+          <div class="result-label">Texto / símbolos percebidos</div>
+          <div id="rEvidence" class="result-value">—</div>
+        </div>
+        <div class="result-item result-wide">
+          <div class="result-label">Observação</div>
+          <div id="rNotes" class="result-value">—</div>
+        </div>
+      </div>
+      <div id="matchActions" class="match-actions" style="display:none">
+        <button id="addMatch" class="add-match">Adicionar à coleção</button>
+        <button id="searchMatch">Ver na lista</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -397,8 +376,19 @@ const coins = [
 ];
 
 const KEY = "colecao-moedas-paises-v1";
+
+/*
+  IMPORTANTE:
+  Depois de publicar o Worker, cole aqui a URL dele.
+  Exemplo:
+  const AI_ENDPOINT = "https://coin-ai.seunome.workers.dev";
+*/
+const AI_ENDPOINT = "COLE_AQUI_A_URL_DO_WORKER";
+
 let owned = new Set(JSON.parse(localStorage.getItem(KEY) || "[]"));
 let currentTab = "missing";
+let selectedImageDataUrl = "";
+let currentMatchCountry = "";
 
 const grid = document.getElementById("grid");
 const empty = document.getElementById("empty");
@@ -428,10 +418,8 @@ function render(){
 
   filtered.forEach(([country,currency])=>{
     const isOwned = owned.has(country);
-
     const card = document.createElement("div");
     card.className = "card" + (isOwned ? " owned" : "");
-
     card.innerHTML = `
       <div>
         <div class="country">${country}</div>
@@ -443,7 +431,6 @@ function render(){
     card.querySelector(".action").addEventListener("click", ()=>{
       if(isOwned) owned.delete(country);
       else owned.add(country);
-
       save();
       render();
     });
@@ -471,6 +458,181 @@ document.getElementById("reset").addEventListener("click", ()=>{
     save();
     render();
   }
+});
+
+// ---------- Scanner IA ----------
+const modal = document.getElementById("scannerModal");
+const previewWrap = document.getElementById("previewWrap");
+const preview = document.getElementById("preview");
+const scanStatus = document.getElementById("scanStatus");
+const scanResult = document.getElementById("scanResult");
+const analyzeBtn = document.getElementById("analyzeBtn");
+const matchActions = document.getElementById("matchActions");
+
+function openScanner(){
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden","false");
+}
+
+function closeScanner(){
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden","true");
+}
+
+document.getElementById("scanOpen").addEventListener("click", openScanner);
+document.getElementById("scannerClose").addEventListener("click", closeScanner);
+modal.addEventListener("click", (e)=>{ if(e.target === modal) closeScanner(); });
+
+function resizeImage(file, maxSide=1600, quality=.88){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = ()=>{
+        let w = img.width, h = img.height;
+        const scale = Math.min(1, maxSide / Math.max(w,h));
+        w = Math.round(w * scale);
+        h = Math.round(h * scale);
+
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleImage(file){
+  if(!file) return;
+  scanStatus.className = "status";
+  scanStatus.textContent = "Preparando foto...";
+  scanResult.classList.remove("show");
+  matchActions.style.display = "none";
+  currentMatchCountry = "";
+  try{
+    selectedImageDataUrl = await resizeImage(file);
+    preview.src = selectedImageDataUrl;
+    previewWrap.classList.add("show");
+    scanStatus.textContent = "Foto pronta para análise.";
+  }catch(err){
+    scanStatus.className = "status error";
+    scanStatus.textContent = "Não consegui abrir essa imagem.";
+  }
+}
+
+document.getElementById("cameraInput").addEventListener("change", e=>handleImage(e.target.files[0]));
+document.getElementById("galleryInput").addEventListener("change", e=>handleImage(e.target.files[0]));
+
+function setText(id, value){
+  document.getElementById(id).textContent = value || "—";
+}
+
+function normalize(s){
+  return (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+}
+
+function findLocalMatch(country, currency){
+  const nc = normalize(country);
+  const ncur = normalize(currency);
+
+  let hit = coins.find(([c]) => normalize(c) === nc);
+  if(hit) return hit;
+
+  hit = coins.find(([c]) => nc && (normalize(c).includes(nc) || nc.includes(normalize(c))));
+  if(hit) return hit;
+
+  hit = coins.find(([c,cur]) => ncur && normalize(cur) === ncur);
+  return hit || null;
+}
+
+analyzeBtn.addEventListener("click", async ()=>{
+  if(!selectedImageDataUrl) return;
+
+  if(!AI_ENDPOINT || AI_ENDPOINT.includes("COLE_AQUI")){
+    scanStatus.className = "status error";
+    scanStatus.textContent = "Falta configurar a URL do Worker no HTML.";
+    return;
+  }
+
+  analyzeBtn.disabled = true;
+  scanStatus.className = "status";
+  scanStatus.textContent = "A IA está examinando a moeda...";
+  scanResult.classList.remove("show");
+  matchActions.style.display = "none";
+
+  try{
+    const response = await fetch(AI_ENDPOINT, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        image:selectedImageDataUrl,
+        collection:coins
+      })
+    });
+
+    const raw = await response.text();
+    let data;
+    try { data = JSON.parse(raw); }
+    catch { throw new Error(raw || "Resposta inválida do servidor."); }
+
+    if(!response.ok) throw new Error(data.error || "Falha na identificação.");
+
+    const localMatch = findLocalMatch(data.country, data.currency);
+    currentMatchCountry = localMatch ? localMatch[0] : "";
+
+    setText("rCountry", data.country);
+    setText("rCurrency", data.currency);
+    setText("rDenomination", data.denomination);
+    setText("rYear", data.year);
+    setText("rConfidence", data.confidence);
+    setText("rEvidence", Array.isArray(data.evidence) ? data.evidence.join(" • ") : data.evidence);
+    setText("rNotes", data.notes);
+    setText("rMatch", localMatch ? `${localMatch[0]} — ${localMatch[1]}` : "Não encontrei correspondência automática");
+
+    scanResult.classList.add("show");
+
+    if(localMatch){
+      matchActions.style.display = "grid";
+      document.getElementById("addMatch").textContent =
+        owned.has(localMatch[0]) ? "Já está na coleção" : "Adicionar à coleção";
+      document.getElementById("addMatch").disabled = owned.has(localMatch[0]);
+    }
+
+    scanStatus.className = "status ok";
+    scanStatus.textContent = "Análise concluída. Confirme visualmente antes de catalogar.";
+  }catch(err){
+    scanStatus.className = "status error";
+    scanStatus.textContent = err.message || "Não foi possível analisar a moeda.";
+  }finally{
+    analyzeBtn.disabled = false;
+  }
+});
+
+document.getElementById("addMatch").addEventListener("click", ()=>{
+  if(!currentMatchCountry) return;
+  owned.add(currentMatchCountry);
+  save();
+  render();
+  document.getElementById("addMatch").textContent = "Já está na coleção";
+  document.getElementById("addMatch").disabled = true;
+  scanStatus.className = "status ok";
+  scanStatus.textContent = `${currentMatchCountry} foi adicionado à coleção.`;
+});
+
+document.getElementById("searchMatch").addEventListener("click", ()=>{
+  if(!currentMatchCountry) return;
+  currentTab = owned.has(currentMatchCountry) ? "owned" : "missing";
+  search.value = currentMatchCountry;
+  render();
+  closeScanner();
+  window.scrollTo({top:0,behavior:"smooth"});
 });
 
 render();
