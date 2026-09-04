@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coleção de Moedas</title>
+<style>
+  :root{
+    --bg:#0f1115;
+    --panel:#171a21;
+    --panel2:#1f242d;
+    --text:#f5f7fa;
+    --muted:#9ca3af;
+    --line:#2a3039;
+    --accent:#d6b25e;
+    --accent-dark:#17120a;
+    --danger:#b86a6a;
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+
+  .wrap{
+    max-width:900px;
+    margin:auto;
+    padding:18px 12px 40px;
+  }
+
+  header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
+
+  h1{
+    margin:0;
+    font-size:22px;
+    line-height:1;
+  }
+
+  .count{
+    font-size:13px;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+
+  .count strong{
+    color:var(--accent);
+    font-size:18px;
+  }
+
+  .toolbar{
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:rgba(15,17,21,.96);
+    padding:8px 0 10px;
+  }
+
+  .tabs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    margin-bottom:8px;
+  }
+
+  .tab{
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--muted);
+    border-radius:9px;
+    padding:9px 8px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  .tab.active{
+    background:var(--accent);
+    color:var(--accent-dark);
+    border-color:var(--accent);
+  }
+
+  .search{
+    width:100%;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--text);
+    border-radius:9px;
+    padding:10px 11px;
+    outline:none;
+    font-size:14px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    margin-top:8px;
+  }
+
+  .card{
+    border:1px solid var(--line);
+    background:var(--panel);
+    border-radius:10px;
+    padding:10px;
+    min-height:108px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    gap:8px;
+  }
+
+  .country{
+    font-size:14px;
+    font-weight:800;
+    line-height:1.15;
+  }
+
+  .currency{
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.25;
+    margin-top:3px;
+  }
+
+  .action{
+    width:100%;
+    border:0;
+    border-radius:8px;
+    padding:8px 6px;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+    background:var(--accent);
+    color:var(--accent-dark);
+  }
+
+  .owned .action{
+    background:var(--panel2);
+    color:#ddd;
+    border:1px solid var(--line);
+  }
+
+  .empty{
+    color:var(--muted);
+    text-align:center;
+    padding:34px 10px;
+    font-size:13px;
+  }
+
+  .reset{
+    width:100%;
+    margin-top:14px;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--muted);
+    border-radius:9px;
+    padding:9px;
+    cursor:pointer;
+    font-size:12px;
+  }
+
+  @media(min-width:600px){
+    .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  }
+
+  .scan-btn{
+    width:100%;
+    margin-top:8px;
+    border:1px solid var(--accent);
+    background:transparent;
+    color:var(--accent);
+    border-radius:9px;
+    padding:10px;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .scanner{
+    display:none;
+    margin-top:10px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    border-radius:12px;
+    padding:10px;
+  }
+  .scanner.open{display:block}
+  .photo-preview{
+    width:100%;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    background:#000;
+    border-radius:10px;
+    display:none;
+  }
+  .photo-preview.show{display:block}
+  .capture-label,
+  .scanner button{
+    display:block;
+    width:100%;
+    border:1px solid var(--line);
+    background:var(--panel2);
+    color:var(--text);
+    border-radius:8px;
+    padding:10px 8px;
+    font-weight:800;
+    cursor:pointer;
+    text-align:center;
+    font-size:13px;
+  }
+  .capture-label{
+    background:var(--accent);
+    color:var(--accent-dark);
+    border-color:var(--accent);
+  }
+  .scanner-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    margin-top:8px;
+  }
+  .scanner-actions button.primary{
+    background:var(--accent);
+    color:var(--accent-dark);
+    border-color:var(--accent);
+  }
+  .scan-result{
+    margin-top:8px;
+    font-size:12px;
+    line-height:1.4;
+    color:var(--muted);
+  }
+  .scan-result strong{color:var(--text)}
+  .scan-match{
+    display:none;
+    margin-top:8px;
+    padding:10px;
+    border:1px solid var(--line);
+    border-radius:9px;
+  }
+  .scan-match.show{display:block}
+  .scan-match .confidence{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:4px;
+  }
+  .scan-match button{
+    margin-top:8px;
+    background:var(--accent);
+    color:var(--accent-dark);
+    border-color:var(--accent);
+  }
+  #coinPhoto{display:none}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Moedas</h1>
+    </div>
+    <div class="count"><strong id="count">0</strong> / <span id="total">0</span></div>
+  </header>
+
+  <div class="toolbar">
+    <div class="tabs">
+      <button class="tab active" data-tab="missing">Faltam</button>
+      <button class="tab" data-tab="owned">Já tenho</button>
+    </div>
+
+    <input id="search" class="search" type="search" placeholder="Buscar país ou moeda">
+
+    <button id="scanBtn" class="scan-btn">Escanear moeda</button>
+
+    <div id="scanner" class="scanner">
+      <input id="coinPhoto" type="file" accept="image/*" capture="environment">
+      <label for="coinPhoto" class="capture-label">Tirar foto da moeda</label>
+
+      <img id="photoPreview" class="photo-preview" alt="Prévia da moeda">
+
+      <div class="scanner-actions">
+        <button id="closeScan">Fechar</button>
+        <button id="identifyPhoto" class="primary" disabled>Identificar</button>
+      </div>
+
+      <div id="scanResult" class="scan-result">
+        No Android, o botão acima abre diretamente a câmera traseira.
+      </div>
+
+      <div id="scanMatch" class="scan-match">
+        <div id="matchText"></div>
+        <div id="matchConfidence" class="confidence"></div>
+        <button id="addMatch">Adicionar à coleção</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty" hidden>Nenhum item encontrado.</div>
+
+  <button id="reset" class="reset">Limpar coleção</button>
+</div>
+
+<script>
+const coins = [
+["Afeganistão","Afegane"],
+["África do Sul","Rand"],
+["Albânia","Lek"],
+["Alemanha","Euro"],
+["Andorra","Euro"],
+["Angola","Kwanza"],
+["Antígua e Barbuda","Dólar do Caribe Oriental"],
+["Arábia Saudita","Rial saudita"],
+["Argélia","Dinar argelino"],
+["Argentina","Peso argentino"],
+["Armênia","Dram"],
+["Austrália","Dólar australiano"],
+["Áustria","Euro"],
+["Azerbaijão","Manat"],
+["Bahamas","Dólar bahamense"],
+["Bahrein","Dinar bareinita"],
+["Bangladesh","Taka"],
+["Barbados","Dólar barbadense"],
+["Belarus","Rublo bielorrusso"],
+["Bélgica","Euro"],
+["Belize","Dólar belizenho"],
+["Benim","Franco CFA da África Ocidental"],
+["Bolívia","Boliviano"],
+["Bósnia e Herzegovina","Marco conversível"],
+["Botsuana","Pula"],
+["Brasil","Real"],
+["Brunei","Dólar de Brunei"],
+["Bulgária","Lev"],
+["Burkina Faso","Franco CFA da África Ocidental"],
+["Burundi","Franco burundês"],
+["Butão","Ngultrum"],
+["Cabo Verde","Escudo cabo-verdiano"],
+["Camarões","Franco CFA da África Central"],
+["Camboja","Riel"],
+["Canadá","Dólar canadense"],
+["Catar","Rial catariano"],
+["Cazaquistão","Tenge"],
+["Chade","Franco CFA da África Central"],
+["Chile","Peso chileno"],
+["China","Yuan renminbi"],
+["Chipre","Euro"],
+["Colômbia","Peso colombiano"],
+["Comores","Franco comorense"],
+["Coreia do Norte","Won norte-coreano"],
+["Coreia do Sul","Won sul-coreano"],
+["Costa do Marfim","Franco CFA da África Ocidental"],
+["Costa Rica","Colón costa-riquenho"],
+["Croácia","Euro"],
+["Cuba","Peso cubano"],
+["Dinamarca","Coroa dinamarquesa"],
+["Djibuti","Franco djibutiano"],
+["Dominica","Dólar do Caribe Oriental"],
+["Egito","Libra egípcia"],
+["El Salvador","Dólar dos Estados Unidos"],
+["Emirados Árabes Unidos","Dirham dos Emirados Árabes Unidos"],
+["Equador","Dólar dos Estados Unidos"],
+["Eritreia","Nakfa"],
+["Eslováquia","Euro"],
+["Eslovênia","Euro"],
+["Espanha","Euro"],
+["Estados Unidos","Dólar dos Estados Unidos"],
+["Estônia","Euro"],
+["Eswatini","Lilangeni"],
+["Etiópia","Birr"],
+["Fiji","Dólar fijiano"],
+["Filipinas","Peso filipino"],
+["Finlândia","Euro"],
+["França","Euro"],
+["Gabão","Franco CFA da África Central"],
+["Gâmbia","Dalasi"],
+["Gana","Cedi"],
+["Geórgia","Lari"],
+["Granada","Dólar do Caribe Oriental"],
+["Grécia","Euro"],
+["Guatemala","Quetzal"],
+["Guiana","Dólar guianense"],
+["Guiné","Franco guineense"],
+["Guiné-Bissau","Franco CFA da África Ocidental"],
+["Guiné Equatorial","Franco CFA da África Central"],
+["Haiti","Gourde"],
+["Honduras","Lempira"],
+["Hungria","Forint"],
+["Iêmen","Rial iemenita"],
+["Ilhas Marshall","Dólar dos Estados Unidos"],
+["Ilhas Salomão","Dólar das Ilhas Salomão"],
+["Índia","Rupia indiana"],
+["Indonésia","Rupia indonésia"],
+["Irã","Rial iraniano"],
+["Iraque","Dinar iraquiano"],
+["Irlanda","Euro"],
+["Islândia","Coroa islandesa"],
+["Israel","Novo shekel israelense"],
+["Itália","Euro"],
+["Jamaica","Dólar jamaicano"],
+["Japão","Iene"],
+["Jordânia","Dinar jordaniano"],
+["Kiribati","Dólar australiano"],
+["Kuwait","Dinar kuwaitiano"],
+["Laos","Kip"],
+["Lesoto","Loti"],
+["Letônia","Euro"],
+["Líbano","Libra libanesa"],
+["Libéria","Dólar liberiano"],
+["Líbia","Dinar líbio"],
+["Liechtenstein","Franco suíço"],
+["Lituânia","Euro"],
+["Luxemburgo","Euro"],
+["Macedônia do Norte","Denar"],
+["Madagascar","Ariary"],
+["Malásia","Ringgit"],
+["Malawi","Kwacha malauiano"],
+["Maldivas","Rufiyaa"],
+["Mali","Franco CFA da África Ocidental"],
+["Malta","Euro"],
+["Marrocos","Dirham marroquino"],
+["Maurício","Rupia mauriciana"],
+["Mauritânia","Ouguiya"],
+["México","Peso mexicano"],
+["Micronésia","Dólar dos Estados Unidos"],
+["Moçambique","Metical"],
+["Moldávia","Leu moldavo"],
+["Mônaco","Euro"],
+["Mongólia","Tugrik"],
+["Montenegro","Euro"],
+["Myanmar","Kyat"],
+["Namíbia","Dólar namibiano"],
+["Nauru","Dólar australiano"],
+["Nepal","Rupia nepalesa"],
+["Nicarágua","Córdoba"],
+["Níger","Franco CFA da África Ocidental"],
+["Nigéria","Naira"],
+["Noruega","Coroa norueguesa"],
+["Nova Zelândia","Dólar neozelandês"],
+["Omã","Rial omanense"],
+["Países Baixos","Euro"],
+["Palau","Dólar dos Estados Unidos"],
+["Panamá","Balboa / Dólar dos Estados Unidos"],
+["Papua-Nova Guiné","Kina"],
+["Paquistão","Rupia paquistanesa"],
+["Paraguai","Guarani"],
+["Peru","Sol"],
+["Polônia","Złoty"],
+["Portugal","Euro"],
+["Quênia","Xelim queniano"],
+["Quirguistão","Som"],
+["Reino Unido","Libra esterlina"],
+["República Centro-Africana","Franco CFA da África Central"],
+["República Democrática do Congo","Franco congolês"],
+["República do Congo","Franco CFA da África Central"],
+["República Dominicana","Peso dominicano"],
+["República Tcheca","Coroa tcheca"],
+["Romênia","Leu romeno"],
+["Ruanda","Franco ruandês"],
+["Rússia","Rublo russo"],
+["Samoa","Tala"],
+["San Marino","Euro"],
+["Santa Lúcia","Dólar do Caribe Oriental"],
+["São Cristóvão e Névis","Dólar do Caribe Oriental"],
+["São Tomé e Príncipe","Dobra"],
+["São Vicente e Granadinas","Dólar do Caribe Oriental"],
+["Senegal","Franco CFA da África Ocidental"],
+["Serra Leoa","Leone"],
+["Sérvia","Dinar sérvio"],
+["Seychelles","Rupia seichelense"],
+["Singapura","Dólar de Singapura"],
+["Síria","Libra síria"],
+["Somália","Xelim somali"],
+["Sri Lanka","Rupia do Sri Lanka"],
+["Sudão","Libra sudanesa"],
+["Sudão do Sul","Libra sul-sudanesa"],
+["Suécia","Coroa sueca"],
+["Suíça","Franco suíço"],
+["Suriname","Dólar surinamês"],
+["Tadjiquistão","Somoni"],
+["Tailândia","Baht"],
+["Tanzânia","Xelim tanzaniano"],
+["Timor-Leste","Dólar dos Estados Unidos"],
+["Togo","Franco CFA da África Ocidental"],
+["Tonga","Paʻanga"],
+["Trinidad e Tobago","Dólar de Trinidad e Tobago"],
+["Tunísia","Dinar tunisiano"],
+["Turcomenistão","Manat turcomeno"],
+["Turquia","Lira turca"],
+["Tuvalu","Dólar australiano"],
+["Ucrânia","Hryvnia"],
+["Uganda","Xelim ugandense"],
+["Uruguai","Peso uruguaio"],
+["Uzbequistão","Som uzbeque"],
+["Vanuatu","Vatu"],
+["Vaticano","Euro"],
+["Venezuela","Bolívar"],
+["Vietnã","Dong"],
+["Zâmbia","Kwacha zambiano"],
+["Zimbábue","Zimbabwe Gold (ZiG)"]
+];
+
+const KEY = "colecao-moedas-paises-v1";
+let owned = new Set(JSON.parse(localStorage.getItem(KEY) || "[]"));
+let currentTab = "missing";
+
+const grid = document.getElementById("grid");
+const empty = document.getElementById("empty");
+const search = document.getElementById("search");
+const count = document.getElementById("count");
+const total = document.getElementById("total");
+
+function save(){
+  localStorage.setItem(KEY, JSON.stringify([...owned]));
+}
+
+function render(){
+  const term = search.value.trim().toLocaleLowerCase("pt-BR");
+
+  document.querySelectorAll(".tab").forEach(btn=>{
+    btn.classList.toggle("active", btn.dataset.tab === currentTab);
+  });
+
+  const filtered = coins.filter(([country,currency])=>{
+    const isOwned = owned.has(country);
+    const tabMatch = currentTab === "owned" ? isOwned : !isOwned;
+    const searchMatch = !term || `${country} ${currency}`.toLocaleLowerCase("pt-BR").includes(term);
+    return tabMatch && searchMatch;
+  });
+
+  grid.innerHTML = "";
+
+  filtered.forEach(([country,currency])=>{
+    const isOwned = owned.has(country);
+
+    const card = document.createElement("div");
+    card.className = "card" + (isOwned ? " owned" : "");
+
+    card.innerHTML = `
+      <div>
+        <div class="country">${country}</div>
+        <div class="currency">${currency}</div>
+      </div>
+      <button class="action">${isOwned ? "Remover" : "Adicionar"}</button>
+    `;
+
+    card.querySelector(".action").addEventListener("click", ()=>{
+      if(isOwned) owned.delete(country);
+      else owned.add(country);
+
+      save();
+      render();
+    });
+
+    grid.appendChild(card);
+  });
+
+  empty.hidden = filtered.length > 0;
+  count.textContent = owned.size;
+  total.textContent = coins.length;
+}
+
+document.querySelectorAll(".tab").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    currentTab = btn.dataset.tab;
+    render();
+  });
+});
+
+search.addEventListener("input", render);
+
+document.getElementById("reset").addEventListener("click", ()=>{
+  if(confirm("Limpar toda a coleção?")){
+    owned.clear();
+    save();
+    render();
+  }
+});
+
+render();
+
+const scanBtn = document.getElementById("scanBtn");
+const scanner = document.getElementById("scanner");
+const coinPhoto = document.getElementById("coinPhoto");
+const photoPreview = document.getElementById("photoPreview");
+const identifyPhoto = document.getElementById("identifyPhoto");
+const closeScan = document.getElementById("closeScan");
+const scanResult = document.getElementById("scanResult");
+const scanMatch = document.getElementById("scanMatch");
+const matchText = document.getElementById("matchText");
+const matchConfidence = document.getElementById("matchConfidence");
+const addMatch = document.getElementById("addMatch");
+
+let photoDataUrl = null;
+let aiMatch = null;
+
+const norm = s => (s || "")
+  .toLocaleLowerCase("pt-BR")
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g,"")
+  .trim();
+
+function findCountry(name){
+  const target = norm(name);
+  return coins.find(([country]) => norm(country) === target) || null;
+}
+
+scanBtn.addEventListener("click", ()=>{
+  scanner.classList.toggle("open");
+  scanMatch.classList.remove("show");
+});
+
+closeScan.addEventListener("click", ()=>{
+  scanner.classList.remove("open");
+});
+
+coinPhoto.addEventListener("change", ()=>{
+  const file = coinPhoto.files && coinPhoto.files[0];
+  if(!file) return;
+
+  if(file.size > 12 * 1024 * 1024){
+    scanResult.innerHTML = "<strong>Imagem muito grande.</strong> Tente fotografar novamente.";
+    identifyPhoto.disabled = true;
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    photoDataUrl = reader.result;
+    photoPreview.src = photoDataUrl;
+    photoPreview.classList.add("show");
+    identifyPhoto.disabled = false;
+    scanResult.textContent = "Foto pronta. Toque em Identificar.";
+    scanMatch.classList.remove("show");
+  };
+  reader.readAsDataURL(file);
+});
+
+identifyPhoto.addEventListener("click", async ()=>{
+  if(!photoDataUrl) return;
+
+  identifyPhoto.disabled = true;
+  scanMatch.classList.remove("show");
+  scanResult.innerHTML = "<strong>Analisando com IA...</strong>";
+
+  try{
+    const response = await fetch("/api/identify-coin",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({image:photoDataUrl})
+    });
+
+    const data = await response.json();
+
+    if(!response.ok){
+      throw new Error(data.error || "Falha na identificação");
+    }
+
+    const collectionCoin = data.identified ? findCountry(data.country) : null;
+
+    if(collectionCoin){
+      aiMatch = collectionCoin;
+
+      matchText.innerHTML =
+        "<strong>" + collectionCoin[0] + "</strong><br>" +
+        collectionCoin[1] +
+        (data.denomination ? "<br>" + data.denomination : "") +
+        (data.year ? " · " + data.year : "");
+
+      matchConfidence.textContent =
+        "Confiança: " + (data.confidence || "não informada") +
+        (data.reason ? " · " + data.reason : "");
+
+      scanMatch.classList.add("show");
+      scanResult.textContent = "Identificação encontrada. Confira antes de adicionar.";
+    }else{
+      aiMatch = null;
+      scanResult.innerHTML =
+        "<strong>Não consegui identificar com segurança.</strong><br>" +
+        (data.reason || "Tente fotografar o outro lado da moeda.");
+    }
+  }catch(err){
+    scanResult.innerHTML =
+      "<strong>A câmera funcionou, mas a IA não está acessível.</strong><br>" +
+      "Para identificar automaticamente, este HTML precisa estar publicado junto com o endpoint /api/identify-coin em HTTPS.<br><br>" +
+      "Detalhe: " + (err.message || "erro de conexão");
+  }finally{
+    identifyPhoto.disabled = false;
+  }
+});
+
+addMatch.addEventListener("click", ()=>{
+  if(!aiMatch) return;
+  owned.add(aiMatch[0]);
+  save();
+  render();
+
+  addMatch.textContent = "Adicionada";
+  setTimeout(()=>addMatch.textContent = "Adicionar à coleção", 1000);
+});
+
+</script>
+</body>
+</html>
