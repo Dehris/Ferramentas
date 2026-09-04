@@ -633,8 +633,8 @@
         </label>
 
         <label>
-          Endereço
-          <input id="toolUrl" required placeholder="calculadora/index.html">
+          Nome da pasta
+          <input id="toolUrl" required placeholder="calculadora">
         </label>
 
         <label>
@@ -648,7 +648,7 @@
         </div>
 
         <p class="modal-note">
-          Ferramentas adicionadas por este botão ficam salvas neste navegador.
+          Digite apenas o nome da pasta. O /index.html é adicionado automaticamente. As alterações ficam salvas neste navegador.
         </p>
       </form>
     </div>
@@ -660,7 +660,7 @@
         id: "exames",
         name: "Exames",
         category: "saude",
-        url: "exames/index.html",
+        url: "exames",
         description: "Acesso à ferramenta de exames.",
         icon: "▣"
       },
@@ -668,7 +668,7 @@
         id: "pokemongo",
         name: "Pokémon GO",
         category: "jogos",
-        url: "pokeGO/index.html",
+        url: "pokeGO",
         description: "Avaliador de pacotes, moedas e itens da loja.",
         icon: "◆"
       },
@@ -676,7 +676,7 @@
         id: "pokegodex",
         name: "PokéGO Dex",
         category: "jogos",
-        url: "pokeGoDex/index.html",
+        url: "pokeGoDex",
         description: "Pokédex e coleção do Pokémon GO.",
         icon: "◇"
       },
@@ -684,7 +684,7 @@
         id: "moedas",
         name: "Coleção de Moedas",
         category: "colecoes",
-        url: "moedas/index.html",
+        url: "moedas",
         description: "Controle de moedas, cédulas e itens da coleção.",
         icon: "◉"
       }
@@ -771,8 +771,12 @@
       renderTools();
     }
 
-    function normalizeUrl(url){
-      return url.trim().replace(/^\.?\//, "");
+    function normalizeUrl(folder){
+      folder = folder.trim()
+        .replace(/^\.?\//, "")
+        .replace(/\/$/, "")
+        .replace(/\/index\.html$/i, "");
+      return `${folder}/index.html`;
     }
 
     function updateCounts(){
@@ -880,7 +884,10 @@
 
       const name = document.getElementById("toolName").value.trim();
       const category = document.getElementById("toolCategory").value;
-      const url = normalizeUrl(document.getElementById("toolUrl").value);
+      const url = document.getElementById("toolUrl").value.trim()
+        .replace(/^\.?\//, "")
+        .replace(/\/$/, "")
+        .replace(/\/index\.html$/i, "");
       const description = document.getElementById("toolDescription").value.trim();
 
       const tools = getCustomTools();
