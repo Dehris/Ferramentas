@@ -327,7 +327,185 @@
       .card{min-height:138px}
       .card-top{margin-bottom:16px}
     }
-  </style>
+  
+    .category-card{
+      width:100%;
+      text-align:left;
+      font:inherit;
+      cursor:pointer;
+    }
+
+    .category-head{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin:8px 0 18px;
+    }
+
+    .category-title{
+      margin:0;
+      font-size:1.75rem;
+      letter-spacing:-.035em;
+    }
+
+    .back-btn,
+    .add-tool-btn,
+    .secondary-btn,
+    .primary-btn,
+    .modal-close{
+      border:1px solid var(--line);
+      border-radius:14px;
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .add-tool-btn{
+      background:var(--accent);
+      color:white;
+      padding:12px 16px;
+      white-space:nowrap;
+    }
+
+    .back-btn,
+    .secondary-btn{
+      background:var(--panel);
+      color:var(--text);
+      padding:10px 13px;
+    }
+
+    .primary-btn{
+      background:var(--accent);
+      color:#fff;
+      padding:10px 16px;
+    }
+
+    .category-search{
+      margin-bottom:14px;
+    }
+
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      z-index:100;
+      background:rgba(0,0,0,.66);
+      padding:18px;
+      display:grid;
+      place-items:center;
+    }
+
+    .modal-backdrop[hidden]{
+      display:none;
+    }
+
+    .modal{
+      width:min(520px,100%);
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+
+    .modal-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:15px;
+      margin-bottom:18px;
+    }
+
+    .modal-head h2{
+      margin:0;
+    }
+
+    .modal-close{
+      width:38px;
+      height:38px;
+      background:var(--panel-2);
+      color:var(--text);
+      font-size:1.4rem;
+    }
+
+    .modal form{
+      display:grid;
+      gap:13px;
+    }
+
+    .modal label{
+      display:grid;
+      gap:6px;
+      color:var(--muted);
+      font-size:.8rem;
+      font-weight:800;
+    }
+
+    .modal input,
+    .modal select{
+      width:100%;
+      border:1px solid var(--line);
+      background:var(--panel-2);
+      color:var(--text);
+      border-radius:13px;
+      padding:12px 13px;
+      outline:none;
+      font:inherit;
+    }
+
+    .modal input:focus,
+    .modal select:focus{
+      border-color:var(--accent);
+    }
+
+    .modal-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      margin-top:5px;
+    }
+
+    .modal-note{
+      margin:0;
+      color:var(--muted);
+      font-size:.72rem;
+      line-height:1.45;
+    }
+
+    .modal-open{
+      overflow:hidden;
+    }
+
+    @media(max-width:600px){
+      header{
+        display:grid;
+        grid-template-columns:1fr;
+      }
+
+      .add-tool-btn{
+        width:100%;
+      }
+
+      .category-head{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .back-btn{
+        width:100%;
+      }
+
+      .modal{
+        padding:16px;
+        border-radius:18px;
+      }
+
+      .modal-actions{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
+</style>
 </head>
 <body>
   <main class="wrap">
@@ -335,80 +513,66 @@
       <div class="brand">
         <small>Matriz</small>
         <h1>Ferramentas</h1>
-        <p class="subtitle">Atalhos para meus mini sites e utilitários.</p>
+        <p class="subtitle" id="pageSubtitle">Escolha uma categoria.</p>
       </div>
-      <div class="count">
-        <strong id="toolCount">3</strong>
-        ferramentas
-      </div>
+
+      <button class="add-tool-btn" id="openAddTool">+ Adicionar ferramenta</button>
     </header>
 
-    <div class="toolbar">
-      <div class="search">
+    <section id="homeView">
+      <div class="section-title">Categorias</div>
+
+      <div class="grid category-grid">
+        <button class="card category-card" data-category="saude">
+          <div class="card-top">
+            <div class="app-icon">+</div>
+            <span class="tag">Saúde</span>
+          </div>
+          <h2>Saúde</h2>
+          <p>Exames e ferramentas relacionadas à saúde.</p>
+          <div class="open"><span class="category-count" data-count="saude">0</span> ferramentas →</div>
+        </button>
+
+        <button class="card category-card" data-category="jogos">
+          <div class="card-top">
+            <div class="app-icon">◆</div>
+            <span class="tag">Jogos</span>
+          </div>
+          <h2>Jogos</h2>
+          <p>Pokémon GO e outras ferramentas de jogos.</p>
+          <div class="open"><span class="category-count" data-count="jogos">0</span> ferramentas →</div>
+        </button>
+
+        <button class="card category-card" data-category="colecoes">
+          <div class="card-top">
+            <div class="app-icon">◉</div>
+            <span class="tag">Coleções</span>
+          </div>
+          <h2>Coleções</h2>
+          <p>Moedas e outras ferramentas para organizar coleções.</p>
+          <div class="open"><span class="category-count" data-count="colecoes">0</span> ferramentas →</div>
+        </button>
+      </div>
+    </section>
+
+    <section id="categoryView" hidden>
+      <div class="category-head">
+        <button class="back-btn" id="backHome">← Categorias</button>
+        <div>
+          <div class="section-title" style="margin:0 0 5px">Categoria</div>
+          <h2 id="categoryTitle" class="category-title">Jogos</h2>
+        </div>
+      </div>
+
+      <div class="search category-search">
         <span class="icon">⌕</span>
-        <input id="searchInput" type="search" placeholder="Buscar ferramenta..." autocomplete="off">
+        <input id="searchInput" type="search" placeholder="Buscar nesta categoria..." autocomplete="off">
       </div>
 
-      <div class="filters" id="filters">
-        <button class="filter active" data-filter="all">Todas</button>
-        <button class="filter" data-filter="colecoes">Coleções</button>
-        <button class="filter" data-filter="trabalho">Trabalho</button>
-        <button class="filter" data-filter="utilitarios">Utilitários</button>
-      </div>
-    </div>
-
-    <div class="section-title">Meus aplicativos</div>
-
-    <section class="grid" id="toolsGrid">
-      <!--
-        PARA ADICIONAR UMA NOVA FERRAMENTA:
-        copie um bloco <a class="card">...</a> e troque:
-        href="./nome-da-pasta/"
-        data-category="colecoes | trabalho | utilitarios"
-        data-name="nome usado na busca"
-      -->
-
-      <a class="card"
-         href="./moedas/"
-         data-category="colecoes"
-         data-name="coleção de moedas moedas cédulas países brasil">
-        <div class="card-top">
-          <div class="app-icon">◉</div>
-          <span class="tag">Coleções</span>
-        </div>
-        <h2>Coleção de Moedas</h2>
-        <p>Controle de moedas, cédulas e itens já adicionados à coleção.</p>
-        <div class="open">Abrir ferramenta →</div>
-      </a>
-
-      <a class="card"
-         href="./pokeGO/"
-         data-category="utilitarios"
-         data-name="pokemon go avaliador pacotes loja moedas">
-        <div class="card-top">
-          <div class="app-icon">◆</div>
-          <span class="tag">Utilitários</span>
-        </div>
-        <h2>Pokémon GO</h2>
-        <p>Avaliador de pacotes, moedas e itens da loja.</p>
-        <div class="open">Abrir ferramenta →</div>
-      </a>
-
-      <a class="card"
-         href="./pokeGoDex/"
-         data-category="utilitarios"
-         data-name="pokemon go dex pokedex coleção pokemon">
-        <div class="card-top">
-          <div class="app-icon">◇</div>
-          <span class="tag">Utilitários</span>
-        </div>
-        <h2>PokéGO Dex</h2>
-        <p>Área preparada para sua Pokédex / coleção do Pokémon GO.</p>
-        <div class="open">Abrir ferramenta →</div>
-      </a>
+      <div class="grid" id="toolsGrid"></div>
 
       <div class="empty" id="emptyState">
-        Nenhuma ferramenta encontrada.
+        Nenhuma ferramenta encontrada nesta categoria.
       </div>
     </section>
 
@@ -418,53 +582,249 @@
     </footer>
   </main>
 
-  <script>
-    const searchInput = document.getElementById('searchInput');
-    const filterButtons = [...document.querySelectorAll('.filter')];
-    const cards = [...document.querySelectorAll('.card')];
-    const emptyState = document.getElementById('emptyState');
-    const toolCount = document.getElementById('toolCount');
+  <div class="modal-backdrop" id="toolModal" hidden>
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <div class="section-title" style="margin:0 0 4px">Nova ferramenta</div>
+          <h2>Adicionar à matriz</h2>
+        </div>
+        <button class="modal-close" id="closeAddTool" aria-label="Fechar">×</button>
+      </div>
 
-    let activeFilter = 'all';
+      <form id="toolForm">
+        <label>
+          Nome
+          <input id="toolName" required placeholder="Ex.: Calculadora">
+        </label>
+
+        <label>
+          Categoria
+          <select id="toolCategory" required>
+            <option value="saude">Saúde</option>
+            <option value="jogos">Jogos</option>
+            <option value="colecoes">Coleções</option>
+          </select>
+        </label>
+
+        <label>
+          Endereço
+          <input id="toolUrl" required placeholder="calculadora/index.html">
+        </label>
+
+        <label>
+          Descrição
+          <input id="toolDescription" placeholder="Ex.: Calculadora rápida">
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary-btn" id="cancelAddTool">Cancelar</button>
+          <button type="submit" class="primary-btn">Adicionar</button>
+        </div>
+
+        <p class="modal-note">
+          Ferramentas adicionadas por este botão ficam salvas neste navegador.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const defaultTools = [
+      {
+        name: "Exames",
+        category: "saude",
+        url: "exames/index.html",
+        description: "Acesso à ferramenta de exames.",
+        icon: "▣"
+      },
+      {
+        name: "Pokémon GO",
+        category: "jogos",
+        url: "pokeGO/index.html",
+        description: "Avaliador de pacotes, moedas e itens da loja.",
+        icon: "◆"
+      },
+      {
+        name: "PokéGO Dex",
+        category: "jogos",
+        url: "pokeGoDex/index.html",
+        description: "Pokédex e coleção do Pokémon GO.",
+        icon: "◇"
+      },
+      {
+        name: "Coleção de Moedas",
+        category: "colecoes",
+        url: "moedas/index.html",
+        description: "Controle de moedas, cédulas e itens da coleção.",
+        icon: "◉"
+      }
+    ];
+
+    const categoryNames = {
+      saude: "Saúde",
+      jogos: "Jogos",
+      colecoes: "Coleções"
+    };
+
+    const categoryIcons = {
+      saude: "+",
+      jogos: "◆",
+      colecoes: "◉"
+    };
+
+    const storageKey = "ferramentas_custom_v1";
+
+    const homeView = document.getElementById("homeView");
+    const categoryView = document.getElementById("categoryView");
+    const toolsGrid = document.getElementById("toolsGrid");
+    const categoryTitle = document.getElementById("categoryTitle");
+    const pageSubtitle = document.getElementById("pageSubtitle");
+    const emptyState = document.getElementById("emptyState");
+    const searchInput = document.getElementById("searchInput");
+    const toolModal = document.getElementById("toolModal");
+
+    let currentCategory = null;
 
     function normalize(text){
-      return text
+      return (text || "")
         .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '');
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
     }
 
-    function applyFilters(){
-      const term = normalize(searchInput.value.trim());
-      let visible = 0;
-
-      cards.forEach(card => {
-        const category = card.dataset.category;
-        const name = normalize(card.dataset.name || '');
-        const matchesCategory = activeFilter === 'all' || category === activeFilter;
-        const matchesSearch = !term || name.includes(term);
-        const show = matchesCategory && matchesSearch;
-
-        card.style.display = show ? '' : 'none';
-        if(show) visible++;
-      });
-
-      emptyState.style.display = visible ? 'none' : 'block';
-      toolCount.textContent = cards.length;
+    function getCustomTools(){
+      try{
+        return JSON.parse(localStorage.getItem(storageKey)) || [];
+      }catch{
+        return [];
+      }
     }
 
-    searchInput.addEventListener('input', applyFilters);
+    function getAllTools(){
+      return [...defaultTools, ...getCustomTools()];
+    }
 
-    filterButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        filterButtons.forEach(b => b.classList.remove('active'));
-        button.classList.add('active');
-        activeFilter = button.dataset.filter;
-        applyFilters();
+    function normalizeUrl(url){
+      return url.trim().replace(/^\.?\//, "");
+    }
+
+    function updateCounts(){
+      const tools = getAllTools();
+      Object.keys(categoryNames).forEach(category => {
+        const count = tools.filter(tool => tool.category === category).length;
+        const el = document.querySelector(`[data-count="${category}"]`);
+        if(el) el.textContent = count;
       });
+    }
+
+    function renderTools(){
+      const term = normalize(searchInput.value);
+      const tools = getAllTools()
+        .filter(tool => tool.category === currentCategory)
+        .filter(tool => !term || normalize(`${tool.name} ${tool.description}`).includes(term));
+
+      toolsGrid.innerHTML = "";
+
+      tools.forEach(tool => {
+        const card = document.createElement("a");
+        card.className = "card";
+        card.href = `./${normalizeUrl(tool.url)}`;
+        card.innerHTML = `
+          <div class="card-top">
+            <div class="app-icon">${tool.icon || categoryIcons[tool.category] || "•"}</div>
+            <span class="tag">${categoryNames[tool.category]}</span>
+          </div>
+          <h2>${escapeHtml(tool.name)}</h2>
+          <p>${escapeHtml(tool.description || "Abrir ferramenta.")}</p>
+          <div class="open">Abrir ferramenta →</div>
+        `;
+        toolsGrid.appendChild(card);
+      });
+
+      emptyState.style.display = tools.length ? "none" : "block";
+    }
+
+    function openCategory(category){
+      currentCategory = category;
+      categoryTitle.textContent = categoryNames[category];
+      pageSubtitle.textContent = `Categoria: ${categoryNames[category]}`;
+      searchInput.value = "";
+      homeView.hidden = true;
+      categoryView.hidden = false;
+      renderTools();
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    function goHome(){
+      currentCategory = null;
+      categoryView.hidden = true;
+      homeView.hidden = false;
+      pageSubtitle.textContent = "Escolha uma categoria.";
+      updateCounts();
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    function openModal(){
+      toolModal.hidden = false;
+      document.body.classList.add("modal-open");
+      setTimeout(() => document.getElementById("toolName").focus(), 20);
+    }
+
+    function closeModal(){
+      toolModal.hidden = true;
+      document.body.classList.remove("modal-open");
+      document.getElementById("toolForm").reset();
+    }
+
+    function escapeHtml(value){
+      return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    document.querySelectorAll(".category-card").forEach(card => {
+      card.addEventListener("click", () => openCategory(card.dataset.category));
     });
 
-    applyFilters();
+    document.getElementById("backHome").addEventListener("click", goHome);
+    searchInput.addEventListener("input", renderTools);
+
+    document.getElementById("openAddTool").addEventListener("click", openModal);
+    document.getElementById("closeAddTool").addEventListener("click", closeModal);
+    document.getElementById("cancelAddTool").addEventListener("click", closeModal);
+
+    toolModal.addEventListener("click", event => {
+      if(event.target === toolModal) closeModal();
+    });
+
+    document.getElementById("toolForm").addEventListener("submit", event => {
+      event.preventDefault();
+
+      const name = document.getElementById("toolName").value.trim();
+      const category = document.getElementById("toolCategory").value;
+      const url = normalizeUrl(document.getElementById("toolUrl").value);
+      const description = document.getElementById("toolDescription").value.trim();
+
+      const tools = getCustomTools();
+      tools.push({
+        name,
+        category,
+        url,
+        description,
+        icon: categoryIcons[category]
+      });
+
+      localStorage.setItem(storageKey, JSON.stringify(tools));
+      closeModal();
+      updateCounts();
+      openCategory(category);
+    });
+
+    updateCounts();
   </script>
 </body>
 </html>
