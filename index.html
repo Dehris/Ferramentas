@@ -505,6 +505,31 @@
       }
     }
 
+
+    .tool-card{position:relative}
+    .delete-tool{
+      position:absolute;
+      top:12px;
+      right:12px;
+      z-index:5;
+      width:34px;
+      height:34px;
+      border:1px solid rgba(255,110,110,.25);
+      border-radius:11px;
+      background:rgba(255,90,90,.10);
+      color:#ff9b9b;
+      font-size:18px;
+      line-height:1;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+    }
+    .delete-tool:hover{
+      background:rgba(255,90,90,.18);
+      border-color:rgba(255,110,110,.45);
+    }
+    .tool-card .card-top{padding-right:38px}
+
 </style>
 </head>
 <body>
@@ -632,6 +657,7 @@
   <script>
     const defaultTools = [
       {
+        id: "exames",
         name: "Exames",
         category: "saude",
         url: "exames/index.html",
@@ -639,6 +665,7 @@
         icon: "▣"
       },
       {
+        id: "pokemongo",
         name: "Pokémon GO",
         category: "jogos",
         url: "pokeGO/index.html",
@@ -646,6 +673,7 @@
         icon: "◆"
       },
       {
+        id: "pokegodex",
         name: "PokéGO Dex",
         category: "jogos",
         url: "pokeGoDex/index.html",
@@ -653,6 +681,7 @@
         icon: "◇"
       },
       {
+        id: "moedas",
         name: "Coleção de Moedas",
         category: "colecoes",
         url: "moedas/index.html",
@@ -674,6 +703,15 @@
     };
 
     const storageKey = "ferramentas_custom_v1";
+    const hiddenDefaultsKey = "ferramentas_hidden_defaults_v1";
+
+    function getHiddenDefaults(){
+      try{
+        return JSON.parse(localStorage.getItem(hiddenDefaultsKey)) || [];
+      }catch{
+        return [];
+      }
+    }
 
     const homeView = document.getElementById("homeView");
     const categoryView = document.getElementById("categoryView");
@@ -702,7 +740,35 @@
     }
 
     function getAllTools(){
-      return [...defaultTools, ...getCustomTools()];
+      const hidden = getHiddenDefaults();
+      const defaults = defaultTools
+        .filter(tool => !hidden.includes(tool.id))
+        .map(tool => ({...tool, source:"default"}));
+
+      const custom = getCustomTools()
+        .map((tool, index) => ({...tool, source:"custom", customIndex:index}));
+
+      return [...defaults, ...custom];
+    }
+
+    function deleteTool(tool){
+      const ok = confirm(`Excluir "${tool.name}" da matriz?`);
+      if(!ok) return;
+
+      if(tool.source === "default"){
+        const hidden = getHiddenDefaults();
+        if(!hidden.includes(tool.id)){
+          hidden.push(tool.id);
+          localStorage.setItem(hiddenDefaultsKey, JSON.stringify(hidden));
+        }
+      }else{
+        const custom = getCustomTools();
+        custom.splice(tool.customIndex, 1);
+        localStorage.setItem(storageKey, JSON.stringify(custom));
+      }
+
+      updateCounts();
+      renderTools();
     }
 
     function normalizeUrl(url){
@@ -728,9 +794,10 @@
 
       tools.forEach(tool => {
         const card = document.createElement("a");
-        card.className = "card";
+        card.className = "card tool-card";
         card.href = `./${normalizeUrl(tool.url)}`;
         card.innerHTML = `
+          <button class="delete-tool" type="button" title="Excluir ferramenta" aria-label="Excluir ferramenta">×</button>
           <div class="card-top">
             <div class="app-icon">${tool.icon || categoryIcons[tool.category] || "•"}</div>
             <span class="tag">${categoryNames[tool.category]}</span>
@@ -739,6 +806,13 @@
           <p>${escapeHtml(tool.description || "Abrir ferramenta.")}</p>
           <div class="open">Abrir ferramenta →</div>
         `;
+
+        card.querySelector(".delete-tool").addEventListener("click", event => {
+          event.preventDefault();
+          event.stopPropagation();
+          deleteTool(tool);
+        });
+
         toolsGrid.appendChild(card);
       });
 
@@ -811,6 +885,7 @@
 
       const tools = getCustomTools();
       tools.push({
+        id: `custom-${Date.now()}`,
         name,
         category,
         url,
