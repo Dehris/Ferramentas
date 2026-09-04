@@ -204,6 +204,104 @@ header .count{position:absolute;right:12px}
   .card .currency{font-size:6.8px!important}
 }
 
+
+/* Melhor contraste nos botões redondos dos países */
+.card .country,
+.card .currency{
+  color:var(--accent)!important;
+  opacity:1!important;
+}
+.card.owned .country,
+.card.owned .currency{
+  color:var(--accent-dark)!important;
+  opacity:1!important;
+}
+
+
+/* Fonte maior nos círculos dos países */
+.card .country{
+  font-size:clamp(10px, 2.8vw, 15px)!important;
+  line-height:1.02!important;
+  font-weight:950!important;
+  width:92%!important;
+  overflow-wrap:anywhere;
+}
+.card .currency{
+  font-size:clamp(8px, 2.15vw, 12px)!important;
+  line-height:1.02!important;
+  font-weight:800!important;
+  width:88%!important;
+  overflow-wrap:anywhere;
+}
+@media(max-width:420px){
+  .card .country{font-size:clamp(9px,2.8vw,13px)!important}
+  .card .currency{font-size:clamp(7.5px,2.15vw,10.5px)!important}
+}
+
+
+/* Países: bandeira + textos maiores e quebráveis */
+.card{padding:5px 3px!important}
+.card .flag{
+  font-size:clamp(15px,4vw,23px)!important;
+  line-height:1!important;
+  margin-bottom:1px!important;
+}
+.card .country{
+  font-size:clamp(11px,3.1vw,17px)!important;
+  line-height:1.0!important;
+  font-weight:950!important;
+  width:94%!important;
+  white-space:normal!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+.card .currency{
+  font-size:clamp(9px,2.4vw,13.5px)!important;
+  line-height:1.0!important;
+  font-weight:850!important;
+  width:92%!important;
+  white-space:normal!important;
+}
+@media(max-width:420px){
+  .card .flag{font-size:clamp(14px,4vw,20px)!important}
+  .card .country{font-size:clamp(10px,3vw,15px)!important}
+  .card .currency{font-size:clamp(8px,2.3vw,11.5px)!important}
+}
+
+
+/* Bandeiras reais em SVG (sem emoji) */
+.card .flag{display:none!important}
+.flag-wrap{
+  height:22px;
+  width:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 2px;
+  flex:0 0 auto;
+}
+.flag-img{
+  display:block;
+  max-width:32px;
+  max-height:22px;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  border-radius:2px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.18);
+}
+.flag-fallback{
+  display:none;
+  font-size:9px;
+  font-weight:900;
+  color:var(--accent);
+  letter-spacing:.3px;
+}
+@media(max-width:420px){
+  .flag-wrap{height:19px;width:28px}
+  .flag-img{max-width:28px;max-height:19px}
+}
+
 </style>
 </head>
 <body>
@@ -746,6 +844,67 @@ async function importBackup(file){
   }
 }
 
+
+const COUNTRY_SHORT = {
+  "República Dominicana":"Rep. Dominicana",
+  "República Centro-Africana":"Rep. Centro-Africana",
+  "República Democrática do Congo":"R.D. Congo",
+  "República do Congo":"Rep. do Congo",
+  "Emirados Árabes Unidos":"Emirados Árabes",
+  "Estados Unidos":"EUA",
+  "Bósnia e Herzegovina":"Bósnia e Herz.",
+  "São Vicente e Granadinas":"S. Vicente e Granadinas",
+  "São Cristóvão e Névis":"S. Cristóvão e Névis"
+};
+
+const COUNTRY_CODES = {
+  "Afeganistão":"af","África do Sul":"za","Albânia":"al","Alemanha":"de","Andorra":"ad","Angola":"ao",
+  "Antígua e Barbuda":"ag","Arábia Saudita":"sa","Argélia":"dz","Argentina":"ar","Armênia":"am",
+  "Austrália":"au","Áustria":"at","Azerbaijão":"az","Bahamas":"bs","Bahrein":"bh","Bangladesh":"bd",
+  "Barbados":"bb","Bélgica":"be","Belize":"bz","Benim":"bj","Bielorrússia":"by","Bolívia":"bo",
+  "Bósnia e Herzegovina":"ba","Botsuana":"bw","Brasil":"br","Brunei":"bn","Bulgária":"bg",
+  "Burkina Faso":"bf","Burundi":"bi","Butão":"bt","Cabo Verde":"cv","Camarões":"cm","Camboja":"kh",
+  "Canadá":"ca","Catar":"qa","Cazaquistão":"kz","Chade":"td","Chile":"cl","China":"cn","Chipre":"cy",
+  "Colômbia":"co","Comores":"km","Coreia do Norte":"kp","Coreia do Sul":"kr","Costa Rica":"cr",
+  "Costa do Marfim":"ci","Croácia":"hr","Cuba":"cu","Dinamarca":"dk","Djibuti":"dj","Dominica":"dm",
+  "Egito":"eg","El Salvador":"sv","Emirados Árabes Unidos":"ae","Equador":"ec","Eritreia":"er",
+  "Eslováquia":"sk","Eslovênia":"si","Espanha":"es","Estados Unidos":"us","Estônia":"ee",
+  "Eswatini":"sz","Etiópia":"et","Fiji":"fj","Filipinas":"ph","Finlândia":"fi","França":"fr",
+  "Gabão":"ga","Gâmbia":"gm","Gana":"gh","Geórgia":"ge","Granada":"gd","Grécia":"gr",
+  "Guatemala":"gt","Guiana":"gy","Guiné":"gn","Guiné-Bissau":"gw","Guiné Equatorial":"gq",
+  "Haiti":"ht","Honduras":"hn","Hungria":"hu","Iêmen":"ye","Ilhas Marshall":"mh","Ilhas Salomão":"sb",
+  "Índia":"in","Indonésia":"id","Irã":"ir","Iraque":"iq","Irlanda":"ie","Islândia":"is","Israel":"il",
+  "Itália":"it","Jamaica":"jm","Japão":"jp","Jordânia":"jo","Kiribati":"ki","Kuwait":"kw",
+  "Laos":"la","Lesoto":"ls","Letônia":"lv","Líbano":"lb","Libéria":"lr","Líbia":"ly",
+  "Liechtenstein":"li","Lituânia":"lt","Luxemburgo":"lu","Macedônia do Norte":"mk","Madagascar":"mg",
+  "Malásia":"my","Malawi":"mw","Maldivas":"mv","Mali":"ml","Malta":"mt","Marrocos":"ma",
+  "Maurício":"mu","Mauritânia":"mr","México":"mx","Micronésia":"fm","Moçambique":"mz","Moldávia":"md",
+  "Mônaco":"mc","Mongólia":"mn","Montenegro":"me","Myanmar":"mm","Namíbia":"na","Nauru":"nr",
+  "Nepal":"np","Nicarágua":"ni","Níger":"ne","Nigéria":"ng","Noruega":"no","Nova Zelândia":"nz",
+  "Omã":"om","Países Baixos":"nl","Palau":"pw","Panamá":"pa","Papua-Nova Guiné":"pg",
+  "Paquistão":"pk","Paraguai":"py","Peru":"pe","Polônia":"pl","Portugal":"pt","Quênia":"ke",
+  "Quirguistão":"kg","Reino Unido":"gb","República Centro-Africana":"cf","República Democrática do Congo":"cd",
+  "República do Congo":"cg","República Dominicana":"do","Romênia":"ro","Ruanda":"rw","Rússia":"ru",
+  "Samoa":"ws","San Marino":"sm","Santa Lúcia":"lc","São Cristóvão e Névis":"kn",
+  "São Tomé e Príncipe":"st","São Vicente e Granadinas":"vc","Senegal":"sn","Serra Leoa":"sl",
+  "Sérvia":"rs","Seychelles":"sc","Singapura":"sg","Síria":"sy","Somália":"so","Sri Lanka":"lk",
+  "Sudão":"sd","Sudão do Sul":"ss","Suécia":"se","Suíça":"ch","Suriname":"sr","Tailândia":"th",
+  "Tajiquistão":"tj","Tanzânia":"tz","Timor-Leste":"tl","Togo":"tg","Tonga":"to",
+  "Trinidad e Tobago":"tt","Tunísia":"tn","Turcomenistão":"tm","Turquia":"tr","Tuvalu":"tv",
+  "Ucrânia":"ua","Uganda":"ug","Uruguai":"uy","Uzbequistão":"uz","Vanuatu":"vu","Vaticano":"va",
+  "Venezuela":"ve","Vietnã":"vn","Zâmbia":"zm","Zimbábue":"zw"
+};
+
+
+function flagUrl(country){
+  const code = COUNTRY_CODES[country];
+  return code ? `https://flagcdn.com/${code}.svg` : "";
+}
+
+function shortCountryName(country){
+  return COUNTRY_SHORT[country] || country;
+}
+
 function render(){
   const term = search.value.trim().toLocaleLowerCase("pt-BR");
   const brazilMode = currentTab === "brazil";
@@ -780,10 +939,12 @@ function render(){
     card.type = "button";
     card.className = "card" + (isOwned ? " owned" : "");
     card.innerHTML = `
-      <div>
-        <div class="country">${country}</div>
-        <div class="currency">${currency}</div>
+      <div class="flag-wrap">
+        ${flagUrl(country) ? `<img class="flag-img" src="${flagUrl(country)}" alt="Bandeira de ${country}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">` : ""}
+        <span class="flag-fallback">${(COUNTRY_CODES[country] || country.slice(0,2)).toUpperCase()}</span>
       </div>
+      <div class="country">${shortCountryName(country)}</div>
+      <div class="currency">${currency}</div>
 `;
 
     card.addEventListener("click", ()=>{
