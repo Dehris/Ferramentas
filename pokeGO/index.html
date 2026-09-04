@@ -21,8 +21,19 @@ button{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:1
 button.secondary{background:var(--card2);border:1px solid var(--line)}
 button.delete{background:transparent;color:var(--red);padding:6px 9px}
 .table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:900px}
-th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th,td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}
+th:nth-child(1){width:31%}
+th:nth-child(2){width:8%}
+th:nth-child(3){width:12%}
+th:nth-child(4){width:18%}
+th:nth-child(5){width:12%}
+th:nth-child(6){width:11%}
+th:nth-child(7){width:8%}
+td select{font-size:12px;padding:7px 6px}
+td .qty{max-width:none;padding:7px 5px}
+button.delete{font-size:0;padding:6px 8px}
+button.delete::after{content:"×";font-size:18px;line-height:1}
 th{color:var(--muted);font-size:12px;text-transform:uppercase}
 select,input{width:100%;background:#10162a;color:#fff;border:1px solid var(--line);border-radius:8px;padding:8px}
 .qty{max-width:95px}.metric{background:var(--card2);border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid var(--line)}
@@ -34,7 +45,11 @@ select,input{width:100%;background:#10162a;color:#fff;border:1px solid var(--lin
 .normal{color:var(--muted);background:#ffffff08;border:1px solid var(--line)}
 .estimate{color:var(--gold);background:#ffd16616;border:1px solid #ffd16655}
 .good{color:var(--green)}.bad{color:var(--red)}
-@media(max-width:930px){.wrap{padding:0 12px}.card{padding:14px}.inline{grid-template-columns:1fr}.price-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.results-grid{grid-template-columns:1fr}.table-wrap{margin:0 -4px;padding:0 4px}}@media(max-width:560px){.price-grid{grid-template-columns:1fr}}
+@media(max-width:930px){.wrap{padding:0 12px}.card{padding:14px}.inline{grid-template-columns:1fr}.price-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.results-grid{grid-template-columns:1fr}.table-wrap{margin:0 -4px;padding:0 4px}
+table{table-layout:auto}
+th:nth-child(3),td:nth-child(3),th:nth-child(4),td:nth-child(4){display:none}
+th:nth-child(1){width:48%}th:nth-child(2){width:12%}th:nth-child(5){width:15%}th:nth-child(6){width:17%}th:nth-child(7){width:8%}
+}@media(max-width:560px){.price-grid{grid-template-columns:1fr}}
 
 
 .results-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
