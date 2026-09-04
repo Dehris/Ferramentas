@@ -20,7 +20,7 @@
 }
 *{box-sizing:border-box}
 body{
-  margin:0; min-height:100vh; background:var(--bg); color:var(--text);
+  margin:0; min-height:100vh; background:var(--bg); color:var(--text); text-align:center;
   font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 button,input{font:inherit}
@@ -30,7 +30,7 @@ h1{margin:0;font-size:22px;line-height:1}
 .count{font-size:13px;color:var(--muted);white-space:nowrap}
 .count strong{color:var(--accent);font-size:18px}
 .toolbar{position:sticky;top:0;z-index:10;background:rgba(15,17,21,.96);padding:7px 0 9px;backdrop-filter:blur(8px)}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:7px}
+.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:7px}
 .tab,.scan-open{
   border:1px solid var(--line);background:var(--panel);color:var(--muted);
   border-radius:9px;padding:9px 8px;font-weight:800;cursor:pointer
@@ -45,7 +45,61 @@ h1{margin:0;font-size:22px;line-height:1}
 .backup-btn input{display:none}
 .backup-note{font-size:10px;color:var(--muted);text-align:center;margin:6px 0 0}
 
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}
+.br-wrap{display:none;margin-top:8px}
+.br-wrap.show{display:block}
+.br-top{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.br-subtab{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:9px;padding:9px 8px;font-weight:800;cursor:pointer}
+.br-subtab.active{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
+.br-summary{font-size:11px;color:var(--muted);text-align:center;margin:7px 0 10px}
+.br-section{margin:16px 0 7px;font-size:13px;font-weight:900;color:var(--accent);text-align:center;padding-top:12px;border-top:1px solid var(--line)}
+.br-family{width:100%;display:block;margin-bottom:10px}.br-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+
+.br-family .br-grid{
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(58px,1fr);
+  grid-template-columns:none;
+  gap:3px;
+  overflow-x:auto;
+  padding-bottom:3px;
+  scrollbar-width:thin;
+}
+.br-family .br-grid .br-card{
+  min-height:68px;
+  padding:5px 2px;
+  border-radius:7px;
+  gap:4px;
+}
+.br-family .br-grid .br-name{font-size:8.5px;line-height:1.05}
+.br-family .br-grid .br-meta{font-size:7px;line-height:1.05;margin-top:2px}
+.br-family .br-grid .br-action{font-size:7.5px;padding:5px 1px;border-radius:5px}
+
+
+.real-year{margin:14px 0 10px}
+.real-year-title{font-size:22px;font-weight:950;line-height:1;color:var(--accent);margin:0 0 8px;text-align:center}
+.real-year-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+.real-year-grid .br-card{min-height:74px;padding:6px 3px;border-radius:8px;gap:5px}
+.real-year-grid .br-name{font-size:10px;line-height:1.05}
+.real-year-grid .br-meta{font-size:8px;line-height:1.05;margin-top:2px}
+.real-year-grid .br-action{padding:6px 2px;font-size:8.5px;border-radius:6px}
+@media(max-width:420px){
+  .real-year-title{font-size:20px}
+  .real-year-grid{gap:3px}
+  .real-year-grid .br-card{padding:5px 2px;min-height:70px}
+  .real-year-grid .br-name{font-size:9px}
+  .real-year-grid .br-meta{font-size:7.5px}
+  .real-year-grid .br-action{font-size:8px;padding:5px 1px}
+}
+
+.br-card{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:8px 6px;min-height:70px;display:flex;flex-direction:column;justify-content:center;gap:4px;text-align:center;cursor:pointer;width:100%}
+.br-name{font-size:11.5px;font-weight:800;line-height:1.15;overflow-wrap:anywhere}
+.br-meta{font-size:9.5px;color:var(--muted);line-height:1.15;margin-top:4px;overflow-wrap:anywhere}
+.br-action{width:100%;border:0;border-radius:8px;padding:7px 4px;font-size:10px;font-weight:800;cursor:pointer;background:var(--accent);color:var(--accent-dark)}
+.br-card.owned{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
+.br-card.owned .br-meta{color:var(--accent-dark);opacity:.75}
+
+
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .card{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 6px;min-height:105px;display:flex;flex-direction:column;justify-content:space-between;gap:7px;text-align:center;align-items:stretch}
 .country{font-size:12px;font-weight:800;line-height:1.15;text-align:center;overflow-wrap:anywhere}
 .currency{font-size:10.5px;color:var(--muted);line-height:1.2;margin-top:4px;text-align:center;overflow-wrap:anywhere}
@@ -92,6 +146,64 @@ h1{margin:0;font-size:22px;line-height:1}
   .modal-backdrop{align-items:center;padding:16px}
   .modal{border-radius:18px}
 }
+
+header{align-items:center;text-align:center}
+header>div:first-child{width:100%}
+header .count{position:absolute;right:12px}
+.country,.currency,.result-label,.result-value,.scanner-note,.status,.backup-note,.br-name,.br-meta,.count,h1{text-align:center}
+.modal-head{position:relative;justify-content:center}
+.modal-title{text-align:center;width:100%}
+.modal-head .close{position:absolute;right:0}
+
+
+/* Países: moeda como botão redondo, 4 por linha */
+.grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+.card{
+  aspect-ratio:1/1;
+  width:100%;
+  min-width:0;
+  border-radius:50%!important;
+  padding:7px 5px!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  text-align:center!important;
+  cursor:pointer!important;
+  overflow:hidden;
+  box-sizing:border-box;
+}
+.card .country{
+  font-size:9.5px!important;
+  line-height:1.05!important;
+  font-weight:900!important;
+  margin:0!important;
+  text-align:center!important;
+  max-width:100%;
+}
+.card .currency{
+  font-size:7.5px!important;
+  line-height:1.05!important;
+  margin:0!important;
+  text-align:center!important;
+  max-width:100%;
+}
+.card button,.card .add,.card .remove,.card .action{display:none!important}
+.card.owned{
+  background:var(--accent)!important;
+  color:var(--accent-dark)!important;
+  border-color:var(--accent)!important;
+}
+.card.owned .currency{color:var(--accent-dark)!important;opacity:.78}
+@media(max-width:420px){
+  .grid{gap:6px!important}
+  .card{padding:5px 3px!important}
+  .card .country{font-size:8.5px!important}
+  .card .currency{font-size:6.8px!important}
+}
+
 </style>
 </head>
 <body>
@@ -105,6 +217,7 @@ h1{margin:0;font-size:22px;line-height:1}
     <div class="tabs">
       <button class="tab active" data-tab="missing">Faltam</button>
       <button class="tab" data-tab="owned">Já tenho</button>
+      <button class="tab" data-tab="brazil">Brasil</button>
     </div>
     <input id="search" class="search" type="search" placeholder="Buscar país ou moeda">
     <button id="scanOpen" class="scan-open">Identificar moeda com IA</button>
@@ -120,7 +233,15 @@ h1{margin:0;font-size:22px;line-height:1}
 
   <div id="grid" class="grid"></div>
   <div id="empty" class="empty" hidden>Nenhum item encontrado.</div>
-  <button id="reset" class="reset">Limpar coleção</button>
+
+  <div id="brazilWrap" class="br-wrap">
+    <div class="br-top">
+      <button class="br-subtab active" data-brtab="coins">Moedas</button>
+      <button class="br-subtab" data-brtab="notes">Cédulas</button>
+    </div>
+    <div id="brSummary" class="br-summary"></div>
+    <div id="brContent"></div>
+  </div>
 </div>
 
 <div id="scannerModal" class="modal-backdrop" aria-hidden="true">
@@ -402,6 +523,165 @@ let currentTab = "missing";
 let selectedImageDataUrl = "";
 let currentMatchCountry = "";
 
+
+const BR_KEY = "colecao-moedas-brasil-v1";
+let brOwned = new Set(JSON.parse(localStorage.getItem(BR_KEY) || "[]"));
+let currentBrTab = "coins";
+
+const REAL_YEARS = {"1 centavo — 1ª família":[1994,1995,1996,1997],"5 centavos — 1ª família":[1994,1995,1996,1997],"10 centavos — 1ª família":[1994,1995,1996,1997],"25 centavos — 1ª família":[1994,1995,1996,1997],"50 centavos — 1ª família":[1994,1995,1996,1997],"1 real — 1ª família":[1994,1995,1996,1997],"1 centavo — 2ª família":[1998,1999,2000,2001,2002,2003,2004],"5 centavos — 2ª família":[1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030],"10 centavos — 2ª família":[1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030],"25 centavos — 2ª família":[1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030],"50 centavos — 2ª família":[1998,2000,2001,2002,2003,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030],"1 real — 2ª família":[1998,1999,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030]};
+const HISTORICAL_COINS = [["Réis — Império",["10 réis","20 réis","40 réis","80 réis","100 réis","200 réis","400 réis","500 réis","1.000 réis","2.000 réis"]],["Réis — República",["20 réis","40 réis","50 réis","100 réis","200 réis","400 réis","500 réis","1.000 réis","2.000 réis"]],["Cruzeiro — 1942",["10 centavos","20 centavos","50 centavos","1 cruzeiro","2 cruzeiros","5 cruzeiros","10 cruzeiros","20 cruzeiros","50 cruzeiros"]],["Cruzeiro Novo — 1967",["1 centavo","2 centavos","5 centavos","10 centavos","20 centavos","50 centavos"]],["Cruzeiro — 1970",["1 centavo","2 centavos","5 centavos","10 centavos","20 centavos","50 centavos","1 cruzeiro","5 cruzeiros","10 cruzeiros","20 cruzeiros","50 cruzeiros","100 cruzeiros","200 cruzeiros","500 cruzeiros"]],["Cruzado — 1986",["1 centavo","5 centavos","10 centavos","20 centavos","50 centavos","1 cruzado","5 cruzados","10 cruzados","100 cruzados"]],["Cruzado Novo — 1989",["1 centavo","5 centavos","10 centavos","50 centavos","1 cruzado novo","5 cruzados novos","10 cruzados novos","50 cruzados novos","100 cruzados novos"]],["Cruzeiro — 1990",["1 cruzeiro","5 cruzeiros","10 cruzeiros","50 cruzeiros","100 cruzeiros","500 cruzeiros","1.000 cruzeiros","2.000 cruzeiros","5.000 cruzeiros"]],["Cruzeiro Real — 1993",["5 cruzeiros reais","10 cruzeiros reais","50 cruzeiros reais","100 cruzeiros reais"]]];
+const BRAZIL_NOTES = [["Mil-réis / Réis",["1 mil-réis","2 mil-réis","5 mil-réis","10 mil-réis","20 mil-réis","50 mil-réis","100 mil-réis","200 mil-réis","500 mil-réis","1.000 mil-réis"]],["Cruzeiro — 1942",["1 cruzeiro","2 cruzeiros","5 cruzeiros","10 cruzeiros","20 cruzeiros","50 cruzeiros","100 cruzeiros","200 cruzeiros","500 cruzeiros","1.000 cruzeiros","5.000 cruzeiros","10.000 cruzeiros"]],["Cruzeiro Novo — 1967",["1 cruzeiro novo","5 cruzeiros novos","10 cruzeiros novos"]],["Cruzeiro — 1970",["1 cruzeiro","5 cruzeiros","10 cruzeiros","50 cruzeiros","100 cruzeiros","200 cruzeiros","500 cruzeiros","1.000 cruzeiros","5.000 cruzeiros","10.000 cruzeiros","50.000 cruzeiros","100.000 cruzeiros"]],["Cruzado — 1986",["10 cruzados","50 cruzados","100 cruzados","500 cruzados","1.000 cruzados","5.000 cruzados","10.000 cruzados"]],["Cruzado Novo — 1989",["1 cruzado novo","5 cruzados novos","10 cruzados novos","50 cruzados novos","100 cruzados novos","200 cruzados novos","500 cruzados novos"]],["Cruzeiro — 1990",["100 cruzeiros","200 cruzeiros","500 cruzeiros","1.000 cruzeiros","5.000 cruzeiros","10.000 cruzeiros","50.000 cruzeiros","100.000 cruzeiros","500.000 cruzeiros"]],["Cruzeiro Real — 1993",["50 cruzeiros reais","100 cruzeiros reais","500 cruzeiros reais","1.000 cruzeiros reais","5.000 cruzeiros reais","50.000 cruzeiros reais"]],["Real — 1ª família",["R$ 1","R$ 2","R$ 5","R$ 10","R$ 10 polímero","R$ 20","R$ 50","R$ 100"]],["Real — 2ª família",["R$ 2","R$ 5","R$ 10","R$ 20","R$ 50","R$ 100","R$ 200"]]];
+
+function brId(group, name){
+  return `${group}|||${name}`;
+}
+
+function saveBrazil(){
+  localStorage.setItem(BR_KEY, JSON.stringify([...brOwned]));
+}
+
+function toggleBrazil(id){
+  if(brOwned.has(id)) brOwned.delete(id);
+  else brOwned.add(id);
+  saveBrazil();
+  renderBrazil();
+}
+
+function makeBrCard(group, name, meta=""){
+  const id = brId(group, name);
+  const isOwned = brOwned.has(id);
+  const card = document.createElement("button");
+  card.type = "button";
+  card.className = "br-card" + (isOwned ? " owned" : "");
+  card.setAttribute("aria-pressed", isOwned ? "true" : "false");
+  card.innerHTML = `
+    <div class="br-name">${name}</div>
+    <div class="br-meta">${meta || group}</div>
+  `;
+  card.addEventListener("click",()=>toggleBrazil(id));
+  return card;
+}
+
+function renderBrazil(){
+  const wrap = document.getElementById("brazilWrap");
+  const content = document.getElementById("brContent");
+  const summary = document.getElementById("brSummary");
+
+  document.querySelectorAll(".br-subtab").forEach(btn=>{
+    btn.classList.toggle("active", btn.dataset.brtab === currentBrTab);
+  });
+
+  content.innerHTML = "";
+  let total = 0;
+
+  if(currentBrTab === "coins"){
+    // Mais antigos primeiro
+    HISTORICAL_COINS.forEach(([group, values])=>{
+      const family = document.createElement("div");
+      family.className = "br-family";
+
+      const title = document.createElement("div");
+      title.className = "br-section";
+      title.textContent = group;
+      family.appendChild(title);
+
+      const g = document.createElement("div");
+      g.className = "br-grid";
+      values.forEach(value=>{
+        total++;
+        g.appendChild(makeBrCard(group, value));
+      });
+
+      family.appendChild(g);
+      content.appendChild(family);
+    });
+
+    const realHeader = document.createElement("div");
+    realHeader.className = "br-section";
+    realHeader.textContent = "Plano Real — por ano (até 2030)";
+    content.appendChild(realHeader);
+
+    const futureNote = document.createElement("div");
+    futureNote.className = "br-summary";
+    futureNote.textContent = "2026–2030 ficam como espaços de coleção; a cunhagem futura pode variar.";
+    content.appendChild(futureNote);
+
+    const realByYear = {};
+    Object.entries(REAL_YEARS).forEach(([type, years])=>{
+      years.forEach(year=>{
+        if(!realByYear[year]) realByYear[year] = [];
+        realByYear[year].push(type);
+      });
+    });
+
+    const shortRealName = (type)=>{
+      const base = type.replace(/ — [12]ª família$/, "");
+      return base
+        .replace("1 centavo","1c")
+        .replace("5 centavos","5c")
+        .replace("10 centavos","10c")
+        .replace("25 centavos","25c")
+        .replace("50 centavos","50c")
+        .replace("1 real","R$1");
+    };
+
+    Object.keys(realByYear).map(Number).sort((a,b)=>a-b).forEach(year=>{
+      const block = document.createElement("div");
+      block.className = "real-year";
+
+      const title = document.createElement("div");
+      title.className = "real-year-title";
+      title.textContent = String(year);
+      block.appendChild(title);
+
+      const g = document.createElement("div");
+      g.className = "real-year-grid";
+
+      realByYear[year].forEach(type=>{
+        total++;
+        const familyLabel = type.includes("1ª família") ? "1ª fam." : "2ª fam.";
+        g.appendChild(makeBrCard(`Real — ${type}`, shortRealName(type), familyLabel));
+      });
+
+      block.appendChild(g);
+
+      if(year === 2015){
+        const note = document.createElement("div");
+        note.className = "br-summary";
+        note.textContent = "R$1 comum: não cunhada • houve R$1 comemorativas em circulação";
+        block.appendChild(note);
+      }
+
+      content.appendChild(block);
+    });
+  } else {
+    BRAZIL_NOTES.forEach(([group, values])=>{
+      const title = document.createElement("div");
+      title.className = "br-section";
+      title.textContent = group;
+      content.appendChild(title);
+
+      const g = document.createElement("div");
+      g.className = "br-grid";
+      values.forEach(value=>{
+        total++;
+        g.appendChild(makeBrCard(group, value, "1 de cada tipo/valor"));
+      });
+      content.appendChild(g);
+    });
+  }
+
+  const ownedInCurrent = [...brOwned].filter(id => {
+    if(currentBrTab === "coins") {
+      return id.startsWith("Real — ") || HISTORICAL_COINS.some(([group])=>id.startsWith(group+"|||"));
+    }
+    return BRAZIL_NOTES.some(([group])=>id.startsWith(group+"|||"));
+  }).length;
+
+  summary.textContent = `${ownedInCurrent} / ${total} itens desta seção`;
+}
+
+
 const grid = document.getElementById("grid");
 const empty = document.getElementById("empty");
 const search = document.getElementById("search");
@@ -417,7 +697,8 @@ function downloadBackup(){
     app: "colecao-moedas",
     version: 1,
     exportedAt: new Date().toISOString(),
-    owned: [...owned]
+    owned: [...owned],
+    brazilOwned: [...brOwned]
   };
 
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
@@ -442,20 +723,24 @@ async function importBackup(file){
     const parsed = JSON.parse(text);
 
     const imported = Array.isArray(parsed) ? parsed : parsed?.owned;
+    const importedBrazil = Array.isArray(parsed?.brazilOwned) ? parsed.brazilOwned : [];
     if(!Array.isArray(imported)){
       throw new Error("Arquivo de backup inválido.");
     }
 
     const cleaned = [...new Set(imported.filter(item => typeof item === "string" && item.trim()))];
+    const cleanedBrazil = [...new Set(importedBrazil.filter(item => typeof item === "string" && item.trim()))];
 
-    if(!confirm(`Importar ${cleaned.length} itens e substituir a coleção salva neste aparelho?`)){
+    if(!confirm(`Importar ${cleaned.length} países e ${cleanedBrazil.length} itens do Brasil e substituir a coleção salva neste aparelho?`)){
       return;
     }
 
     owned = new Set(cleaned);
+    brOwned = new Set(cleanedBrazil);
     save();
+    saveBrazil();
     render();
-    alert(`Coleção importada com sucesso: ${owned.size} itens.`);
+    alert(`Coleção importada com sucesso.`);
   }catch(err){
     alert(err?.message || "Não foi possível importar esse backup.");
   }
@@ -463,12 +748,24 @@ async function importBackup(file){
 
 function render(){
   const term = search.value.trim().toLocaleLowerCase("pt-BR");
+  const brazilMode = currentTab === "brazil";
+  document.getElementById("brazilWrap").classList.toggle("show", brazilMode);
+  grid.style.display = brazilMode ? "none" : "";
+  empty.style.display = brazilMode ? "none" : "";
+  search.style.display = brazilMode ? "none" : "";
+  document.getElementById("scanOpen").style.display = brazilMode ? "none" : "";
+  document.querySelector(".backup-row").style.display = brazilMode ? "none" : "";
+  document.querySelector(".backup-note").style.display = brazilMode ? "none" : "";
+
+  if(brazilMode){
+    renderBrazil();
+  }
 
   document.querySelectorAll(".tab").forEach(btn=>{
     btn.classList.toggle("active", btn.dataset.tab === currentTab);
   });
 
-  const filtered = coins.filter(([country,currency])=>{
+  const filtered = brazilMode ? [] : coins.filter(([country,currency])=>{
     const isOwned = owned.has(country);
     const tabMatch = currentTab === "owned" ? isOwned : !isOwned;
     const searchMatch = !term || `${country} ${currency}`.toLocaleLowerCase("pt-BR").includes(term);
@@ -479,15 +776,15 @@ function render(){
 
   filtered.forEach(([country,currency])=>{
     const isOwned = owned.has(country);
-    const card = document.createElement("div");
+    const card = document.createElement("button");
+    card.type = "button";
     card.className = "card" + (isOwned ? " owned" : "");
     card.innerHTML = `
       <div>
         <div class="country">${country}</div>
         <div class="currency">${currency}</div>
       </div>
-      <button class="action">${isOwned ? "Remover" : "Adicionar"}</button>
-    `;
+`;
 
     card.querySelector(".action").addEventListener("click", ()=>{
       if(isOwned) owned.delete(country);
@@ -499,15 +796,24 @@ function render(){
     grid.appendChild(card);
   });
 
-  empty.hidden = filtered.length > 0;
-  count.textContent = owned.size;
-  total.textContent = coins.length;
+  if(!brazilMode){
+    empty.hidden = filtered.length > 0;
+  }
+  count.textContent = brazilMode ? brOwned.size : owned.size;
+  total.textContent = brazilMode ? "Brasil" : coins.length;
 }
 
 document.querySelectorAll(".tab").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     currentTab = btn.dataset.tab;
     render();
+  });
+});
+
+document.querySelectorAll(".br-subtab").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    currentBrTab = btn.dataset.brtab;
+    renderBrazil();
   });
 });
 
@@ -520,13 +826,6 @@ document.getElementById("importInput").addEventListener("change", async (e)=>{
   e.target.value = "";
 });
 
-document.getElementById("reset").addEventListener("click", ()=>{
-  if(confirm("Limpar toda a coleção?")){
-    owned.clear();
-    save();
-    render();
-  }
-});
 
 // ---------- Scanner IA ----------
 const modal = document.getElementById("scannerModal");
@@ -707,3 +1006,4 @@ render();
 </script>
 </body>
 </html>
+<style>.br-action{display:none!important}.real-year-grid .br-card,.br-family .br-grid .br-card{cursor:pointer}</style>
