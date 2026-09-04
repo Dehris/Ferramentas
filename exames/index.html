@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Histórico de Exames</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--text:#1d2430;--muted:#6b7280;--line:#e5e7eb;--accent:#523750}
+*{box-sizing:border-box} body{margin:0;font:14px system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+header{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:18px 22px}
+h1{font-size:22px;margin:0 0 12px}.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+input,select,button{border:1px solid #d1d5db;border-radius:9px;padding:9px 11px;background:#fff;font:inherit}
+button{cursor:pointer}.primary{background:var(--accent);color:white;border-color:var(--accent)}
+main{display:grid;grid-template-columns:230px 1fr;gap:18px;max-width:1400px;margin:auto;padding:18px}
+aside{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;height:max-content;position:sticky;top:112px}
+.cat{display:block;width:100%;text-align:left;border:0;margin:2px 0}.cat.active{background:#eee8ed;font-weight:650;color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px}.card h3{margin:0 0 3px;font-size:16px}.unit{color:var(--muted);font-size:12px}
+table{width:100%;border-collapse:collapse;margin-top:10px}td{padding:7px 3px;border-top:1px solid #f0f1f3}td:last-child{text-align:right;font-weight:650}
+.spark{width:100%;height:70px;margin-top:8px}.empty{padding:40px;text-align:center;color:var(--muted)}
+dialog{border:0;border-radius:14px;padding:0;max-width:620px;width:92%;box-shadow:0 20px 70px #0004}
+dialog form{padding:20px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.formgrid label{display:grid;gap:5px;color:var(--muted)}.wide{grid-column:1/-1}
+.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+#pdfStatus{margin-top:10px;white-space:pre-wrap;color:var(--muted);font-size:12px}
+.note{font-size:12px;color:var(--muted);margin:10px 0 0}
+@media(max-width:760px){main{grid-template-columns:1fr}aside{position:static;display:flex;overflow:auto}.cat{width:auto;white-space:nowrap}.formgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>Histórico de exames</h1>
+<div class="toolbar">
+<input id="search" placeholder="Buscar exame...">
+<button class="primary" id="addBtn">+ Adicionar resultado</button>
+<label><input id="pdfInput" type="file" accept="application/pdf" hidden><button type="button" id="pdfBtn">Importar PDF</button></label>
+<button id="exportBtn">Exportar backup</button>
+<label><input id="importInput" type="file" accept=".json" hidden><button type="button" id="importBtn">Importar backup</button></label>
+</div>
+<div id="pdfStatus"></div>
+</header>
+<main><aside id="cats"></aside><section><div id="grid" class="grid"></div></section></main>
+
+<dialog id="dlg"><form method="dialog" id="form">
+<h2 style="margin-top:0">Adicionar resultado</h2>
+<div class="formgrid">
+<label>Categoria<input id="fCat" required></label>
+<label>Exame<input id="fExam" required></label>
+<label>Data<input id="fDate" type="date" required></label>
+<label>Valor<input id="fValue" inputmode="decimal" required></label>
+<label class="wide">Unidade<input id="fUnit"></label>
+</div>
+<div class="actions"><button value="cancel">Cancelar</button><button class="primary" value="default" id="saveBtn">Salvar</button></div>
+</form></dialog>
+
+<script id="seed" type="application/json">[{"category": "Metabolismo", "exam": "Glicose", "unit": "mg/dL", "results": [{"date": "2022-05-28", "value": 99}, {"date": "2023-10-28", "value": 95}, {"date": "2025-03-15", "value": 100}]}, {"category": "Metabolismo", "exam": "Hemoglobina glicada (HbA1c)", "unit": "%", "results": [{"date": "2022-05-28", "value": 5.3}, {"date": "2023-10-28", "value": 5.3}, {"date": "2025-03-15", "value": 5.4}, {"date": "2026-04-08", "value": 5.2}, {"date": "2026-07-09", "value": 5.1}]}, {"category": "Metabolismo", "exam": "Glicose média estimada", "unit": "mg/dL", "results": [{"date": "2022-05-28", "value": 105}, {"date": "2023-10-28", "value": 105}, {"date": "2025-03-15", "value": 108}, {"date": "2026-07-09", "value": 100}]}, {"category": "Perfil lipídico", "exam": "Colesterol total", "unit": "mg/dL", "results": [{"date": "2022-05-28", "value": 199}, {"date": "2023-10-28", "value": 198}, {"date": "2025-03-15", "value": 190}, {"date": "2026-07-09", "value": 200}]}, {"category": "Perfil lipídico", "exam": "HDL", "unit": "mg/dL", "results": [{"date": "2023-10-28", "value": 33}, {"date": "2025-03-15", "value": 33}, {"date": "2026-07-09", "value": 31}]}, {"category": "Perfil lipídico", "exam": "LDL", "unit": "mg/dL", "results": [{"date": "2023-10-28", "value": 142}, {"date": "2025-03-15", "value": 136}, {"date": "2026-07-09", "value": 142}]}, {"category": "Perfil lipídico", "exam": "Não-HDL", "unit": "mg/dL", "results": [{"date": "2023-10-28", "value": 165}, {"date": "2025-03-15", "value": 157}]}, {"category": "Perfil lipídico", "exam": "VLDL", "unit": "mg/dL", "results": [{"date": "2023-10-28", "value": 23}, {"date": "2025-03-15", "value": 21}, {"date": "2026-07-09", "value": 27}]}, {"category": "Perfil lipídico", "exam": "Triglicérides", "unit": "mg/dL", "results": [{"date": "2022-05-28", "value": 172}, {"date": "2023-10-28", "value": 113}, {"date": "2025-03-15", "value": 103}, {"date": "2026-07-09", "value": 133}]}, {"category": "Função renal", "exam": "Creatinina", "unit": "mg/dL", "results": [{"date": "2018-10-02", "value": 0.92}, {"date": "2022-05-28", "value": 0.88}, {"date": "2023-10-28", "value": 1.04}, {"date": "2025-03-15", "value": 1.05}, {"date": "2026-05-06", "value": 1.05}]}, {"category": "Função renal", "exam": "eTFG", "unit": "mL/min/1,73m²", "results": [{"date": "2018-10-02", "value": 60}, {"date": "2022-05-28", "value": 90}, {"date": "2023-10-28", "value": 90}, {"date": "2025-03-15", "value": 90}, {"date": "2026-05-06", "value": 90}]}, {"category": "Função renal", "exam": "Ureia", "unit": "mg/dL", "results": [{"date": "2026-05-06", "value": 38}, {"date": "2026-07-09", "value": 28}]}, {"category": "Função renal", "exam": "Ácido úrico", "unit": "mg/dL", "results": [{"date": "2022-05-28", "value": 5.3}, {"date": "2023-10-28", "value": 5.6}, {"date": "2025-03-15", "value": 5.1}]}, {"category": "Ferro e vitaminas", "exam": "Ferritina", "unit": "ng/mL", "results": [{"date": "2022-05-28", "value": 524.2}, {"date": "2023-11-14", "value": 629.4}, {"date": "2025-03-15", "value": 579.7}, {"date": "2026-05-06", "value": 432.15}, {"date": "2026-07-09", "value": 684.69}]}, {"category": "Ferro e vitaminas", "exam": "Ferro sérico", "unit": "µg/dL", "results": [{"date": "2026-05-06", "value": 63}]}, {"category": "Ferro e vitaminas", "exam": "Transferrina", "unit": "mg/dL", "results": [{"date": "2026-05-06", "value": 189}]}, {"category": "Ferro e vitaminas", "exam": "Vitamina B12", "unit": "pg/mL", "results": [{"date": "2023-10-28", "value": 397}, {"date": "2025-03-15", "value": 436}, {"date": "2026-05-06", "value": 463}, {"date": "2026-07-09", "value": 505}]}, {"category": "Ferro e vitaminas", "exam": "Ácido fólico", "unit": "ng/mL", "results": [{"date": "2023-11-14", "value": 6.3}, {"date": "2025-03-15", "value": 4.1}, {"date": "2026-05-06", "value": 6.7}]}, {"category": "Ferro e vitaminas", "exam": "Vitamina D (25-OH)", "unit": "ng/mL", "results": [{"date": "2023-11-14", "value": 33.5}, {"date": "2025-03-15", "value": 36.3}]}, {"category": "Tireoide", "exam": "TSH", "unit": "µUI/mL", "results": [{"date": "2022-05-28", "value": 0.67}, {"date": "2023-10-28", "value": 0.38}, {"date": "2025-03-15", "value": 0.64}, {"date": "2026-05-06", "value": 0.67}, {"date": "2026-07-09", "value": 0.61}]}, {"category": "Tireoide", "exam": "T4 livre", "unit": "ng/dL", "results": [{"date": "2022-05-28", "value": 1.22}, {"date": "2023-10-28", "value": 1.39}, {"date": "2025-03-15", "value": 1.37}, {"date": "2026-07-09", "value": 1.08}]}, {"category": "Tireoide", "exam": "T3 total", "unit": "ng/mL", "results": [{"date": "2026-05-06", "value": 1.25}]}, {"category": "Tireoide", "exam": "T4 total", "unit": "µg/dL", "results": [{"date": "2026-05-06", "value": 8.37}]}, {"category": "Hormônios", "exam": "Testosterona total", "unit": "ng/dL", "results": [{"date": "2023-11-14", "value": 168.4}, {"date": "2025-03-15", "value": 358.4}, {"date": "2026-05-06", "value": 207.95}, {"date": "2026-07-09", "value": 347.28}]}, {"category": "Hormônios", "exam": "Testosterona livre", "unit": "ng/dL", "results": [{"date": "2026-05-06", "value": 5.59}, {"date": "2026-07-09", "value": 9.707}]}, {"category": "Hormônios", "exam": "SHBG", "unit": "nmol/L", "results": [{"date": "2026-05-06", "value": 16.4}]}, {"category": "Hormônios", "exam": "Testosterona biodisponível", "unit": "ng/dL", "results": [{"date": "2026-05-06", "value": 131.38}]}, {"category": "Hormônios", "exam": "DHT", "unit": "pg/mL", "results": [{"date": "2022-05-28", "value": 316}, {"date": "2026-05-06", "value": 265.3}]}, {"category": "Hormônios", "exam": "Prolactina", "unit": "ng/mL", "results": [{"date": "2026-07-09", "value": 9.06}]}, {"category": "Hormônios", "exam": "LH", "unit": "mUI/mL", "results": [{"date": "2026-07-09", "value": 3.23}]}, {"category": "Hormônios", "exam": "FSH", "unit": "mUI/mL", "results": [{"date": "2026-07-09", "value": 2.17}]}, {"category": "Hormônios", "exam": "Cortisol", "unit": "µg/dL", "results": [{"date": "2023-11-14", "value": 5.5}]}, {"category": "Insulina", "exam": "Insulina", "unit": "µUI/mL", "results": [{"date": "2023-11-14", "value": 9.0}, {"date": "2025-03-15", "value": 10.6}]}, {"category": "Insulina", "exam": "HOMA-IR", "unit": "", "results": [{"date": "2025-03-15", "value": 2.62}]}, {"category": "Função hepática", "exam": "TGO / AST", "unit": "U/L", "results": [{"date": "2022-05-28", "value": 19}, {"date": "2023-11-14", "value": 19}, {"date": "2025-03-15", "value": 15}, {"date": "2026-04-08", "value": 19}, {"date": "2026-05-06", "value": 19}, {"date": "2026-07-09", "value": 19}]}, {"category": "Função hepática", "exam": "TGP / ALT", "unit": "U/L", "results": [{"date": "2022-05-28", "value": 37}, {"date": "2023-11-14", "value": 19}, {"date": "2025-03-15", "value": 16}, {"date": "2026-04-08", "value": 29}, {"date": "2026-05-06", "value": 25}, {"date": "2026-07-09", "value": 31}]}, {"category": "Função hepática", "exam": "Gama-GT", "unit": "U/L", "results": [{"date": "2023-11-14", "value": 27}, {"date": "2025-03-15", "value": 28}, {"date": "2026-04-08", "value": 44}, {"date": "2026-05-06", "value": 35}, {"date": "2026-07-09", "value": 35}]}, {"category": "Função hepática", "exam": "Fosfatase alcalina", "unit": "U/L", "results": [{"date": "2023-11-14", "value": 75}, {"date": "2025-03-15", "value": 77}, {"date": "2026-05-06", "value": 102}]}, {"category": "Função hepática", "exam": "Bilirrubina total", "unit": "mg/dL", "results": [{"date": "2023-11-14", "value": 0.46}, {"date": "2025-03-15", "value": 0.39}, {"date": "2026-05-06", "value": 0.2}, {"date": "2026-07-09", "value": 0.56}]}, {"category": "Função hepática", "exam": "Bilirrubina direta", "unit": "mg/dL", "results": [{"date": "2023-11-14", "value": 0.18}, {"date": "2025-03-15", "value": 0.17}, {"date": "2026-05-06", "value": 0.1}, {"date": "2026-07-09", "value": 0.17}]}, {"category": "Função hepática", "exam": "Bilirrubina indireta", "unit": "mg/dL", "results": [{"date": "2023-11-14", "value": 0.28}, {"date": "2025-03-15", "value": 0.22}, {"date": "2026-05-06", "value": 0.1}, {"date": "2026-07-09", "value": 0.39}]}, {"category": "Proteínas", "exam": "Proteínas totais", "unit": "g/dL", "results": [{"date": "2023-11-14", "value": 7.5}, {"date": "2025-03-15", "value": 7.9}, {"date": "2026-05-06", "value": 7.0}, {"date": "2026-07-09", "value": 7.2}]}, {"category": "Proteínas", "exam": "Albumina", "unit": "g/dL", "results": [{"date": "2023-11-14", "value": 4.48}, {"date": "2025-03-15", "value": 4.86}, {"date": "2026-05-06", "value": 4.47}, {"date": "2026-07-09", "value": 4.24}]}, {"category": "Proteínas", "exam": "Alfa-1 globulina", "unit": "g/dL", "results": [{"date": "2023-11-14", "value": 0.32}, {"date": "2025-03-15", "value": 0.31}, {"date": "2026-05-06", "value": 0.25}, {"date": "2026-07-09", "value": 0.28}]}, {"category": "Proteínas", "exam": "Alfa-2 globulina", "unit": "g/dL", "results": [{"date": "2023-11-14", "value": 0.74}, {"date": "2025-03-15", "value": 0.68}, {"date": "2026-05-06", "value": 0.6}, {"date": "2026-07-09", "value": 0.73}]}, {"category": "Proteínas", "exam": "Beta-1 globulina", "unit": "g/dL", "results": [{"date": "2023-11-14", "value": 0.4}, {"date": "2025-03-15", "value": 0.41}, {"date": "2026-05-06", "value": 0.32}, {"date": "2026-07-09", "value": 0.42}]}, {"category": "Proteínas", "exam": "Beta-2 globulina", "unit": "g/dL", "results": [{"date": "2023-11-14", "value": 0.5}, {"date": "2025-03-15", "value": 0.51}, {"date": "2026-05-06", "value": 0.42}, {"date": "2026-07-09", "value": 0.45}]}, {"category": "Proteínas", "exam": "Gama globulina", "unit": "g/dL", "results": [{"date": "2023-11-14", "value": 1.07}, {"date": "2025-03-15", "value": 1.13}, {"date": "2026-05-06", "value": 0.94}, {"date": "2026-07-09", "value": 1.07}]}, {"category": "Proteínas", "exam": "Relação A/G", "unit": "", "results": [{"date": "2023-11-14", "value": 1.48}, {"date": "2025-03-15", "value": 1.6}, {"date": "2026-05-06", "value": 1.76}, {"date": "2026-07-09", "value": 1.43}]}, {"category": "Hemograma", "exam": "Hemoglobina", "unit": "g/dL", "results": [{"date": "2018-10-02", "value": 14.7}, {"date": "2022-05-28", "value": 15.2}, {"date": "2023-11-14", "value": 14.8}, {"date": "2025-03-15", "value": 14.6}, {"date": "2026-05-06", "value": 14.7}, {"date": "2026-07-09", "value": 15.2}]}, {"category": "Hemograma", "exam": "Hematócrito", "unit": "%", "results": [{"date": "2018-10-02", "value": 44.6}, {"date": "2022-05-28", "value": 45.8}, {"date": "2023-11-14", "value": 43.4}, {"date": "2025-03-15", "value": 42.8}, {"date": "2026-05-06", "value": 42.8}, {"date": "2026-07-09", "value": 42.9}]}, {"category": "Hemograma", "exam": "Leucócitos", "unit": "/µL", "results": [{"date": "2018-10-02", "value": 8690}, {"date": "2022-05-28", "value": 7370}, {"date": "2023-11-14", "value": 6870}, {"date": "2025-03-15", "value": 6360}, {"date": "2026-05-06", "value": 7170}, {"date": "2026-07-09", "value": 7200}]}, {"category": "Hemograma", "exam": "Plaquetas", "unit": "/µL", "results": [{"date": "2018-10-02", "value": 297000}, {"date": "2022-05-28", "value": 286000}, {"date": "2023-11-14", "value": 262000}, {"date": "2025-03-15", "value": 230000}, {"date": "2026-05-06", "value": 273000}, {"date": "2026-07-09", "value": 237000}]}, {"category": "Inflamação / coagulação", "exam": "PCR", "unit": "mg/L", "results": [{"date": "2018-10-02", "value": 9.9}, {"date": "2023-11-14", "value": 21}]}, {"category": "Inflamação / coagulação", "exam": "Proteína C funcional", "unit": "%", "results": [{"date": "2025-03-15", "value": 92}]}]</script>
+<script>
+const KEY='historico_exames_v1';
+let db=JSON.parse(localStorage.getItem(KEY)||document.getElementById('seed').textContent);
+let active='Todos';
+const save=()=>localStorage.setItem(KEY,JSON.stringify(db));
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const brDate=d=>d.split('-').reverse().join('/');
+function spark(results){
+ if(results.length<2)return '';
+ let vals=results.map(x=>+x.value), min=Math.min(...vals),max=Math.max(...vals),span=max-min||1;
+ let pts=vals.map((v,i)=>`${8+i*(284/(vals.length-1))},${58-(v-min)/span*48}`).join(' ');
+ return `<svg class="spark" viewBox="0 0 300 65"><polyline points="${pts}" fill="none" stroke="#523750" stroke-width="2"/><line x1="8" y1="59" x2="292" y2="59" stroke="#e5e7eb"/></svg>`;
+}
+function render(){
+ const q=document.getElementById('search').value.toLowerCase();
+ const cats=['Todos',...new Set(db.map(x=>x.category))];
+ document.getElementById('cats').innerHTML=cats.map(c=>`<button class="cat ${c===active?'active':''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+ document.querySelectorAll('.cat').forEach(b=>b.onclick=()=>{active=b.dataset.c;render()});
+ let items=db.filter(x=>(active==='Todos'||x.category===active)&&x.exam.toLowerCase().includes(q));
+ document.getElementById('grid').innerHTML=items.length?items.map(x=>{
+   let r=[...x.results].sort((a,b)=>a.date.localeCompare(b.date));
+   return `<article class="card"><h3>${esc(x.exam)}</h3><div class="unit">${esc(x.category)} · ${esc(x.unit||'sem unidade')}</div>
+   ${spark(r)}<table>${r.slice().reverse().map(v=>`<tr><td>${brDate(v.date)}</td><td>${esc(v.value)} ${esc(x.unit)}</td></tr>`).join('')}</table></article>`
+ }).join(''):`<div class="empty">Nenhum exame encontrado.</div>`;
+}
+document.getElementById('search').oninput=render;
+document.getElementById('addBtn').onclick=()=>document.getElementById('dlg').showModal();
+document.getElementById('saveBtn').onclick=e=>{
+ e.preventDefault();
+ let cat=fCat.value.trim(),exam=fExam.value.trim(),date=fDate.value,val=fValue.value.trim().replace(',','.'),unit=fUnit.value.trim();
+ if(!cat||!exam||!date||!val)return;
+ let item=db.find(x=>x.exam.toLowerCase()===exam.toLowerCase()&&x.unit===unit);
+ if(!item){item={category:cat,exam,unit,results:[]};db.push(item)}
+ item.results.push({date,value:isNaN(Number(val))?val:Number(val)});save();dlg.close();form.reset();render();
+};
+document.getElementById('exportBtn').onclick=()=>{
+ let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.download='backup_exames.json';a.click()
+};
+document.getElementById('importBtn').onclick=()=>importInput.click();
+importInput.onchange=async()=>{try{db=JSON.parse(await importInput.files[0].text());save();render()}catch(e){alert('Backup inválido.')}};
+document.getElementById('pdfBtn').onclick=()=>pdfInput.click();
+
+/* Importação local de PDF.
+   Usa PDF.js carregado do CDN. O arquivo NÃO é enviado a servidor.
+   A extração é heurística: resultados encontrados vão para revisão antes de salvar. */
+pdfInput.onchange=async()=>{
+ const file=pdfInput.files[0]; if(!file)return;
+ pdfStatus.textContent='Lendo PDF...';
+ try{
+   if(!window.pdfjsLib){
+     await new Promise((ok,no)=>{let s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.onload=ok;s.onerror=no;document.head.appendChild(s)});
+     pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+   }
+   const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+   let text='';
+   for(let p=1;p<=pdf.numPages;p++){let page=await pdf.getPage(p),tc=await page.getTextContent();text+=' '+tc.items.map(i=>i.str).join(' ')+'\n'}
+   const dateMatch=text.match(/(?:DATA\s+COLETA\/RECEBIMENTO|Coleta)\s*:?\s*(\d{2}\/\d{2}\/\d{4})/i);
+   const date=dateMatch?dateMatch[1].split('/').reverse().join('-'):new Date().toISOString().slice(0,10);
+   const aliases=[
+    ['Metabolismo','Glicose','mg/dL',['Glicose']],
+    ['Metabolismo','Hemoglobina glicada (HbA1c)','%',['Hemoglobina Glicada','HbA1c']],
+    ['Perfil lipídico','Triglicérides','mg/dL',['Triglicérides','Triglicerides']],
+    ['Perfil lipídico','Colesterol total','mg/dL',['Colesterol Total']],
+    ['Perfil lipídico','HDL','mg/dL',['HDL - Colesterol','HDL Colesterol']],
+    ['Perfil lipídico','LDL','mg/dL',['LDL - Colesterol','LDL Colesterol']],
+    ['Função renal','Creatinina','mg/dL',['Creatinina']],
+    ['Função renal','Ureia','mg/dL',['Ureia']],
+    ['Função renal','Ácido úrico','mg/dL',['Ácido Úrico','Acido Urico']],
+    ['Ferro e vitaminas','Ferritina','ng/mL',['Ferritina']],
+    ['Ferro e vitaminas','Vitamina B12','pg/mL',['Vitamina B-12','Vitamina B12']],
+    ['Ferro e vitaminas','Ácido fólico','ng/mL',['Ácido Fólico','Acido Folico']],
+    ['Tireoide','TSH','µUI/mL',['Hormônio Tireoestimulante Ultra Sensível TSH','TSH']],
+    ['Tireoide','T4 livre','ng/dL',['T4 Livre']],
+    ['Hormônios','Testosterona total','ng/dL',['Testosterona Total']],
+    ['Hormônios','Prolactina','ng/mL',['Prolactina']],
+    ['Hormônios','LH','mUI/mL',['LH']],
+    ['Hormônios','FSH','mUI/mL',['FSH']],
+    ['Insulina','Insulina','µUI/mL',['Insulina']],
+    ['Função hepática','TGO / AST','U/L',['Transaminase oxalacética','TGO']],
+    ['Função hepática','TGP / ALT','U/L',['Transaminase pirúvica','TGP']],
+    ['Função hepática','Gama-GT','U/L',['Gama-Glutamil Transferase','Gama-GT']],
+    ['Função hepática','Fosfatase alcalina','U/L',['Fosfatase Alcalina']],
+    ['Hemograma','Hemoglobina','g/dL',['Hemoglobina']],
+    ['Hemograma','Hematócrito','%',['Hematócrito','Hematocrito']],
+    ['Hemograma','Plaquetas','/µL',['Plaquetas']]
+   ];
+   let found=[];
+   for(const [cat,exam,unit,names] of aliases){
+     for(const name of names){
+       let safe=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+       let re=new RegExp(safe+'[^\\d]{0,45}(\\d{1,6}(?:[.,]\\d{1,4})?)\\s*(?:'+unit.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')?','i');
+       let m=text.match(re);
+       if(m){found.push({cat,exam,unit,value:m[1].replace(',','.')});break}
+     }
+   }
+   if(!found.length){pdfStatus.textContent='Não encontrei resultados automaticamente. Você ainda pode adicionar manualmente.';return}
+   let review='Data detectada: '+brDate(date)+'\n\n'+found.map((x,i)=>`${i+1}. ${x.exam}: ${x.value} ${x.unit}`).join('\n');
+   if(confirm(review+'\n\nAdicionar estes resultados? Revise os números antes de confirmar.')){
+     for(const f of found){
+       let item=db.find(x=>x.exam===f.exam&&x.unit===f.unit);
+       if(!item){item={category:f.cat,exam:f.exam,unit:f.unit,results:[]};db.push(item)}
+       if(!item.results.some(r=>r.date===date&&String(r.value)===String(Number(f.value)))) item.results.push({date,value:Number(f.value)});
+     }
+     save();render();pdfStatus.textContent=`${found.length} resultados importados.`;
+   } else pdfStatus.textContent='Importação cancelada.';
+ }catch(e){console.error(e);pdfStatus.textContent='Não consegui ler este PDF automaticamente. PDFs escaneados/imagem precisam de OCR, que esta versão não faz.'}
+ pdfInput.value='';
+};
+render();
+</script>
+</body></html>
