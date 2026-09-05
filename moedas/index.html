@@ -3,311 +3,297 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0f1115">
 <title>Coleção de Moedas</title>
 <style>
-:root{
-  --bg:#0f1115;
-  --panel:#171a21;
-  --panel2:#1f242d;
-  --text:#f5f7fa;
-  --muted:#9ca3af;
-  --line:#2a3039;
-  --accent:#d6b25e;
-  --accent-dark:#17120a;
-  --danger:#b86a6a;
-  --ok:#69b584;
-}
-*{box-sizing:border-box}
-body{
-  margin:0; min-height:100vh; background:var(--bg); color:var(--text); text-align:center;
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-}
-button,input{font:inherit}
-.wrap{max-width:900px;margin:auto;padding:16px 12px 40px}
-header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px}
-h1{margin:0;font-size:22px;line-height:1}
-.count{font-size:13px;color:var(--muted);white-space:nowrap}
-.count strong{color:var(--accent);font-size:18px}
-.toolbar{position:sticky;top:0;z-index:10;background:rgba(15,17,21,.96);padding:7px 0 9px;backdrop-filter:blur(8px)}
-.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:7px}
-.tab,.scan-open{
-  border:1px solid var(--line);background:var(--panel);color:var(--muted);
-  border-radius:9px;padding:9px 8px;font-weight:800;cursor:pointer
-}
-.tab.active{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
-.search{width:100%;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:9px;padding:10px 11px;outline:none;font-size:14px}
-.scan-open{width:100%;margin-top:7px;background:var(--accent);border-color:var(--accent);color:var(--accent-dark)}
+  :root{
+    --bg:#0f1115;
+    --panel:#171a21;
+    --panel2:#1f242d;
+    --text:#f5f7fa;
+    --muted:#9ca3af;
+    --line:#2a3039;
+    --accent:#d6b25e;
+    --accent-dark:#17120a;
+    --danger:#b86a6a;
+  }
 
-.backup-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
-.backup-btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:9px;padding:9px 7px;font-size:11px;font-weight:800;cursor:pointer;text-align:center}
-.backup-btn:hover{border-color:var(--accent)}
-.backup-btn input{display:none}
-.backup-note{font-size:10px;color:var(--muted);text-align:center;margin:6px 0 0}
+  *{box-sizing:border-box}
 
-.br-wrap{display:none;margin-top:8px}
-.br-wrap.show{display:block}
-.br-top{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
-.br-subtab{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:9px;padding:9px 8px;font-weight:800;cursor:pointer}
-.br-subtab.active{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
-.br-summary{font-size:11px;color:var(--muted);text-align:center;margin:7px 0 10px}
-.br-section{margin:16px 0 7px;font-size:13px;font-weight:900;color:var(--accent);text-align:center;padding-top:12px;border-top:1px solid var(--line)}
-.br-family{width:100%;display:block;margin-bottom:10px}.br-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
 
-.br-family .br-grid{
-  display:grid;
-  grid-auto-flow:column;
-  grid-auto-columns:minmax(58px,1fr);
-  grid-template-columns:none;
-  gap:3px;
-  overflow-x:auto;
-  padding-bottom:3px;
-  scrollbar-width:thin;
-}
-.br-family .br-grid .br-card{
-  min-height:68px;
-  padding:5px 2px;
-  border-radius:7px;
-  gap:4px;
-}
-.br-family .br-grid .br-name{font-size:8.5px;line-height:1.05}
-.br-family .br-grid .br-meta{font-size:7px;line-height:1.05;margin-top:2px}
-.br-family .br-grid .br-action{font-size:7.5px;padding:5px 1px;border-radius:5px}
+  .wrap{
+    max-width:900px;
+    margin:auto;
+    padding:18px 12px 40px;
+  }
 
+  header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
 
-.real-year{margin:14px 0 10px}
-.real-year-title{font-size:22px;font-weight:950;line-height:1;color:var(--accent);margin:0 0 8px;text-align:center}
-.real-year-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
-.real-year-grid .br-card{min-height:74px;padding:6px 3px;border-radius:8px;gap:5px}
-.real-year-grid .br-name{font-size:10px;line-height:1.05}
-.real-year-grid .br-meta{font-size:8px;line-height:1.05;margin-top:2px}
-.real-year-grid .br-action{padding:6px 2px;font-size:8.5px;border-radius:6px}
-@media(max-width:420px){
-  .real-year-title{font-size:20px}
-  .real-year-grid{gap:3px}
-  .real-year-grid .br-card{padding:5px 2px;min-height:70px}
-  .real-year-grid .br-name{font-size:9px}
-  .real-year-grid .br-meta{font-size:7.5px}
-  .real-year-grid .br-action{font-size:8px;padding:5px 1px}
-}
+  h1{
+    margin:0;
+    font-size:22px;
+    line-height:1;
+  }
 
-.br-card{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:8px 6px;min-height:70px;display:flex;flex-direction:column;justify-content:center;gap:4px;text-align:center;cursor:pointer;width:100%}
-.br-name{font-size:11.5px;font-weight:800;line-height:1.15;overflow-wrap:anywhere}
-.br-meta{font-size:9.5px;color:var(--muted);line-height:1.15;margin-top:4px;overflow-wrap:anywhere}
-.br-action{width:100%;border:0;border-radius:8px;padding:7px 4px;font-size:10px;font-weight:800;cursor:pointer;background:var(--accent);color:var(--accent-dark)}
-.br-card.owned{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
-.br-card.owned .br-meta{color:var(--accent-dark);opacity:.75}
+  .count{
+    font-size:13px;
+    color:var(--muted);
+    white-space:nowrap;
+  }
 
+  .count strong{
+    color:var(--accent);
+    font-size:18px;
+  }
 
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.card{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 6px;min-height:105px;display:flex;flex-direction:column;justify-content:space-between;gap:7px;text-align:center;align-items:stretch}
-.country{font-size:12px;font-weight:800;line-height:1.15;text-align:center;overflow-wrap:anywhere}
-.currency{font-size:10.5px;color:var(--muted);line-height:1.2;margin-top:4px;text-align:center;overflow-wrap:anywhere}
-.action{width:100%;border:0;border-radius:8px;padding:7px 4px;font-size:10.5px;font-weight:800;cursor:pointer;background:var(--accent);color:var(--accent-dark)}
-.owned .action{background:var(--panel2);color:#ddd;border:1px solid var(--line)}
-.empty{color:var(--muted);text-align:center;padding:34px 10px;font-size:13px}
-.reset{width:100%;margin-top:14px;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:9px;padding:9px;cursor:pointer;font-size:12px}
+  .toolbar{
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:rgba(15,17,21,.96);
+    padding:8px 0 10px;
+  }
 
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:50;display:none;align-items:flex-end;justify-content:center}
-.modal-backdrop.open{display:flex}
-.modal{width:100%;max-width:620px;max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px 18px 0 0;padding:14px}
-.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.modal-title{font-size:17px;font-weight:900}
-.close{border:0;background:var(--panel2);color:var(--text);width:34px;height:34px;border-radius:9px;font-size:20px;cursor:pointer}
-.scanner-note{font-size:12px;color:var(--muted);line-height:1.4;margin:0 0 10px}
-.capture-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.capture-btn{display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:11px 8px;font-weight:800;font-size:13px;cursor:pointer;text-align:center}
-.capture-btn.primary{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
-.capture-btn input{display:none}
-.preview-wrap{margin-top:10px;display:none}
-.preview-wrap.show{display:block}
-.preview{display:block;width:100%;max-height:300px;object-fit:contain;background:#0b0d10;border:1px solid var(--line);border-radius:12px}
-.analyze{width:100%;margin-top:8px;border:0;border-radius:10px;padding:11px;font-weight:900;background:var(--accent);color:var(--accent-dark);cursor:pointer}
-.analyze:disabled{opacity:.55;cursor:wait}
-.status{font-size:12px;color:var(--muted);margin-top:8px;min-height:17px}
-.result{display:none;margin-top:10px;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:11px}
-.result.show{display:block}
-.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.result-item{background:var(--panel);border-radius:9px;padding:8px}
-.result-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.result-value{font-size:13px;font-weight:800;margin-top:3px;word-break:break-word}
-.result-wide{grid-column:1/-1}
-.confidence{display:inline-block;padding:3px 7px;border-radius:999px;background:var(--panel2);font-size:11px}
-.match-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
-.match-actions button{border:1px solid var(--line);border-radius:9px;padding:9px;font-weight:800;cursor:pointer;background:var(--panel2);color:var(--text)}
-.match-actions .add-match{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
-.error{color:#e6a0a0}
-.ok{color:#8ed3a7}
-@media(min-width:600px){
-  .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-  .country{font-size:14px}
-  .currency{font-size:12px}
-  .action{font-size:12px}
-  .modal-backdrop{align-items:center;padding:16px}
-  .modal{border-radius:18px}
-}
+  .tabs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    margin-bottom:8px;
+  }
 
-header{align-items:center;text-align:center}
-header>div:first-child{width:100%}
-header .count{position:absolute;right:12px}
-.country,.currency,.result-label,.result-value,.scanner-note,.status,.backup-note,.br-name,.br-meta,.count,h1{text-align:center}
-.modal-head{position:relative;justify-content:center}
-.modal-title{text-align:center;width:100%}
-.modal-head .close{position:absolute;right:0}
+  .tab{
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--muted);
+    border-radius:9px;
+    padding:9px 8px;
+    font-weight:700;
+    cursor:pointer;
+  }
 
+  .tab.active{
+    background:var(--accent);
+    color:var(--accent-dark);
+    border-color:var(--accent);
+  }
 
-/* Países: moeda como botão redondo, 4 por linha */
-.grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
-.card{
-  aspect-ratio:1/1;
-  width:100%;
-  min-width:0;
-  border-radius:50%!important;
-  padding:7px 5px!important;
-  min-height:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:3px!important;
-  text-align:center!important;
-  cursor:pointer!important;
-  overflow:hidden;
-  box-sizing:border-box;
-}
-.card .country{
-  font-size:9.5px!important;
-  line-height:1.05!important;
-  font-weight:900!important;
-  margin:0!important;
-  text-align:center!important;
-  max-width:100%;
-}
-.card .currency{
-  font-size:7.5px!important;
-  line-height:1.05!important;
-  margin:0!important;
-  text-align:center!important;
-  max-width:100%;
-}
-.card button,.card .add,.card .remove,.card .action{display:none!important}
-.card.owned{
-  background:var(--accent)!important;
-  color:var(--accent-dark)!important;
-  border-color:var(--accent)!important;
-}
-.card.owned .currency{color:var(--accent-dark)!important;opacity:.78}
-@media(max-width:420px){
-  .grid{gap:6px!important}
-  .card{padding:5px 3px!important}
-  .card .country{font-size:8.5px!important}
-  .card .currency{font-size:6.8px!important}
-}
+  .search{
+    width:100%;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--text);
+    border-radius:9px;
+    padding:10px 11px;
+    outline:none;
+    font-size:14px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    margin-top:8px;
+  }
+
+  .card{
+    border:1px solid var(--line);
+    background:var(--panel);
+    border-radius:10px;
+    padding:10px;
+    min-height:108px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    gap:8px;
+  }
+
+  .country{
+    font-size:14px;
+    font-weight:800;
+    line-height:1.15;
+  }
+
+  .currency{
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.25;
+    margin-top:3px;
+  }
+
+  .action{
+    width:100%;
+    border:0;
+    border-radius:8px;
+    padding:8px 6px;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+    background:var(--accent);
+    color:var(--accent-dark);
+  }
+
+  .owned .action{
+    background:var(--panel2);
+    color:#ddd;
+    border:1px solid var(--line);
+  }
+
+  .empty{
+    color:var(--muted);
+    text-align:center;
+    padding:34px 10px;
+    font-size:13px;
+  }
+
+  .reset{
+    width:100%;
+    margin-top:14px;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--muted);
+    border-radius:9px;
+    padding:9px;
+    cursor:pointer;
+    font-size:12px;
+  }
+
+  @media(min-width:600px){
+    .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  }
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 
-/* Melhor contraste nos botões redondos dos países */
-.card .country,
-.card .currency{
-  color:var(--accent)!important;
-  opacity:1!important;
-}
-.card.owned .country,
-.card.owned .currency{
-  color:var(--accent-dark)!important;
-  opacity:1!important;
-}
+  .type{
+    display:inline-block;
+    margin-top:5px;
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--muted);
+    opacity:.8;
+  }
+  .manual-box{
+    display:none;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    margin-top:8px;
+  }
+  .manual-box.open{display:grid}
+  .manual-box input{
+    width:100%;
+    min-width:0;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--text);
+    border-radius:8px;
+    padding:9px;
+    font-size:12px;
+    outline:none;
+  }
+  .manual-box button{
+    grid-column:1/-1;
+    border:0;
+    border-radius:8px;
+    background:var(--accent);
+    color:var(--accent-dark);
+    padding:9px;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .manual-toggle{
+    width:100%;
+    margin-top:6px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--muted);
+    border-radius:8px;
+    padding:8px;
+    font-size:12px;
+    cursor:pointer;
+  }
 
 
-/* Fonte maior nos círculos dos países */
-.card .country{
-  font-size:clamp(10px, 2.8vw, 15px)!important;
-  line-height:1.02!important;
-  font-weight:950!important;
-  width:92%!important;
-  overflow-wrap:anywhere;
-}
-.card .currency{
-  font-size:clamp(8px, 2.15vw, 12px)!important;
-  line-height:1.02!important;
-  font-weight:800!important;
-  width:88%!important;
-  overflow-wrap:anywhere;
-}
-@media(max-width:420px){
-  .card .country{font-size:clamp(9px,2.8vw,13px)!important}
-  .card .currency{font-size:clamp(7.5px,2.15vw,10.5px)!important}
-}
+  .main-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+  .main-tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:9px;padding:10px 6px;font-weight:800;cursor:pointer}
+  .main-tab.active{background:#f5f7fa;color:#111;border-color:#f5f7fa}
+  .brasil-section{display:none}
+  .brasil-section.active{display:block}
+  .world-section.hidden{display:none}
+  .br-subtabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+  .br-subtab{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:8px;padding:9px;font-weight:800;cursor:pointer}
+  .br-subtab.active{background:var(--accent);color:var(--accent-dark);border-color:var(--accent)}
+  .br-filters{display:flex;gap:6px;overflow:auto;padding-bottom:4px;margin-bottom:8px}
+  .br-filter{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:6px 9px;font-size:10px;font-weight:700;cursor:pointer}
+  .br-filter.active{color:var(--text);border-color:var(--accent)}
+  .br-card{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:9px;min-height:118px;display:flex;flex-direction:column;justify-content:space-between;gap:6px}
+  .br-title{font-size:13px;font-weight:800;line-height:1.15}
+  .br-meta{font-size:10px;color:var(--muted);line-height:1.3;margin-top:3px}
+  .br-action{width:100%;border:0;border-radius:7px;padding:7px 5px;font-size:11px;font-weight:800;background:var(--accent);color:var(--accent-dark);cursor:pointer}
+  .br-card.owned .br-action{background:var(--panel2);color:#ddd;border:1px solid var(--line)}
+  .br-progress{font-size:11px;color:var(--muted);margin:6px 0 2px}
 
 
-/* Países: bandeira + textos maiores e quebráveis */
-.card{padding:5px 3px!important}
-.card .flag{
-  font-size:clamp(15px,4vw,23px)!important;
-  line-height:1!important;
-  margin-bottom:1px!important;
-}
-.card .country{
-  font-size:clamp(11px,3.1vw,17px)!important;
-  line-height:1.0!important;
-  font-weight:950!important;
-  width:94%!important;
-  white-space:normal!important;
-  overflow-wrap:normal!important;
-  word-break:normal!important;
-}
-.card .currency{
-  font-size:clamp(9px,2.4vw,13.5px)!important;
-  line-height:1.0!important;
-  font-weight:850!important;
-  width:92%!important;
-  white-space:normal!important;
-}
-@media(max-width:420px){
-  .card .flag{font-size:clamp(14px,4vw,20px)!important}
-  .card .country{font-size:clamp(10px,3vw,15px)!important}
-  .card .currency{font-size:clamp(8px,2.3vw,11.5px)!important}
-}
-
-
-/* Bandeiras reais em SVG (sem emoji) */
-.card .flag{display:none!important}
-.flag-wrap{
-  height:22px;
-  width:32px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto 2px;
-  flex:0 0 auto;
-}
-.flag-img{
-  display:block;
-  max-width:32px;
-  max-height:22px;
-  width:auto;
-  height:auto;
-  object-fit:contain;
-  border-radius:2px;
-  box-shadow:0 0 0 1px rgba(255,255,255,.18);
-}
-.flag-fallback{
-  display:none;
-  font-size:9px;
-  font-weight:900;
-  color:var(--accent);
-  letter-spacing:.3px;
-}
-@media(max-width:420px){
-  .flag-wrap{height:19px;width:28px}
-  .flag-img{max-width:28px;max-height:19px}
-}
+  #grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  .card{aspect-ratio:1/1;min-height:0;border-radius:50%;padding:10px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px;cursor:pointer;position:relative;overflow:hidden}
+  .card .action{display:none!important}
+  .flag{width:26px;height:18px;object-fit:cover;border-radius:2px;margin-bottom:3px;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+  .country{font-size:11px;line-height:1.05}.currency{font-size:9px;line-height:1.1;margin-top:2px}.type{font-size:7px;margin-top:2px}
+  .card.owned{border-color:var(--accent);box-shadow:inset 0 0 0 2px rgba(214,178,94,.18)}
+  .card.owned::after{content:"✓";position:absolute;top:7px;right:9px;font-size:10px;font-weight:900;color:var(--accent)}
+  #brGrid{display:block;margin-top:8px}
+  .br-year-row{display:grid;grid-template-columns:46px repeat(6,1fr);gap:5px;align-items:center;margin-bottom:6px}
+  .br-year-label{font-size:11px;font-weight:800;color:var(--muted);text-align:center}
+  .br-head{position:sticky;top:96px;z-index:5;background:var(--bg);padding:5px 0;margin-bottom:6px}
+  .br-head .br-year-label{color:var(--muted)}
+  .br-denom-label{font-size:9px;font-weight:800;color:var(--muted);text-align:center}
+  .br-coin{aspect-ratio:1/1;width:100%;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:9px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+  .br-coin.owned{border-color:var(--accent);background:rgba(214,178,94,.12);color:var(--accent)}
+  .br-coin.missing{opacity:.12;cursor:default}
+  .br-card{aspect-ratio:1/1;border-radius:50%;min-height:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;cursor:pointer}
+  .br-card .br-action{display:none!important}.br-title{font-size:10px}.br-meta{font-size:8px}.br-card.owned{border-color:var(--accent);box-shadow:inset 0 0 0 2px rgba(214,178,94,.18)}
+  @media(max-width:420px){#grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.card{padding:8px 5px}.country{font-size:10px}.currency{font-size:8px}.flag{width:22px;height:15px}.br-year-row{grid-template-columns:38px repeat(6,1fr);gap:4px}.br-coin{font-size:8px}}
 
 </style>
 </head>
 <body>
 <div class="wrap">
+  <div class="main-tabs">
+    <button class="main-tab active" data-main="world">Mundo</button>
+    <button class="main-tab" data-main="brasil">Brasil</button>
+  </div>
+  <div id="worldSection" class="world-section">
   <header>
-    <div><h1>Moedas</h1></div>
+    <div>
+      <h1>Moedas</h1>
+    </div>
     <div class="count"><strong id="count">0</strong> / <span id="total">0</span></div>
   </header>
 
@@ -315,470 +301,458 @@ header .count{position:absolute;right:12px}
     <div class="tabs">
       <button class="tab active" data-tab="missing">Faltam</button>
       <button class="tab" data-tab="owned">Já tenho</button>
-      <button class="tab" data-tab="brazil">Brasil</button>
     </div>
-    <input id="search" class="search" type="search" placeholder="Buscar país ou moeda">
-    <button id="scanOpen" class="scan-open">Identificar moeda com IA</button>
-    <div class="backup-row">
-      <button id="exportBtn" class="backup-btn" type="button">Exportar coleção</button>
-      <label class="backup-btn">
-        Importar coleção
-        <input id="importInput" type="file" accept=".json,application/json">
-      </label>
+
+    <input id="search" class="search" type="search" placeholder="Buscar país, território, histórico ou moeda">
+
+    <button id="manualToggle" class="manual-toggle">+ Adicionar emissor manualmente</button>
+    <div id="manualBox" class="manual-box">
+      <input id="manualCountry" placeholder="País / emissor antigo">
+      <input id="manualCurrency" placeholder="Moeda">
+      <button id="manualAdd">Adicionar como “Já tenho”</button>
     </div>
-    <div class="backup-note">Backup para trocar de celular ou recuperar a coleção.</div>
-  </div>
+</div>
 
   <div id="grid" class="grid"></div>
   <div id="empty" class="empty" hidden>Nenhum item encontrado.</div>
 
-  <div id="brazilWrap" class="br-wrap">
-    <div class="br-top">
+  <button id="reset" class="reset">Limpar coleção</button>
+  </div>
+
+  <div id="brasilSection" class="brasil-section">
+    <header>
+      <div><h1>Brasil</h1></div>
+      <div class="count"><strong id="brCount">0</strong> / <span id="brTotal">0</span></div>
+    </header>
+
+    <div class="br-subtabs">
       <button class="br-subtab active" data-brtab="coins">Moedas</button>
       <button class="br-subtab" data-brtab="notes">Cédulas</button>
     </div>
-    <div id="brSummary" class="br-summary"></div>
-    <div id="brContent"></div>
+
+    <div class="br-state-tabs">
+      <button class="br-state-tab active" data-brstate="missing">Faltam</button>
+      <button class="br-state-tab" data-brstate="owned">Já tenho</button>
+    </div>
+
+    <div id="brFilters" class="br-filters"></div>
+    <input id="brSearch" class="search" type="search" placeholder="Buscar valor, ano, padrão ou modelo">
+    <div id="brProgress" class="br-progress"></div>
+    <div id="brGrid" class="grid"></div>
   </div>
-</div>
 
-<div id="scannerModal" class="modal-backdrop" aria-hidden="true">
-  <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title">Identificar moeda com IA</div>
-      <button id="scannerClose" class="close" aria-label="Fechar">×</button>
-    </div>
-    <p class="scanner-note">
-      Fotografe a moeda com boa luz e o mais reto possível. Se puder, faça primeiro a face que tenha
-      nome do país, ano ou inscrições. Para moedas difíceis, uma segunda foto do outro lado ajuda.
-    </p>
-
-    <div class="capture-row">
-      <label class="capture-btn primary">
-        Usar câmera
-        <input id="cameraInput" type="file" accept="image/*" capture="environment">
-      </label>
-      <label class="capture-btn">
-        Escolher foto
-        <input id="galleryInput" type="file" accept="image/*">
-      </label>
-    </div>
-
-    <div id="previewWrap" class="preview-wrap">
-      <img id="preview" class="preview" alt="Foto da moeda">
-      <button id="analyzeBtn" class="analyze">Analisar com IA</button>
-    </div>
-
-    <div id="scanStatus" class="status"></div>
-
-    <div id="scanResult" class="result">
-      <div class="result-grid">
-        <div class="result-item">
-          <div class="result-label">País / território</div>
-          <div id="rCountry" class="result-value">—</div>
-        </div>
-        <div class="result-item">
-          <div class="result-label">Moeda</div>
-          <div id="rCurrency" class="result-value">—</div>
-        </div>
-        <div class="result-item">
-          <div class="result-label">Valor</div>
-          <div id="rDenomination" class="result-value">—</div>
-        </div>
-        <div class="result-item">
-          <div class="result-label">Ano</div>
-          <div id="rYear" class="result-value">—</div>
-        </div>
-        <div class="result-item">
-          <div class="result-label">Confiança</div>
-          <div id="rConfidence" class="result-value"><span class="confidence">—</span></div>
-        </div>
-        <div class="result-item">
-          <div class="result-label">Combina com sua lista</div>
-          <div id="rMatch" class="result-value">—</div>
-        </div>
-        <div class="result-item result-wide">
-          <div class="result-label">Texto / símbolos percebidos</div>
-          <div id="rEvidence" class="result-value">—</div>
-        </div>
-        <div class="result-item result-wide">
-          <div class="result-label">Observação</div>
-          <div id="rNotes" class="result-value">—</div>
-        </div>
-      </div>
-      <div id="matchActions" class="match-actions" style="display:none">
-        <button id="addMatch" class="add-match">Adicionar à coleção</button>
-        <button id="searchMatch">Ver na lista</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
 const coins = [
-["Afeganistão","Afegane"],
-["África do Sul","Rand"],
-["Albânia","Lek"],
-["Alemanha","Euro"],
-["Andorra","Euro"],
-["Angola","Kwanza"],
-["Antígua e Barbuda","Dólar do Caribe Oriental"],
-["Arábia Saudita","Rial saudita"],
-["Argélia","Dinar argelino"],
-["Argentina","Peso argentino"],
-["Armênia","Dram"],
-["Austrália","Dólar australiano"],
-["Áustria","Euro"],
-["Azerbaijão","Manat"],
-["Bahamas","Dólar bahamense"],
-["Bahrein","Dinar bareinita"],
-["Bangladesh","Taka"],
-["Barbados","Dólar barbadense"],
-["Belarus","Rublo bielorrusso"],
-["Bélgica","Euro"],
-["Belize","Dólar belizenho"],
-["Benim","Franco CFA da África Ocidental"],
-["Bolívia","Boliviano"],
-["Bósnia e Herzegovina","Marco conversível"],
-["Botsuana","Pula"],
-["Brasil","Real"],
-["Brunei","Dólar de Brunei"],
-["Bulgária","Lev"],
-["Burkina Faso","Franco CFA da África Ocidental"],
-["Burundi","Franco burundês"],
-["Butão","Ngultrum"],
-["Cabo Verde","Escudo cabo-verdiano"],
-["Camarões","Franco CFA da África Central"],
-["Camboja","Riel"],
-["Canadá","Dólar canadense"],
-["Catar","Rial catariano"],
-["Cazaquistão","Tenge"],
-["Chade","Franco CFA da África Central"],
-["Chile","Peso chileno"],
-["China","Yuan renminbi"],
-["Chipre","Euro"],
-["Colômbia","Peso colombiano"],
-["Comores","Franco comorense"],
-["Coreia do Norte","Won norte-coreano"],
-["Coreia do Sul","Won sul-coreano"],
-["Costa do Marfim","Franco CFA da África Ocidental"],
-["Costa Rica","Colón costa-riquenho"],
-["Croácia","Euro"],
-["Cuba","Peso cubano"],
-["Dinamarca","Coroa dinamarquesa"],
-["Djibuti","Franco djibutiano"],
-["Dominica","Dólar do Caribe Oriental"],
-["Egito","Libra egípcia"],
-["El Salvador","Dólar dos Estados Unidos"],
-["Emirados Árabes Unidos","Dirham dos Emirados Árabes Unidos"],
-["Equador","Dólar dos Estados Unidos"],
-["Eritreia","Nakfa"],
-["Eslováquia","Euro"],
-["Eslovênia","Euro"],
-["Espanha","Euro"],
-["Estados Unidos","Dólar dos Estados Unidos"],
-["Estônia","Euro"],
-["Eswatini","Lilangeni"],
-["Etiópia","Birr"],
-["Fiji","Dólar fijiano"],
-["Filipinas","Peso filipino"],
-["Finlândia","Euro"],
-["França","Euro"],
-["Gabão","Franco CFA da África Central"],
-["Gâmbia","Dalasi"],
-["Gana","Cedi"],
-["Geórgia","Lari"],
-["Granada","Dólar do Caribe Oriental"],
-["Grécia","Euro"],
-["Guatemala","Quetzal"],
-["Guiana","Dólar guianense"],
-["Guiné","Franco guineense"],
-["Guiné-Bissau","Franco CFA da África Ocidental"],
-["Guiné Equatorial","Franco CFA da África Central"],
-["Haiti","Gourde"],
-["Honduras","Lempira"],
-["Hungria","Forint"],
-["Iêmen","Rial iemenita"],
-["Ilhas Marshall","Dólar dos Estados Unidos"],
-["Ilhas Salomão","Dólar das Ilhas Salomão"],
-["Índia","Rupia indiana"],
-["Indonésia","Rupia indonésia"],
-["Irã","Rial iraniano"],
-["Iraque","Dinar iraquiano"],
-["Irlanda","Euro"],
-["Islândia","Coroa islandesa"],
-["Israel","Novo shekel israelense"],
-["Itália","Euro"],
-["Jamaica","Dólar jamaicano"],
-["Japão","Iene"],
-["Jordânia","Dinar jordaniano"],
-["Kiribati","Dólar australiano"],
-["Kuwait","Dinar kuwaitiano"],
-["Laos","Kip"],
-["Lesoto","Loti"],
-["Letônia","Euro"],
-["Líbano","Libra libanesa"],
-["Libéria","Dólar liberiano"],
-["Líbia","Dinar líbio"],
-["Liechtenstein","Franco suíço"],
-["Lituânia","Euro"],
-["Luxemburgo","Euro"],
-["Macedônia do Norte","Denar"],
-["Madagascar","Ariary"],
-["Malásia","Ringgit"],
-["Malawi","Kwacha malauiano"],
-["Maldivas","Rufiyaa"],
-["Mali","Franco CFA da África Ocidental"],
-["Malta","Euro"],
-["Marrocos","Dirham marroquino"],
-["Maurício","Rupia mauriciana"],
-["Mauritânia","Ouguiya"],
-["México","Peso mexicano"],
-["Micronésia","Dólar dos Estados Unidos"],
-["Moçambique","Metical"],
-["Moldávia","Leu moldavo"],
-["Mônaco","Euro"],
-["Mongólia","Tugrik"],
-["Montenegro","Euro"],
-["Myanmar","Kyat"],
-["Namíbia","Dólar namibiano"],
-["Nauru","Dólar australiano"],
-["Nepal","Rupia nepalesa"],
-["Nicarágua","Córdoba"],
-["Níger","Franco CFA da África Ocidental"],
-["Nigéria","Naira"],
-["Noruega","Coroa norueguesa"],
-["Nova Zelândia","Dólar neozelandês"],
-["Omã","Rial omanense"],
-["Países Baixos","Euro"],
-["Palau","Dólar dos Estados Unidos"],
-["Panamá","Balboa / Dólar dos Estados Unidos"],
-["Papua-Nova Guiné","Kina"],
-["Paquistão","Rupia paquistanesa"],
-["Paraguai","Guarani"],
-["Peru","Sol"],
-["Polônia","Złoty"],
-["Portugal","Euro"],
-["Quênia","Xelim queniano"],
-["Quirguistão","Som"],
-["Reino Unido","Libra esterlina"],
-["República Centro-Africana","Franco CFA da África Central"],
-["República Democrática do Congo","Franco congolês"],
-["República do Congo","Franco CFA da África Central"],
-["República Dominicana","Peso dominicano"],
-["República Tcheca","Coroa tcheca"],
-["Romênia","Leu romeno"],
-["Ruanda","Franco ruandês"],
-["Rússia","Rublo russo"],
-["Samoa","Tala"],
-["San Marino","Euro"],
-["Santa Lúcia","Dólar do Caribe Oriental"],
-["São Cristóvão e Névis","Dólar do Caribe Oriental"],
-["São Tomé e Príncipe","Dobra"],
-["São Vicente e Granadinas","Dólar do Caribe Oriental"],
-["Senegal","Franco CFA da África Ocidental"],
-["Serra Leoa","Leone"],
-["Sérvia","Dinar sérvio"],
-["Seychelles","Rupia seichelense"],
-["Singapura","Dólar de Singapura"],
-["Síria","Libra síria"],
-["Somália","Xelim somali"],
-["Sri Lanka","Rupia do Sri Lanka"],
-["Sudão","Libra sudanesa"],
-["Sudão do Sul","Libra sul-sudanesa"],
-["Suécia","Coroa sueca"],
-["Suíça","Franco suíço"],
-["Suriname","Dólar surinamês"],
-["Tadjiquistão","Somoni"],
-["Tailândia","Baht"],
-["Tanzânia","Xelim tanzaniano"],
-["Timor-Leste","Dólar dos Estados Unidos"],
-["Togo","Franco CFA da África Ocidental"],
-["Tonga","Paʻanga"],
-["Trinidad e Tobago","Dólar de Trinidad e Tobago"],
-["Tunísia","Dinar tunisiano"],
-["Turcomenistão","Manat turcomeno"],
-["Turquia","Lira turca"],
-["Tuvalu","Dólar australiano"],
-["Ucrânia","Hryvnia"],
-["Uganda","Xelim ugandense"],
-["Uruguai","Peso uruguaio"],
-["Uzbequistão","Som uzbeque"],
-["Vanuatu","Vatu"],
-["Vaticano","Euro"],
-["Venezuela","Bolívar"],
-["Vietnã","Dong"],
-["Zâmbia","Kwacha zambiano"],
-["Zimbábue","Zimbabwe Gold (ZiG)"]
+["Afeganistão", "Afegane", "Atual"],
+["África do Sul", "Rand", "Atual"],
+["Albânia", "Lek", "Atual"],
+["Alemanha", "Euro", "Atual"],
+["Andorra", "Euro", "Atual"],
+["Angola", "Kwanza", "Atual"],
+["Antígua e Barbuda", "Dólar do Caribe Oriental", "Atual"],
+["Arábia Saudita", "Rial saudita", "Atual"],
+["Argélia", "Dinar argelino", "Atual"],
+["Argentina", "Peso argentino", "Atual"],
+["Armênia", "Dram", "Atual"],
+["Austrália", "Dólar australiano", "Atual"],
+["Áustria", "Euro", "Atual"],
+["Azerbaijão", "Manat", "Atual"],
+["Bahamas", "Dólar bahamense", "Atual"],
+["Bahrein", "Dinar bareinita", "Atual"],
+["Bangladesh", "Taka", "Atual"],
+["Barbados", "Dólar barbadense", "Atual"],
+["Belarus", "Rublo bielorrusso", "Atual"],
+["Bélgica", "Euro", "Atual"],
+["Belize", "Dólar belizenho", "Atual"],
+["Benim", "Franco CFA da África Ocidental", "Atual"],
+["Bolívia", "Boliviano", "Atual"],
+["Bósnia e Herzegovina", "Marco conversível", "Atual"],
+["Botsuana", "Pula", "Atual"],
+["Brasil", "Real", "Atual"],
+["Brunei", "Dólar de Brunei", "Atual"],
+["Bulgária", "Euro", "Atual"],
+["Burkina Faso", "Franco CFA da África Ocidental", "Atual"],
+["Burundi", "Franco burundês", "Atual"],
+["Butão", "Ngultrum", "Atual"],
+["Cabo Verde", "Escudo cabo-verdiano", "Atual"],
+["Camarões", "Franco CFA da África Central", "Atual"],
+["Camboja", "Riel", "Atual"],
+["Canadá", "Dólar canadense", "Atual"],
+["Catar", "Rial catariano", "Atual"],
+["Cazaquistão", "Tenge", "Atual"],
+["Chade", "Franco CFA da África Central", "Atual"],
+["Chile", "Peso chileno", "Atual"],
+["China", "Yuan renminbi", "Atual"],
+["Chipre", "Euro", "Atual"],
+["Colômbia", "Peso colombiano", "Atual"],
+["Comores", "Franco comorense", "Atual"],
+["Coreia do Norte", "Won norte-coreano", "Atual"],
+["Coreia do Sul", "Won sul-coreano", "Atual"],
+["Costa do Marfim", "Franco CFA da África Ocidental", "Atual"],
+["Costa Rica", "Colón costa-riquenho", "Atual"],
+["Croácia", "Euro", "Atual"],
+["Cuba", "Peso cubano", "Atual"],
+["Dinamarca", "Coroa dinamarquesa", "Atual"],
+["Djibuti", "Franco djibutiano", "Atual"],
+["Dominica", "Dólar do Caribe Oriental", "Atual"],
+["Egito", "Libra egípcia", "Atual"],
+["El Salvador", "Dólar dos Estados Unidos", "Atual"],
+["Emirados Árabes Unidos", "Dirham dos Emirados Árabes Unidos", "Atual"],
+["Equador", "Dólar dos Estados Unidos", "Atual"],
+["Eritreia", "Nakfa", "Atual"],
+["Eslováquia", "Euro", "Atual"],
+["Eslovênia", "Euro", "Atual"],
+["Espanha", "Euro", "Atual"],
+["Estados Unidos", "Dólar dos Estados Unidos", "Atual"],
+["Estônia", "Euro", "Atual"],
+["Eswatini", "Lilangeni", "Atual"],
+["Etiópia", "Birr", "Atual"],
+["Fiji", "Dólar fijiano", "Atual"],
+["Filipinas", "Peso filipino", "Atual"],
+["Finlândia", "Euro", "Atual"],
+["França", "Euro", "Atual"],
+["Gabão", "Franco CFA da África Central", "Atual"],
+["Gâmbia", "Dalasi", "Atual"],
+["Gana", "Cedi", "Atual"],
+["Geórgia", "Lari", "Atual"],
+["Granada", "Dólar do Caribe Oriental", "Atual"],
+["Grécia", "Euro", "Atual"],
+["Guatemala", "Quetzal", "Atual"],
+["Guiana", "Dólar guianense", "Atual"],
+["Guiné", "Franco guineense", "Atual"],
+["Guiné-Bissau", "Franco CFA da África Ocidental", "Atual"],
+["Guiné Equatorial", "Franco CFA da África Central", "Atual"],
+["Haiti", "Gourde", "Atual"],
+["Honduras", "Lempira", "Atual"],
+["Hungria", "Forint", "Atual"],
+["Iêmen", "Rial iemenita", "Atual"],
+["Ilhas Marshall", "Dólar dos Estados Unidos", "Atual"],
+["Ilhas Salomão", "Dólar das Ilhas Salomão", "Atual"],
+["Índia", "Rupia indiana", "Atual"],
+["Indonésia", "Rupia indonésia", "Atual"],
+["Irã", "Rial iraniano", "Atual"],
+["Iraque", "Dinar iraquiano", "Atual"],
+["Irlanda", "Euro", "Atual"],
+["Islândia", "Coroa islandesa", "Atual"],
+["Israel", "Novo shekel israelense", "Atual"],
+["Itália", "Euro", "Atual"],
+["Jamaica", "Dólar jamaicano", "Atual"],
+["Japão", "Iene", "Atual"],
+["Jordânia", "Dinar jordaniano", "Atual"],
+["Kiribati", "Dólar australiano", "Atual"],
+["Kuwait", "Dinar kuwaitiano", "Atual"],
+["Laos", "Kip", "Atual"],
+["Lesoto", "Loti", "Atual"],
+["Letônia", "Euro", "Atual"],
+["Líbano", "Libra libanesa", "Atual"],
+["Libéria", "Dólar liberiano", "Atual"],
+["Líbia", "Dinar líbio", "Atual"],
+["Liechtenstein", "Franco suíço", "Atual"],
+["Lituânia", "Euro", "Atual"],
+["Luxemburgo", "Euro", "Atual"],
+["Macedônia do Norte", "Denar", "Atual"],
+["Madagascar", "Ariary", "Atual"],
+["Malásia", "Ringgit", "Atual"],
+["Malawi", "Kwacha malauiano", "Atual"],
+["Maldivas", "Rufiyaa", "Atual"],
+["Mali", "Franco CFA da África Ocidental", "Atual"],
+["Malta", "Euro", "Atual"],
+["Marrocos", "Dirham marroquino", "Atual"],
+["Maurício", "Rupia mauriciana", "Atual"],
+["Mauritânia", "Ouguiya", "Atual"],
+["México", "Peso mexicano", "Atual"],
+["Micronésia", "Dólar dos Estados Unidos", "Atual"],
+["Moçambique", "Metical", "Atual"],
+["Moldávia", "Leu moldavo", "Atual"],
+["Mônaco", "Euro", "Atual"],
+["Mongólia", "Tugrik", "Atual"],
+["Montenegro", "Euro", "Atual"],
+["Myanmar", "Kyat", "Atual"],
+["Namíbia", "Dólar namibiano", "Atual"],
+["Nauru", "Dólar australiano", "Atual"],
+["Nepal", "Rupia nepalesa", "Atual"],
+["Nicarágua", "Córdoba", "Atual"],
+["Níger", "Franco CFA da África Ocidental", "Atual"],
+["Nigéria", "Naira", "Atual"],
+["Noruega", "Coroa norueguesa", "Atual"],
+["Nova Zelândia", "Dólar neozelandês", "Atual"],
+["Omã", "Rial omanense", "Atual"],
+["Países Baixos", "Euro", "Atual"],
+["Palau", "Dólar dos Estados Unidos", "Atual"],
+["Panamá", "Balboa", "Atual"],
+["Papua-Nova Guiné", "Kina", "Atual"],
+["Paquistão", "Rupia paquistanesa", "Atual"],
+["Paraguai", "Guarani", "Atual"],
+["Peru", "Sol", "Atual"],
+["Polônia", "Złoty", "Atual"],
+["Portugal", "Euro", "Atual"],
+["Quênia", "Xelim queniano", "Atual"],
+["Quirguistão", "Som", "Atual"],
+["Reino Unido", "Libra esterlina", "Atual"],
+["República Centro-Africana", "Franco CFA da África Central", "Atual"],
+["República Democrática do Congo", "Franco congolês", "Atual"],
+["República do Congo", "Franco CFA da África Central", "Atual"],
+["República Dominicana", "Peso dominicano", "Atual"],
+["República Tcheca", "Coroa tcheca", "Atual"],
+["Romênia", "Leu romeno", "Atual"],
+["Ruanda", "Franco ruandês", "Atual"],
+["Rússia", "Rublo russo", "Atual"],
+["Samoa", "Tala", "Atual"],
+["San Marino", "Euro", "Atual"],
+["Santa Lúcia", "Dólar do Caribe Oriental", "Atual"],
+["São Cristóvão e Névis", "Dólar do Caribe Oriental", "Atual"],
+["São Tomé e Príncipe", "Dobra", "Atual"],
+["São Vicente e Granadinas", "Dólar do Caribe Oriental", "Atual"],
+["Senegal", "Franco CFA da África Ocidental", "Atual"],
+["Serra Leoa", "Leone", "Atual"],
+["Sérvia", "Dinar sérvio", "Atual"],
+["Seychelles", "Rupia seichelense", "Atual"],
+["Singapura", "Dólar de Singapura", "Atual"],
+["Síria", "Libra síria", "Atual"],
+["Somália", "Xelim somali", "Atual"],
+["Sri Lanka", "Rupia do Sri Lanka", "Atual"],
+["Sudão", "Libra sudanesa", "Atual"],
+["Sudão do Sul", "Libra sul-sudanesa", "Atual"],
+["Suécia", "Coroa sueca", "Atual"],
+["Suíça", "Franco suíço", "Atual"],
+["Suriname", "Dólar surinamês", "Atual"],
+["Tadjiquistão", "Somoni", "Atual"],
+["Tailândia", "Baht", "Atual"],
+["Tanzânia", "Xelim tanzaniano", "Atual"],
+["Timor-Leste", "Dólar dos Estados Unidos / centavos próprios", "Atual"],
+["Togo", "Franco CFA da África Ocidental", "Atual"],
+["Tonga", "Paʻanga", "Atual"],
+["Trinidad e Tobago", "Dólar de Trinidad e Tobago", "Atual"],
+["Tunísia", "Dinar tunisiano", "Atual"],
+["Turcomenistão", "Manat turcomeno", "Atual"],
+["Turquia", "Lira turca", "Atual"],
+["Tuvalu", "Dólar australiano / moedas próprias", "Atual"],
+["Ucrânia", "Hryvnia", "Atual"],
+["Uganda", "Xelim ugandense", "Atual"],
+["Uruguai", "Peso uruguaio", "Atual"],
+["Uzbequistão", "Som uzbeque", "Atual"],
+["Vanuatu", "Vatu", "Atual"],
+["Vaticano", "Euro", "Atual"],
+["Venezuela", "Bolívar", "Atual"],
+["Vietnã", "Dong", "Atual"],
+["Zâmbia", "Kwacha zambiano", "Atual"],
+["Zimbábue", "Zimbabwe Gold (ZiG)", "Atual"],
+["Aruba", "Florim arubano", "Território"],
+["Curaçao", "Florim caribenho", "Território"],
+["Sint Maarten", "Florim caribenho", "Território"],
+["Bermudas", "Dólar bermudense", "Território"],
+["Ilhas Cayman", "Dólar das Ilhas Cayman", "Território"],
+["Ilhas Falkland", "Libra das Ilhas Falkland", "Território"],
+["Gibraltar", "Libra de Gibraltar", "Território"],
+["Ilha de Man", "Libra manesa", "Território"],
+["Jersey", "Libra de Jersey", "Território"],
+["Guernsey", "Libra de Guernsey", "Território"],
+["Santa Helena", "Libra de Santa Helena", "Território"],
+["Ascensão", "Libra de Santa Helena / moedas próprias", "Território"],
+["Ilhas Cook", "Dólar da Nova Zelândia / moedas próprias", "Território"],
+["Niue", "Dólar da Nova Zelândia / moedas próprias", "Território"],
+["Tokelau", "Dólar da Nova Zelândia / moedas próprias", "Território"],
+["Hong Kong", "Dólar de Hong Kong", "Território"],
+["Macau", "Pataca", "Território"],
+["Taiwan", "Novo dólar taiwanês", "Território"],
+["Polinésia Francesa", "Franco CFP", "Território"],
+["Nova Caledônia", "Franco CFP", "Território"],
+["Wallis e Futuna", "Franco CFP", "Território"],
+["Groenlândia", "Coroa dinamarquesa / emissões históricas locais", "Território"],
+["Ilhas Faroé", "Coroa dinamarquesa / emissões locais históricas", "Território"],
+["Porto Rico", "Dólar dos Estados Unidos / emissões históricas", "Território"],
+["Ilhas Virgens Britânicas", "Dólar dos Estados Unidos / moedas próprias de coleção", "Território"],
+["Montserrat", "Dólar do Caribe Oriental", "Território"],
+["Anguilla", "Dólar do Caribe Oriental", "Território"],
+["Ilhas Turcas e Caicos", "Dólar dos Estados Unidos / moedas próprias de coleção", "Território"],
+["Ilhas Pitcairn", "Dólar da Nova Zelândia / moedas próprias", "Território"],
+["Território Britânico do Oceano Índico", "Moedas comemorativas próprias", "Território"],
+["União Soviética (URSS)", "Rublo soviético", "Histórico"],
+["Iugoslávia", "Dinar iugoslavo", "Histórico"],
+["Tchecoslováquia", "Coroa tchecoslovaca", "Histórico"],
+["Alemanha Oriental (RDA)", "Marco da Alemanha Oriental", "Histórico"],
+["Alemanha Ocidental (RFA)", "Marco alemão", "Histórico"],
+["Império Alemão", "Marco alemão", "Histórico"],
+["República de Weimar", "Marco / Reichsmark", "Histórico"],
+["Terceiro Reich", "Reichsmark", "Histórico"],
+["Império Austro-Húngaro", "Coroa austro-húngara", "Histórico"],
+["Império Austríaco", "Florim austríaco", "Histórico"],
+["Império Otomano", "Lira otomana / kuruş", "Histórico"],
+["Império Russo", "Rublo imperial", "Histórico"],
+["Índia Britânica", "Rupia indiana britânica", "Histórico"],
+["Índias Orientais Holandesas", "Gulden das Índias Holandesas", "Histórico"],
+["Indochina Francesa", "Piastre", "Histórico"],
+["África Oriental Britânica", "Xelim da África Oriental", "Histórico"],
+["África Ocidental Britânica", "Libra da África Ocidental Britânica", "Histórico"],
+["África Oriental Alemã", "Rupia da África Oriental Alemã", "Histórico"],
+["África Sudoeste Alemã", "Marco alemão / emissões coloniais", "Histórico"],
+["Rodésia", "Dólar rodesiano", "Histórico"],
+["Rodésia e Niassalândia", "Libra da Federação", "Histórico"],
+["Zaire", "Zaïre", "Histórico"],
+["Congo Belga", "Franco congolês", "Histórico"],
+["África Oriental Italiana", "Lira da África Oriental Italiana", "Histórico"],
+["Somalilândia Italiana", "Somalo / rupia", "Histórico"],
+["Líbia Italiana", "Lira italiana / emissões coloniais", "Histórico"],
+["Palestina sob Mandato Britânico", "Libra palestina", "Histórico"],
+["Estado Livre de Danzig", "Gulden de Danzig", "Histórico"],
+["Sarre", "Franco do Sarre", "Histórico"],
+["Fiume", "Coroa de Fiume", "Histórico"],
+["Reino da Itália", "Lira italiana", "Histórico"],
+["Estados Papais", "Lira / scudo papal", "Histórico"],
+["Reino das Duas Sicílias", "Ducado / piastra", "Histórico"],
+["Reino da Sardenha", "Lira sarda", "Histórico"],
+["Prússia", "Thaler / marco", "Histórico"],
+["Baviera", "Gulden / marco", "Histórico"],
+["Saxônia", "Thaler / marco", "Histórico"],
+["Hanôver", "Thaler", "Histórico"],
+["Reino da Grécia", "Dracma", "Histórico"],
+["Reino da Iugoslávia", "Dinar iugoslavo", "Histórico"],
+["Sérvia e Montenegro", "Dinar sérvio / euro em Montenegro", "Histórico"],
+["Checoslováquia socialista", "Coroa tchecoslovaca", "Histórico"],
+["União da África do Sul", "Libra sul-africana", "Histórico"],
+["Ceilão", "Rupia do Ceilão", "Histórico"],
+["Birmânia", "Rupia / kyat", "Histórico"],
+["Sião", "Baht", "Histórico"],
+["Pérsia", "Qiran / rial", "Histórico"],
+["Reino do Iraque", "Dinar iraquiano", "Histórico"],
+["Reino do Egito", "Libra egípcia", "Histórico"],
+["Reino do Afeganistão", "Afegane", "Histórico"],
+["Reino do Nepal", "Rupia nepalesa", "Histórico"],
+["Reino do Laos", "Kip", "Histórico"],
+["Vietnã do Sul", "Đồng sul-vietnamita", "Histórico"],
+["Vietnã do Norte", "Đồng norte-vietnamita", "Histórico"],
+["República Árabe Unida", "Libra egípcia / libra síria", "Histórico"],
+["Tanganica", "Xelim da África Oriental", "Histórico"],
+["Zanzibar", "Rupia / xelim", "Histórico"],
+["Estados Malaios Federados", "Dólar do Estreito / dólar malaio", "Histórico"],
+["Malaya e Bornéu Britânico", "Dólar da Malaya e Bornéu Britânico", "Histórico"],
+["Estabelecimentos dos Estreitos", "Dólar do Estreito", "Histórico"],
+["Bornéu do Norte", "Dólar do Bornéu do Norte", "Histórico"],
+["Sarawak", "Dólar de Sarawak", "Histórico"],
+["Nova Guiné Alemã", "Marco da Nova Guiné", "Histórico"],
+["Nova Guiné Australiana", "Libra australiana / emissões locais", "Histórico"],
+["Havaí (Reino)", "Dólar havaiano", "Histórico"],
+["Terra Nova", "Dólar de Newfoundland", "Histórico"],
+["Domínio do Canadá", "Dólar canadense", "Histórico"],
+["Antilhas Holandesas", "Florim das Antilhas Holandesas", "Histórico"],
+["Guiana Britânica", "Dólar das Índias Ocidentais Britânicas", "Histórico"],
+["Guiana Holandesa", "Gulden do Suriname", "Histórico"],
+["Guiana Francesa", "Franco francês / emissões locais", "Histórico"],
+["Índia Portuguesa", "Rupia / escudo da Índia Portuguesa", "Histórico"],
+["Angola Portuguesa", "Escudo angolano", "Histórico"],
+["Moçambique Português", "Escudo moçambicano", "Histórico"],
+["Guiné Portuguesa", "Escudo da Guiné Portuguesa", "Histórico"],
+["Cabo Verde Português", "Escudo cabo-verdiano", "Histórico"],
+["Macau Português", "Pataca", "Histórico"],
+["Timor Português", "Pataca / escudo timorense", "Histórico"],
+["Brasil Império", "Réis", "Histórico"],
+["Brasil Colônia", "Réis", "Histórico"],
+["Estados Unidos do Brasil", "Réis / cruzeiro", "Histórico"],
+["Confederação Argentina", "Peso / real", "Histórico"],
+["Gran Colômbia", "Peso", "Histórico"],
+["Estados Unidos da Colômbia", "Peso", "Histórico"],
+["Estados Unidos da Venezuela", "Bolívar", "Histórico"],
+["Peru-Bolívia (Confederação)", "Peso", "Histórico"],
+["América Central (República Federal)", "Real / peso", "Histórico"],
+["Portugal — Escudo", "Escudo português", "Histórico"],
+["Espanha — Peseta", "Peseta espanhola", "Histórico"],
+["França — Franco", "Franco francês", "Histórico"],
+["Itália — Lira", "Lira italiana", "Histórico"],
+["Alemanha — Marco", "Marco alemão", "Histórico"],
+["Áustria — Schilling", "Schilling austríaco", "Histórico"],
+["Bélgica — Franco", "Franco belga", "Histórico"],
+["Países Baixos — Florim", "Florim neerlandês", "Histórico"],
+["Grécia — Dracma", "Dracma grega", "Histórico"],
+["Irlanda — Libra", "Libra irlandesa", "Histórico"],
+["Finlândia — Markka", "Markka finlandesa", "Histórico"],
+["Luxemburgo — Franco", "Franco luxemburguês", "Histórico"],
+["Malta — Lira", "Lira maltesa", "Histórico"],
+["Chipre — Libra", "Libra cipriota", "Histórico"],
+["Eslovênia — Tolar", "Tolar esloveno", "Histórico"],
+["Eslováquia — Coroa", "Coroa eslovaca", "Histórico"],
+["Estônia — Kroon", "Kroon estoniano", "Histórico"],
+["Letônia — Lats", "Lats letão", "Histórico"],
+["Lituânia — Litas", "Litas lituano", "Histórico"],
+["Croácia — Kuna", "Kuna croata", "Histórico"],
+["Bulgária — Lev", "Lev búlgaro", "Histórico"],
+["Romênia — Leu antigo", "Leu romeno antigo", "Histórico"],
+["Polônia — Złoty antigo", "Złoty polonês antigo", "Histórico"],
+["Hungria — Pengő", "Pengő húngaro", "Histórico"],
+["Hungria — Forint antigo", "Forint húngaro antigo", "Histórico"],
+["República Tcheca — Coroa tcheca antiga", "Coroa tcheca", "Histórico"],
+["Dinamarca — Rigsdaler", "Rigsdaler dinamarquês", "Histórico"],
+["Noruega — Speciedaler", "Speciedaler norueguês", "Histórico"],
+["Suécia — Riksdaler", "Riksdaler sueco", "Histórico"],
+["Suíça — Rappen/Franco antigo", "Franco suíço antigo", "Histórico"],
+["Reino Unido — Pré-decimal", "Libra esterlina pré-decimal", "Histórico"],
+["Reino Unido — Shilling", "Shilling britânico", "Histórico"],
+["Reino Unido — Penny antigo", "Penny britânico pré-decimal", "Histórico"],
+["Brasil — Réis", "Réis", "Histórico"],
+["Brasil — Cruzeiro", "Cruzeiro", "Histórico"],
+["Brasil — Cruzado", "Cruzado", "Histórico"],
+["Brasil — Cruzado Novo", "Cruzado novo", "Histórico"],
+["Brasil — Cruzeiro Real", "Cruzeiro real", "Histórico"],
+["Argentina — Austral", "Austral argentino", "Histórico"],
+["Argentina — Peso Lei", "Peso ley", "Histórico"],
+["Argentina — Peso Moneda Nacional", "Peso moneda nacional", "Histórico"],
+["Uruguai — Novo Peso", "Nuevo peso uruguaio", "Histórico"],
+["Chile — Escudo", "Escudo chileno", "Histórico"],
+["Chile — Peso antigo", "Peso chileno antigo", "Histórico"],
+["Peru — Inti", "Inti peruano", "Histórico"],
+["Peru — Sol de Oro", "Sol de oro", "Histórico"],
+["Bolívia — Peso boliviano", "Peso boliviano", "Histórico"],
+["Venezuela — Bolívar antigo", "Bolívar antigo", "Histórico"],
+["México — Peso antigo", "Peso mexicano antigo", "Histórico"],
+["México — Centavo antigo", "Centavo mexicano antigo", "Histórico"],
+["Paraguai — Peso", "Peso paraguaio", "Histórico"],
+["Equador — Sucre", "Sucre equatoriano", "Histórico"],
+["Colômbia — Peso ouro", "Peso oro colombiano", "Histórico"],
+["Costa Rica — Peso", "Peso costa-riquenho", "Histórico"],
+["Nicarágua — Peso", "Peso nicaraguense", "Histórico"],
+["Guatemala — Peso", "Peso guatemalteco", "Histórico"],
+["Honduras — Peso", "Peso hondurenho", "Histórico"],
+["El Salvador — Colón", "Colón salvadorenho", "Histórico"],
+["República Dominicana — Peso ouro", "Peso oro dominicano", "Histórico"],
+["Cuba — Peso conversível", "Peso cubano conversível", "Histórico"],
+["Austrália — Libra", "Libra australiana", "Histórico"],
+["Nova Zelândia — Libra", "Libra neozelandesa", "Histórico"],
+["Canadá — Dólar antigo", "Dólar canadense antigo", "Histórico"],
+["Índia — Rupia antiga", "Rupia indiana antiga", "Histórico"],
+["Paquistão — Rupia antiga", "Rupia paquistanesa antiga", "Histórico"],
+["Sri Lanka — Rupia do Ceilão", "Rupia do Ceilão", "Histórico"],
+["Malásia — Dólar malaio", "Dólar malaio", "Histórico"],
+["Singapura — Dólar malaio", "Dólar malaio e britânico de Bornéu", "Histórico"],
+["Hong Kong — Dólar antigo", "Dólar de Hong Kong antigo", "Histórico"],
+["Japão — Sen", "Sen japonês", "Histórico"],
+["China — Yuan antigo", "Yuan chinês antigo", "Histórico"],
+["Taiwan — Velho dólar", "Velho dólar taiwanês", "Histórico"],
+["Coreia do Sul — Hwan", "Hwan sul-coreano", "Histórico"],
+["Coreia do Sul — Won antigo", "Won sul-coreano antigo", "Histórico"],
+["Israel — Lira", "Lira israelense", "Histórico"],
+["Israel — Shekel antigo", "Shekel antigo", "Histórico"],
+["Turquia — Lira antiga", "Lira turca antiga", "Histórico"],
+["África do Sul — Libra", "Libra sul-africana", "Histórico"],
+["África do Sul — Rand antigo", "Rand sul-africano antigo", "Histórico"],
+["Egito — Piastre", "Piastre egípcio", "Histórico"],
+["Marrocos — Franco", "Franco marroquino", "Histórico"],
+["Tunísia — Franco", "Franco tunisiano", "Histórico"],
+["Argélia — Franco", "Franco argelino", "Histórico"],
+["Moçambique — Escudo", "Escudo moçambicano", "Histórico"],
+["Angola — Escudo", "Escudo angolano", "Histórico"],
+["Cabo Verde — Escudo antigo", "Escudo cabo-verdiano antigo", "Histórico"]
 ];
+const flagMap = {"Afeganistão": "af", "África do Sul": "za", "Albânia": "al", "Alemanha": "de", "Andorra": "ad", "Angola": "ao", "Antígua e Barbuda": "ag", "Arábia Saudita": "sa", "Argélia": "dz", "Argentina": "ar", "Armênia": "am", "Austrália": "au", "Áustria": "at", "Azerbaijão": "az", "Bahamas": "bs", "Bahrein": "bh", "Bangladesh": "bd", "Barbados": "bb", "Belarus": "by", "Bélgica": "be", "Belize": "bz", "Benim": "bj", "Bolívia": "bo", "Bósnia e Herzegovina": "ba", "Botsuana": "bw", "Brasil": "br", "Brunei": "bn", "Bulgária": "bg", "Burkina Faso": "bf", "Burundi": "bi", "Butão": "bt", "Cabo Verde": "cv", "Camarões": "cm", "Camboja": "kh", "Canadá": "ca", "Catar": "qa", "Cazaquistão": "kz", "Chade": "td", "Chile": "cl", "China": "cn", "Chipre": "cy", "Colômbia": "co", "Comores": "km", "Coreia do Norte": "kp", "Coreia do Sul": "kr", "Costa do Marfim": "ci", "Costa Rica": "cr", "Croácia": "hr", "Cuba": "cu", "Dinamarca": "dk", "Djibuti": "dj", "Dominica": "dm", "Egito": "eg", "El Salvador": "sv", "Emirados Árabes Unidos": "ae", "Equador": "ec", "Eritreia": "er", "Eslováquia": "sk", "Eslovênia": "si", "Espanha": "es", "Estados Unidos": "us", "Estônia": "ee", "Eswatini": "sz", "Etiópia": "et", "Fiji": "fj", "Filipinas": "ph", "Finlândia": "fi", "França": "fr", "Gabão": "ga", "Gâmbia": "gm", "Gana": "gh", "Geórgia": "ge", "Granada": "gd", "Grécia": "gr", "Guatemala": "gt", "Guiana": "gy", "Guiné": "gn", "Guiné-Bissau": "gw", "Guiné Equatorial": "gq", "Haiti": "ht", "Honduras": "hn", "Hungria": "hu", "Iêmen": "ye", "Ilhas Marshall": "mh", "Ilhas Salomão": "sb", "Índia": "in", "Indonésia": "id", "Irã": "ir", "Iraque": "iq", "Irlanda": "ie", "Islândia": "is", "Israel": "il", "Itália": "it", "Jamaica": "jm", "Japão": "jp", "Jordânia": "jo", "Kiribati": "ki", "Kuwait": "kw", "Laos": "la", "Lesoto": "ls", "Letônia": "lv", "Líbano": "lb", "Libéria": "lr", "Líbia": "ly", "Liechtenstein": "li", "Lituânia": "lt", "Luxemburgo": "lu", "Macedônia do Norte": "mk", "Madagascar": "mg", "Malásia": "my", "Malawi": "mw", "Maldivas": "mv", "Mali": "ml", "Malta": "mt", "Marrocos": "ma", "Maurício": "mu", "Mauritânia": "mr", "México": "mx", "Micronésia": "fm", "Moçambique": "mz", "Moldávia": "md", "Mônaco": "mc", "Mongólia": "mn", "Montenegro": "me", "Myanmar": "mm", "Namíbia": "na", "Nauru": "nr", "Nepal": "np", "Nicarágua": "ni", "Níger": "ne", "Nigéria": "ng", "Noruega": "no", "Nova Zelândia": "nz", "Omã": "om", "Países Baixos": "nl", "Palau": "pw", "Panamá": "pa", "Papua-Nova Guiné": "pg", "Paquistão": "pk", "Paraguai": "py", "Peru": "pe", "Polônia": "pl", "Portugal": "pt", "Quênia": "ke", "Quirguistão": "kg", "Reino Unido": "gb", "República Centro-Africana": "cf", "República Democrática do Congo": "cd", "República do Congo": "cg", "República Dominicana": "do", "República Tcheca": "cz", "Romênia": "ro", "Ruanda": "rw", "Rússia": "ru", "Samoa": "ws", "San Marino": "sm", "Santa Lúcia": "lc", "São Cristóvão e Névis": "kn", "São Tomé e Príncipe": "st", "São Vicente e Granadinas": "vc", "Senegal": "sn", "Serra Leoa": "sl", "Sérvia": "rs", "Seychelles": "sc", "Singapura": "sg", "Síria": "sy", "Somália": "so", "Sri Lanka": "lk", "Sudão": "sd", "Sudão do Sul": "ss", "Suécia": "se", "Suíça": "ch", "Suriname": "sr", "Tadjiquistão": "tj", "Tailândia": "th", "Tanzânia": "tz", "Timor-Leste": "tl", "Togo": "tg", "Tonga": "to", "Trinidad e Tobago": "tt", "Tunísia": "tn", "Turcomenistão": "tm", "Turquia": "tr", "Tuvalu": "tv", "Ucrânia": "ua", "Uganda": "ug", "Uruguai": "uy", "Uzbequistão": "uz", "Vanuatu": "vu", "Vaticano": "va", "Venezuela": "ve", "Vietnã": "vn", "Zâmbia": "zm", "Zimbábue": "zw", "Aruba": "aw", "Curaçao": "cw", "Sint Maarten": "sx", "Bermudas": "bm", "Ilhas Cayman": "ky", "Ilhas Falkland": "fk", "Gibraltar": "gi", "Ilha de Man": "im", "Jersey": "je", "Guernsey": "gg", "Santa Helena": "sh", "Hong Kong": "hk", "Macau": "mo", "Taiwan": "tw", "Polinésia Francesa": "pf", "Nova Caledônia": "nc", "Wallis e Futuna": "wf", "Groenlândia": "gl", "Ilhas Faroé": "fo", "Porto Rico": "pr", "Ilhas Virgens Britânicas": "vg", "Montserrat": "ms", "Anguilla": "ai", "Ilhas Turcas e Caicos": "tc", "Ilhas Cook": "ck", "Niue": "nu", "Tokelau": "tk", "Ilhas Pitcairn": "pn", "União Soviética (URSS)": "ru", "Iugoslávia": "rs", "Tchecoslováquia": "cz", "Alemanha Oriental (RDA)": "de", "Alemanha Ocidental (RFA)": "de", "Império Alemão": "de", "República de Weimar": "de", "Terceiro Reich": "de", "Império Austro-Húngaro": "at", "Império Austríaco": "at", "Império Otomano": "tr", "Império Russo": "ru", "Índia Britânica": "in", "Índias Orientais Holandesas": "id", "Indochina Francesa": "vn", "África Oriental Britânica": "ke", "África Ocidental Britânica": "gh", "África Oriental Alemã": "tz", "África Sudoeste Alemã": "na", "Rodésia": "zw", "Rodésia e Niassalândia": "zw", "Zaire": "cd", "Congo Belga": "cd", "África Oriental Italiana": "et", "Somalilândia Italiana": "so", "Líbia Italiana": "ly", "Palestina sob Mandato Britânico": "ps", "Estado Livre de Danzig": "pl", "Sarre": "de", "Fiume": "hr", "Reino da Itália": "it", "Estados Papais": "va", "Reino das Duas Sicílias": "it", "Reino da Sardenha": "it", "Prússia": "de", "Baviera": "de", "Saxônia": "de", "Hanôver": "de", "Reino da Grécia": "gr", "Reino da Iugoslávia": "rs", "Sérvia e Montenegro": "rs", "Checoslováquia socialista": "cz", "União da África do Sul": "za", "Ceilão": "lk", "Birmânia": "mm", "Sião": "th", "Pérsia": "ir", "Reino do Iraque": "iq", "Reino do Egito": "eg", "Reino do Afeganistão": "af", "Reino do Nepal": "np", "Reino do Laos": "la", "Vietnã do Sul": "vn", "Vietnã do Norte": "vn", "República Árabe Unida": "eg", "Tanganica": "tz", "Zanzibar": "tz", "Estados Malaios Federados": "my", "Malaya e Bornéu Britânico": "my", "Estabelecimentos dos Estreitos": "sg", "Bornéu do Norte": "my", "Sarawak": "my", "Nova Guiné Alemã": "pg", "Nova Guiné Australiana": "pg", "Havaí (Reino)": "us", "Terra Nova": "ca", "Domínio do Canadá": "ca", "Antilhas Holandesas": "cw", "Guiana Britânica": "gy", "Guiana Holandesa": "sr", "Guiana Francesa": "gf", "Índia Portuguesa": "in", "Angola Portuguesa": "ao", "Moçambique Português": "mz", "Guiné Portuguesa": "gw", "Cabo Verde Português": "cv", "Macau Português": "mo", "Timor Português": "tl", "Brasil Império": "br", "Brasil Colônia": "br", "Estados Unidos do Brasil": "br", "Confederação Argentina": "ar", "Gran Colômbia": "co", "Estados Unidos da Colômbia": "co", "Estados Unidos da Venezuela": "ve", "Peru-Bolívia (Confederação)": "bo", "América Central (República Federal)": "gt", "Ascensão": "sh", "Território Britânico do Oceano Índico": "io", "Portugal — Escudo": "pt", "Espanha — Peseta": "es", "França — Franco": "fr", "Itália — Lira": "it", "Alemanha — Marco": "de", "Áustria — Schilling": "at", "Bélgica — Franco": "be", "Países Baixos — Florim": "nl", "Grécia — Dracma": "gr", "Irlanda — Libra": "ie", "Finlândia — Markka": "fi", "Luxemburgo — Franco": "lu", "Malta — Lira": "mt", "Chipre — Libra": "cy", "Eslovênia — Tolar": "si", "Eslováquia — Coroa": "sk", "Estônia — Kroon": "ee", "Letônia — Lats": "lv", "Lituânia — Litas": "lt", "Croácia — Kuna": "hr", "Bulgária — Lev": "bg", "Romênia — Leu antigo": "ro", "Polônia — Złoty antigo": "pl", "Hungria — Pengő": "hu", "Hungria — Forint antigo": "hu", "República Tcheca — Coroa tcheca antiga": "cz", "Dinamarca — Rigsdaler": "dk", "Noruega — Speciedaler": "no", "Suécia — Riksdaler": "se", "Suíça — Rappen/Franco antigo": "ch", "Reino Unido — Pré-decimal": "gb", "Reino Unido — Shilling": "gb", "Reino Unido — Penny antigo": "gb", "Brasil — Réis": "br", "Brasil — Cruzeiro": "br", "Brasil — Cruzado": "br", "Brasil — Cruzado Novo": "br", "Brasil — Cruzeiro Real": "br", "Argentina — Austral": "ar", "Argentina — Peso Lei": "ar", "Argentina — Peso Moneda Nacional": "ar", "Uruguai — Novo Peso": "uy", "Chile — Escudo": "cl", "Chile — Peso antigo": "cl", "Peru — Inti": "pe", "Peru — Sol de Oro": "pe", "Bolívia — Peso boliviano": "bo", "Venezuela — Bolívar antigo": "ve", "México — Peso antigo": "mx", "México — Centavo antigo": "mx", "Paraguai — Peso": "py", "Equador — Sucre": "ec", "Colômbia — Peso ouro": "co", "Costa Rica — Peso": "cr", "Nicarágua — Peso": "ni", "Guatemala — Peso": "gt", "Honduras — Peso": "hn", "El Salvador — Colón": "sv", "República Dominicana — Peso ouro": "do", "Cuba — Peso conversível": "cu", "Austrália — Libra": "au", "Nova Zelândia — Libra": "nz", "Canadá — Dólar antigo": "ca", "Índia — Rupia antiga": "in", "Paquistão — Rupia antiga": "pk", "Sri Lanka — Rupia do Ceilão": "lk", "Malásia — Dólar malaio": "my", "Singapura — Dólar malaio": "sg", "Hong Kong — Dólar antigo": "hk", "Japão — Sen": "jp", "China — Yuan antigo": "cn", "Taiwan — Velho dólar": "tw", "Coreia do Sul — Hwan": "kr", "Coreia do Sul — Won antigo": "kr", "Israel — Lira": "il", "Israel — Shekel antigo": "il", "Turquia — Lira antiga": "tr", "África do Sul — Libra": "za", "África do Sul — Rand antigo": "za", "Egito — Piastre": "eg", "Marrocos — Franco": "ma", "Tunísia — Franco": "tn", "Argélia — Franco": "dz", "Moçambique — Escudo": "mz", "Angola — Escudo": "ao", "Cabo Verde — Escudo antigo": "cv"};
+function flagUrl(country){const code=flagMap[country];return code?`https://flagcdn.com/w40/${code}.png`:"";}
+
+const brazilCoins = [{"id": "coin|Réis — Império|20 réis", "pattern": "Réis — Império", "value": "20 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|40 réis", "pattern": "Réis — Império", "value": "40 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|80 réis", "pattern": "Réis — Império", "value": "80 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|100 réis", "pattern": "Réis — Império", "value": "100 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|200 réis", "pattern": "Réis — Império", "value": "200 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|400 réis", "pattern": "Réis — Império", "value": "400 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|500 réis", "pattern": "Réis — Império", "value": "500 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|1.000 réis", "pattern": "Réis — Império", "value": "1.000 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|20 réis", "pattern": "Réis — República", "value": "20 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|40 réis", "pattern": "Réis — República", "value": "40 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|100 réis", "pattern": "Réis — República", "value": "100 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|200 réis", "pattern": "Réis — República", "value": "200 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|400 réis", "pattern": "Réis — República", "value": "400 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|500 réis", "pattern": "Réis — República", "value": "500 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|1.000 réis", "pattern": "Réis — República", "value": "1.000 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|2.000 réis", "pattern": "Réis — República", "value": "2.000 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|10 centavos", "pattern": "Cruzeiro 1942", "value": "10 centavos", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|20 centavos", "pattern": "Cruzeiro 1942", "value": "20 centavos", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|50 centavos", "pattern": "Cruzeiro 1942", "value": "50 centavos", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|1 cruzeiro", "pattern": "Cruzeiro 1942", "value": "1 cruzeiro", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|2 cruzeiros", "pattern": "Cruzeiro 1942", "value": "2 cruzeiros", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|5 cruzeiros", "pattern": "Cruzeiro 1942", "value": "5 cruzeiros", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|10 cruzeiros", "pattern": "Cruzeiro 1942", "value": "10 cruzeiros", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|20 cruzeiros", "pattern": "Cruzeiro 1942", "value": "20 cruzeiros", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|50 cruzeiros", "pattern": "Cruzeiro 1942", "value": "50 cruzeiros", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|1 centavo", "pattern": "Cruzeiro Novo", "value": "1 centavo", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|2 centavos", "pattern": "Cruzeiro Novo", "value": "2 centavos", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|5 centavos", "pattern": "Cruzeiro Novo", "value": "5 centavos", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|10 centavos", "pattern": "Cruzeiro Novo", "value": "10 centavos", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|20 centavos", "pattern": "Cruzeiro Novo", "value": "20 centavos", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|50 centavos", "pattern": "Cruzeiro Novo", "value": "50 centavos", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|1 centavo", "pattern": "Cruzeiro 1970", "value": "1 centavo", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|2 centavos", "pattern": "Cruzeiro 1970", "value": "2 centavos", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|5 centavos", "pattern": "Cruzeiro 1970", "value": "5 centavos", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|10 centavos", "pattern": "Cruzeiro 1970", "value": "10 centavos", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|20 centavos", "pattern": "Cruzeiro 1970", "value": "20 centavos", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|50 centavos", "pattern": "Cruzeiro 1970", "value": "50 centavos", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|1 cruzeiro", "pattern": "Cruzeiro 1970", "value": "1 cruzeiro", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|5 cruzeiros", "pattern": "Cruzeiro 1970", "value": "5 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|10 cruzeiros", "pattern": "Cruzeiro 1970", "value": "10 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|20 cruzeiros", "pattern": "Cruzeiro 1970", "value": "20 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|50 cruzeiros", "pattern": "Cruzeiro 1970", "value": "50 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|100 cruzeiros", "pattern": "Cruzeiro 1970", "value": "100 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|200 cruzeiros", "pattern": "Cruzeiro 1970", "value": "200 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|500 cruzeiros", "pattern": "Cruzeiro 1970", "value": "500 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|1 centavo", "pattern": "Cruzado", "value": "1 centavo", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|5 centavos", "pattern": "Cruzado", "value": "5 centavos", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|10 centavos", "pattern": "Cruzado", "value": "10 centavos", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|50 centavos", "pattern": "Cruzado", "value": "50 centavos", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|1 cruzado", "pattern": "Cruzado", "value": "1 cruzado", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|5 cruzados", "pattern": "Cruzado", "value": "5 cruzados", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|10 cruzados", "pattern": "Cruzado", "value": "10 cruzados", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado Novo|1 centavo", "pattern": "Cruzado Novo", "value": "1 centavo", "year": "1989–1990", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado Novo|5 centavos", "pattern": "Cruzado Novo", "value": "5 centavos", "year": "1989–1990", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado Novo|10 centavos", "pattern": "Cruzado Novo", "value": "10 centavos", "year": "1989–1990", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado Novo|50 centavos", "pattern": "Cruzado Novo", "value": "50 centavos", "year": "1989–1990", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado Novo|1 cruzado novo", "pattern": "Cruzado Novo", "value": "1 cruzado novo", "year": "1989–1990", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|1 cruzeiro", "pattern": "Cruzeiro 1990", "value": "1 cruzeiro", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|5 cruzeiros", "pattern": "Cruzeiro 1990", "value": "5 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|10 cruzeiros", "pattern": "Cruzeiro 1990", "value": "10 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|50 cruzeiros", "pattern": "Cruzeiro 1990", "value": "50 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|100 cruzeiros", "pattern": "Cruzeiro 1990", "value": "100 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|500 cruzeiros", "pattern": "Cruzeiro 1990", "value": "500 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|1.000 cruzeiros", "pattern": "Cruzeiro 1990", "value": "1.000 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|5.000 cruzeiros", "pattern": "Cruzeiro 1990", "value": "5.000 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Real|5 cruzeiros reais", "pattern": "Cruzeiro Real", "value": "5 cruzeiros reais", "year": "1993–1994", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Real|10 cruzeiros reais", "pattern": "Cruzeiro Real", "value": "10 cruzeiros reais", "year": "1993–1994", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Real|50 cruzeiros reais", "pattern": "Cruzeiro Real", "value": "50 cruzeiros reais", "year": "1993–1994", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Real|100 cruzeiros reais", "pattern": "Cruzeiro Real", "value": "100 cruzeiros reais", "year": "1993–1994", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Real|1 centavo|1994", "pattern": "Real", "value": "1 centavo", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|1 centavo|1995", "pattern": "Real", "value": "1 centavo", "year": "1995", "note": "1ª família"}, {"id": "coin|Real|1 centavo|1996", "pattern": "Real", "value": "1 centavo", "year": "1996", "note": "1ª família"}, {"id": "coin|Real|1 centavo|1997", "pattern": "Real", "value": "1 centavo", "year": "1997", "note": "1ª família"}, {"id": "coin|Real|1 centavo|1998", "pattern": "Real", "value": "1 centavo", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|1 centavo|1999", "pattern": "Real", "value": "1 centavo", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|1 centavo|2000", "pattern": "Real", "value": "1 centavo", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|1 centavo|2001", "pattern": "Real", "value": "1 centavo", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|1 centavo|2002", "pattern": "Real", "value": "1 centavo", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|1 centavo|2003", "pattern": "Real", "value": "1 centavo", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|1 centavo|2004", "pattern": "Real", "value": "1 centavo", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|5 centavos|1994", "pattern": "Real", "value": "5 centavos", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|5 centavos|1995", "pattern": "Real", "value": "5 centavos", "year": "1995", "note": "1ª família"}, {"id": "coin|Real|5 centavos|1996", "pattern": "Real", "value": "5 centavos", "year": "1996", "note": "1ª família"}, {"id": "coin|Real|5 centavos|1997", "pattern": "Real", "value": "5 centavos", "year": "1997", "note": "1ª família"}, {"id": "coin|Real|5 centavos|1998", "pattern": "Real", "value": "5 centavos", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|5 centavos|1999", "pattern": "Real", "value": "5 centavos", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2000", "pattern": "Real", "value": "5 centavos", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2001", "pattern": "Real", "value": "5 centavos", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2002", "pattern": "Real", "value": "5 centavos", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2003", "pattern": "Real", "value": "5 centavos", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2004", "pattern": "Real", "value": "5 centavos", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2005", "pattern": "Real", "value": "5 centavos", "year": "2005", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2006", "pattern": "Real", "value": "5 centavos", "year": "2006", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2007", "pattern": "Real", "value": "5 centavos", "year": "2007", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2008", "pattern": "Real", "value": "5 centavos", "year": "2008", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2009", "pattern": "Real", "value": "5 centavos", "year": "2009", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2010", "pattern": "Real", "value": "5 centavos", "year": "2010", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2011", "pattern": "Real", "value": "5 centavos", "year": "2011", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2012", "pattern": "Real", "value": "5 centavos", "year": "2012", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2013", "pattern": "Real", "value": "5 centavos", "year": "2013", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2014", "pattern": "Real", "value": "5 centavos", "year": "2014", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2015", "pattern": "Real", "value": "5 centavos", "year": "2015", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2016", "pattern": "Real", "value": "5 centavos", "year": "2016", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2017", "pattern": "Real", "value": "5 centavos", "year": "2017", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2018", "pattern": "Real", "value": "5 centavos", "year": "2018", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2019", "pattern": "Real", "value": "5 centavos", "year": "2019", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2020", "pattern": "Real", "value": "5 centavos", "year": "2020", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2021", "pattern": "Real", "value": "5 centavos", "year": "2021", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2022", "pattern": "Real", "value": "5 centavos", "year": "2022", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2023", "pattern": "Real", "value": "5 centavos", "year": "2023", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2024", "pattern": "Real", "value": "5 centavos", "year": "2024", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2025", "pattern": "Real", "value": "5 centavos", "year": "2025", "note": "2ª família"}, {"id": "coin|Real|10 centavos|1994", "pattern": "Real", "value": "10 centavos", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|10 centavos|1995", "pattern": "Real", "value": "10 centavos", "year": "1995", "note": "1ª família"}, {"id": "coin|Real|10 centavos|1996", "pattern": "Real", "value": "10 centavos", "year": "1996", "note": "1ª família"}, {"id": "coin|Real|10 centavos|1997", "pattern": "Real", "value": "10 centavos", "year": "1997", "note": "1ª família"}, {"id": "coin|Real|10 centavos|1998", "pattern": "Real", "value": "10 centavos", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|10 centavos|1999", "pattern": "Real", "value": "10 centavos", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2000", "pattern": "Real", "value": "10 centavos", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2001", "pattern": "Real", "value": "10 centavos", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2002", "pattern": "Real", "value": "10 centavos", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2003", "pattern": "Real", "value": "10 centavos", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2004", "pattern": "Real", "value": "10 centavos", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2005", "pattern": "Real", "value": "10 centavos", "year": "2005", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2006", "pattern": "Real", "value": "10 centavos", "year": "2006", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2007", "pattern": "Real", "value": "10 centavos", "year": "2007", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2008", "pattern": "Real", "value": "10 centavos", "year": "2008", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2009", "pattern": "Real", "value": "10 centavos", "year": "2009", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2010", "pattern": "Real", "value": "10 centavos", "year": "2010", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2011", "pattern": "Real", "value": "10 centavos", "year": "2011", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2012", "pattern": "Real", "value": "10 centavos", "year": "2012", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2013", "pattern": "Real", "value": "10 centavos", "year": "2013", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2014", "pattern": "Real", "value": "10 centavos", "year": "2014", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2015", "pattern": "Real", "value": "10 centavos", "year": "2015", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2016", "pattern": "Real", "value": "10 centavos", "year": "2016", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2017", "pattern": "Real", "value": "10 centavos", "year": "2017", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2018", "pattern": "Real", "value": "10 centavos", "year": "2018", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2019", "pattern": "Real", "value": "10 centavos", "year": "2019", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2020", "pattern": "Real", "value": "10 centavos", "year": "2020", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2021", "pattern": "Real", "value": "10 centavos", "year": "2021", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2022", "pattern": "Real", "value": "10 centavos", "year": "2022", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2023", "pattern": "Real", "value": "10 centavos", "year": "2023", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2024", "pattern": "Real", "value": "10 centavos", "year": "2024", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2025", "pattern": "Real", "value": "10 centavos", "year": "2025", "note": "2ª família"}, {"id": "coin|Real|25 centavos|1994", "pattern": "Real", "value": "25 centavos", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|25 centavos|1995", "pattern": "Real", "value": "25 centavos", "year": "1995", "note": "1ª família"}, {"id": "coin|Real|25 centavos|1996", "pattern": "Real", "value": "25 centavos", "year": "1996", "note": "1ª família"}, {"id": "coin|Real|25 centavos|1997", "pattern": "Real", "value": "25 centavos", "year": "1997", "note": "1ª família"}, {"id": "coin|Real|25 centavos|1998", "pattern": "Real", "value": "25 centavos", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|25 centavos|1999", "pattern": "Real", "value": "25 centavos", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2000", "pattern": "Real", "value": "25 centavos", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2001", "pattern": "Real", "value": "25 centavos", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2002", "pattern": "Real", "value": "25 centavos", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2003", "pattern": "Real", "value": "25 centavos", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2004", "pattern": "Real", "value": "25 centavos", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2005", "pattern": "Real", "value": "25 centavos", "year": "2005", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2006", "pattern": "Real", "value": "25 centavos", "year": "2006", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2007", "pattern": "Real", "value": "25 centavos", "year": "2007", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2008", "pattern": "Real", "value": "25 centavos", "year": "2008", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2009", "pattern": "Real", "value": "25 centavos", "year": "2009", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2010", "pattern": "Real", "value": "25 centavos", "year": "2010", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2011", "pattern": "Real", "value": "25 centavos", "year": "2011", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2012", "pattern": "Real", "value": "25 centavos", "year": "2012", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2013", "pattern": "Real", "value": "25 centavos", "year": "2013", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2014", "pattern": "Real", "value": "25 centavos", "year": "2014", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2015", "pattern": "Real", "value": "25 centavos", "year": "2015", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2016", "pattern": "Real", "value": "25 centavos", "year": "2016", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2017", "pattern": "Real", "value": "25 centavos", "year": "2017", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2018", "pattern": "Real", "value": "25 centavos", "year": "2018", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2019", "pattern": "Real", "value": "25 centavos", "year": "2019", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2020", "pattern": "Real", "value": "25 centavos", "year": "2020", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2021", "pattern": "Real", "value": "25 centavos", "year": "2021", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2022", "pattern": "Real", "value": "25 centavos", "year": "2022", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2023", "pattern": "Real", "value": "25 centavos", "year": "2023", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2024", "pattern": "Real", "value": "25 centavos", "year": "2024", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2025", "pattern": "Real", "value": "25 centavos", "year": "2025", "note": "2ª família"}, {"id": "coin|Real|50 centavos|1994", "pattern": "Real", "value": "50 centavos", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|50 centavos|1995", "pattern": "Real", "value": "50 centavos", "year": "1995", "note": "1ª família"}, {"id": "coin|Real|50 centavos|1996", "pattern": "Real", "value": "50 centavos", "year": "1996", "note": "1ª família"}, {"id": "coin|Real|50 centavos|1997", "pattern": "Real", "value": "50 centavos", "year": "1997", "note": "1ª família"}, {"id": "coin|Real|50 centavos|1998", "pattern": "Real", "value": "50 centavos", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|50 centavos|1999", "pattern": "Real", "value": "50 centavos", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2000", "pattern": "Real", "value": "50 centavos", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2001", "pattern": "Real", "value": "50 centavos", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2002", "pattern": "Real", "value": "50 centavos", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2003", "pattern": "Real", "value": "50 centavos", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2004", "pattern": "Real", "value": "50 centavos", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2005", "pattern": "Real", "value": "50 centavos", "year": "2005", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2006", "pattern": "Real", "value": "50 centavos", "year": "2006", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2007", "pattern": "Real", "value": "50 centavos", "year": "2007", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2008", "pattern": "Real", "value": "50 centavos", "year": "2008", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2009", "pattern": "Real", "value": "50 centavos", "year": "2009", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2010", "pattern": "Real", "value": "50 centavos", "year": "2010", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2011", "pattern": "Real", "value": "50 centavos", "year": "2011", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2012", "pattern": "Real", "value": "50 centavos", "year": "2012", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2013", "pattern": "Real", "value": "50 centavos", "year": "2013", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2014", "pattern": "Real", "value": "50 centavos", "year": "2014", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2015", "pattern": "Real", "value": "50 centavos", "year": "2015", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2016", "pattern": "Real", "value": "50 centavos", "year": "2016", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2017", "pattern": "Real", "value": "50 centavos", "year": "2017", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2018", "pattern": "Real", "value": "50 centavos", "year": "2018", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2019", "pattern": "Real", "value": "50 centavos", "year": "2019", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2020", "pattern": "Real", "value": "50 centavos", "year": "2020", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2021", "pattern": "Real", "value": "50 centavos", "year": "2021", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2022", "pattern": "Real", "value": "50 centavos", "year": "2022", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2023", "pattern": "Real", "value": "50 centavos", "year": "2023", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2024", "pattern": "Real", "value": "50 centavos", "year": "2024", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2025", "pattern": "Real", "value": "50 centavos", "year": "2025", "note": "2ª família"}, {"id": "coin|Real|1 real|1994", "pattern": "Real", "value": "1 real", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|1 real|1998", "pattern": "Real", "value": "1 real", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|1 real|1999", "pattern": "Real", "value": "1 real", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|1 real|2000", "pattern": "Real", "value": "1 real", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|1 real|2001", "pattern": "Real", "value": "1 real", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|1 real|2002", "pattern": "Real", "value": "1 real", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|1 real|2003", "pattern": "Real", "value": "1 real", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|1 real|2004", "pattern": "Real", "value": "1 real", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|1 real|2005", "pattern": "Real", "value": "1 real", "year": "2005", "note": "2ª família"}, {"id": "coin|Real|1 real|2006", "pattern": "Real", "value": "1 real", "year": "2006", "note": "2ª família"}, {"id": "coin|Real|1 real|2007", "pattern": "Real", "value": "1 real", "year": "2007", "note": "2ª família"}, {"id": "coin|Real|1 real|2008", "pattern": "Real", "value": "1 real", "year": "2008", "note": "2ª família"}, {"id": "coin|Real|1 real|2009", "pattern": "Real", "value": "1 real", "year": "2009", "note": "2ª família"}, {"id": "coin|Real|1 real|2010", "pattern": "Real", "value": "1 real", "year": "2010", "note": "2ª família"}, {"id": "coin|Real|1 real|2011", "pattern": "Real", "value": "1 real", "year": "2011", "note": "2ª família"}, {"id": "coin|Real|1 real|2012", "pattern": "Real", "value": "1 real", "year": "2012", "note": "2ª família"}, {"id": "coin|Real|1 real|2013", "pattern": "Real", "value": "1 real", "year": "2013", "note": "2ª família"}, {"id": "coin|Real|1 real|2014", "pattern": "Real", "value": "1 real", "year": "2014", "note": "2ª família"}, {"id": "coin|Real|1 real|2015", "pattern": "Real", "value": "1 real", "year": "2015", "note": "2ª família"}, {"id": "coin|Real|1 real|2016", "pattern": "Real", "value": "1 real", "year": "2016", "note": "2ª família"}, {"id": "coin|Real|1 real|2017", "pattern": "Real", "value": "1 real", "year": "2017", "note": "2ª família"}, {"id": "coin|Real|1 real|2018", "pattern": "Real", "value": "1 real", "year": "2018", "note": "2ª família"}, {"id": "coin|Real|1 real|2019", "pattern": "Real", "value": "1 real", "year": "2019", "note": "2ª família"}, {"id": "coin|Real|1 real|2020", "pattern": "Real", "value": "1 real", "year": "2020", "note": "2ª família"}, {"id": "coin|Real|1 real|2021", "pattern": "Real", "value": "1 real", "year": "2021", "note": "2ª família"}, {"id": "coin|Real|1 real|2022", "pattern": "Real", "value": "1 real", "year": "2022", "note": "2ª família"}, {"id": "coin|Real|1 real|2023", "pattern": "Real", "value": "1 real", "year": "2023", "note": "2ª família"}, {"id": "coin|Real|1 real|2024", "pattern": "Real", "value": "1 real", "year": "2024", "note": "2ª família"}, {"id": "coin|Real|1 real|2025", "pattern": "Real", "value": "1 real", "year": "2025", "note": "2ª família"}, {"id": "coin|Real Comemorativa|50 anos da Declaração Universal dos Direitos Humanos|1998", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "1998", "note": "50 anos da Declaração Universal dos Direitos Humanos"}, {"id": "coin|Real Comemorativa|Centenário de Juscelino Kubitschek|2002", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2002", "note": "Centenário de Juscelino Kubitschek"}, {"id": "coin|Real Comemorativa|40 anos do Banco Central|2005", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2005", "note": "40 anos do Banco Central"}, {"id": "coin|Real Comemorativa|Entrega da Bandeira Olímpica|2012", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2012", "note": "Entrega da Bandeira Olímpica"}, {"id": "coin|Real Comemorativa|50 anos do Banco Central — prova/coleção|2014", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2014", "note": "50 anos do Banco Central — prova/coleção"}, {"id": "coin|Real Comemorativa|Olimpíadas — Atletismo|2014", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2014", "note": "Olimpíadas — Atletismo"}, {"id": "coin|Real Comemorativa|Olimpíadas — Natação|2014", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2014", "note": "Olimpíadas — Natação"}, {"id": "coin|Real Comemorativa|Olimpíadas — Paratriatlo|2014", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2014", "note": "Olimpíadas — Paratriatlo"}, {"id": "coin|Real Comemorativa|Olimpíadas — Golfe|2014", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2014", "note": "Olimpíadas — Golfe"}, {"id": "coin|Real Comemorativa|Olimpíadas — Basquetebol|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Basquetebol"}, {"id": "coin|Real Comemorativa|Olimpíadas — Vela|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Vela"}, {"id": "coin|Real Comemorativa|Olimpíadas — Paracanoagem|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Paracanoagem"}, {"id": "coin|Real Comemorativa|Olimpíadas — Rugby|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Rugby"}, {"id": "coin|Real Comemorativa|Olimpíadas — Futebol|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Futebol"}, {"id": "coin|Real Comemorativa|Olimpíadas — Voleibol|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Voleibol"}, {"id": "coin|Real Comemorativa|Olimpíadas — Atletismo Paralímpico|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Atletismo Paralímpico"}, {"id": "coin|Real Comemorativa|Olimpíadas — Judô|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Judô"}, {"id": "coin|Real Comemorativa|Olimpíadas — Boxe|2016", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2016", "note": "Olimpíadas — Boxe"}, {"id": "coin|Real Comemorativa|Olimpíadas — Natação Paralímpica|2016", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2016", "note": "Olimpíadas — Natação Paralímpica"}, {"id": "coin|Real Comemorativa|Olimpíadas — Mascote Vinicius|2016", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2016", "note": "Olimpíadas — Mascote Vinicius"}, {"id": "coin|Real Comemorativa|Paralimpíadas — Mascote Tom|2016", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2016", "note": "Paralimpíadas — Mascote Tom"}, {"id": "coin|Real Comemorativa|25 anos do Plano Real|2019", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2019", "note": "25 anos do Plano Real"}, {"id": "coin|Real Comemorativa|Bicentenário da Independência|2022", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2022", "note": "Bicentenário da Independência"}, {"id": "coin|Real Comemorativa|30 anos do Real|2024", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2024", "note": "30 anos do Real"}, {"id": "coin|Real Comemorativa|60 anos do Banco Central|2025", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2025", "note": "60 anos do Banco Central"}];
+const brazilNotes = [{"id": "note|Réis|1 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "1 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|2 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "2 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|5 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "5 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|10 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "10 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|20 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "20 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|50 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "50 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|100 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "100 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|200 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "200 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|500 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "500 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|1 conto de réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "1 conto de réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Cruzeiro 1942|1 cruzeiro|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "1 cruzeiro", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|2 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "2 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|5 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "5 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|10 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "10 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|20 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "20 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|50 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "50 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|100 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "100 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|200 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "200 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|500 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "500 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|1.000 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "1.000 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|5.000 cruzeiros|Tiradentes", "pattern": "Cruzeiro 1942", "value": "5.000 cruzeiros", "year": "", "note": "Tiradentes"}, {"id": "note|Cruzeiro 1942|10.000 cruzeiros|Santos Dumont", "pattern": "Cruzeiro 1942", "value": "10.000 cruzeiros", "year": "", "note": "Santos Dumont"}, {"id": "note|Cruzeiro Novo|1 centavo|Getúlio Vargas — carimbada", "pattern": "Cruzeiro Novo", "value": "1 centavo", "year": "", "note": "Getúlio Vargas — carimbada"}, {"id": "note|Cruzeiro Novo|5 centavos|Princesa Isabel — carimbada", "pattern": "Cruzeiro Novo", "value": "5 centavos", "year": "", "note": "Princesa Isabel — carimbada"}, {"id": "note|Cruzeiro Novo|10 centavos|D. Pedro II — carimbada", "pattern": "Cruzeiro Novo", "value": "10 centavos", "year": "", "note": "D. Pedro II — carimbada"}, {"id": "note|Cruzeiro Novo|50 centavos|D. João VI — carimbada", "pattern": "Cruzeiro Novo", "value": "50 centavos", "year": "", "note": "D. João VI — carimbada"}, {"id": "note|Cruzeiro Novo|1 cruzeiro novo|Pedro Álvares Cabral — carimbada", "pattern": "Cruzeiro Novo", "value": "1 cruzeiro novo", "year": "", "note": "Pedro Álvares Cabral — carimbada"}, {"id": "note|Cruzeiro Novo|5 cruzeiros novos|Tiradentes — carimbada", "pattern": "Cruzeiro Novo", "value": "5 cruzeiros novos", "year": "", "note": "Tiradentes — carimbada"}, {"id": "note|Cruzeiro Novo|10 cruzeiros novos|Santos Dumont — carimbada", "pattern": "Cruzeiro Novo", "value": "10 cruzeiros novos", "year": "", "note": "Santos Dumont — carimbada"}, {"id": "note|Cruzeiro 1970|1 cruzeiro|República", "pattern": "Cruzeiro 1970", "value": "1 cruzeiro", "year": "", "note": "República"}, {"id": "note|Cruzeiro 1970|5 cruzeiros|D. Pedro I", "pattern": "Cruzeiro 1970", "value": "5 cruzeiros", "year": "", "note": "D. Pedro I"}, {"id": "note|Cruzeiro 1970|10 cruzeiros|D. Pedro II", "pattern": "Cruzeiro 1970", "value": "10 cruzeiros", "year": "", "note": "D. Pedro II"}, {"id": "note|Cruzeiro 1970|50 cruzeiros|Deodoro da Fonseca", "pattern": "Cruzeiro 1970", "value": "50 cruzeiros", "year": "", "note": "Deodoro da Fonseca"}, {"id": "note|Cruzeiro 1970|100 cruzeiros|Floriano Peixoto / Duque de Caxias", "pattern": "Cruzeiro 1970", "value": "100 cruzeiros", "year": "", "note": "Floriano Peixoto / Duque de Caxias"}, {"id": "note|Cruzeiro 1970|200 cruzeiros|Princesa Isabel", "pattern": "Cruzeiro 1970", "value": "200 cruzeiros", "year": "", "note": "Princesa Isabel"}, {"id": "note|Cruzeiro 1970|500 cruzeiros|Evolução Étnica / Deodoro", "pattern": "Cruzeiro 1970", "value": "500 cruzeiros", "year": "", "note": "Evolução Étnica / Deodoro"}, {"id": "note|Cruzeiro 1970|1.000 cruzeiros|Barão do Rio Branco", "pattern": "Cruzeiro 1970", "value": "1.000 cruzeiros", "year": "", "note": "Barão do Rio Branco"}, {"id": "note|Cruzeiro 1970|5.000 cruzeiros|Castello Branco", "pattern": "Cruzeiro 1970", "value": "5.000 cruzeiros", "year": "", "note": "Castello Branco"}, {"id": "note|Cruzeiro 1970|10.000 cruzeiros|Rui Barbosa", "pattern": "Cruzeiro 1970", "value": "10.000 cruzeiros", "year": "", "note": "Rui Barbosa"}, {"id": "note|Cruzeiro 1970|50.000 cruzeiros|Oswaldo Cruz", "pattern": "Cruzeiro 1970", "value": "50.000 cruzeiros", "year": "", "note": "Oswaldo Cruz"}, {"id": "note|Cruzeiro 1970|100.000 cruzeiros|Juscelino Kubitschek", "pattern": "Cruzeiro 1970", "value": "100.000 cruzeiros", "year": "", "note": "Juscelino Kubitschek"}, {"id": "note|Cruzado|10 cruzados|Rui Barbosa", "pattern": "Cruzado", "value": "10 cruzados", "year": "", "note": "Rui Barbosa"}, {"id": "note|Cruzado|50 cruzados|Oswaldo Cruz", "pattern": "Cruzado", "value": "50 cruzados", "year": "", "note": "Oswaldo Cruz"}, {"id": "note|Cruzado|100 cruzados|Juscelino Kubitschek", "pattern": "Cruzado", "value": "100 cruzados", "year": "", "note": "Juscelino Kubitschek"}, {"id": "note|Cruzado|500 cruzados|Villa-Lobos", "pattern": "Cruzado", "value": "500 cruzados", "year": "", "note": "Villa-Lobos"}, {"id": "note|Cruzado|1.000 cruzados|Machado de Assis", "pattern": "Cruzado", "value": "1.000 cruzados", "year": "", "note": "Machado de Assis"}, {"id": "note|Cruzado|5.000 cruzados|Portinari", "pattern": "Cruzado", "value": "5.000 cruzados", "year": "", "note": "Portinari"}, {"id": "note|Cruzado|10.000 cruzados|Carlos Chagas", "pattern": "Cruzado", "value": "10.000 cruzados", "year": "", "note": "Carlos Chagas"}, {"id": "note|Cruzado Novo|1 cruzado novo|Machado de Assis", "pattern": "Cruzado Novo", "value": "1 cruzado novo", "year": "", "note": "Machado de Assis"}, {"id": "note|Cruzado Novo|5 cruzados novos|Portinari", "pattern": "Cruzado Novo", "value": "5 cruzados novos", "year": "", "note": "Portinari"}, {"id": "note|Cruzado Novo|10 cruzados novos|Carlos Chagas", "pattern": "Cruzado Novo", "value": "10 cruzados novos", "year": "", "note": "Carlos Chagas"}, {"id": "note|Cruzado Novo|50 cruzados novos|Carlos Drummond", "pattern": "Cruzado Novo", "value": "50 cruzados novos", "year": "", "note": "Carlos Drummond"}, {"id": "note|Cruzado Novo|100 cruzados novos|Cecília Meireles", "pattern": "Cruzado Novo", "value": "100 cruzados novos", "year": "", "note": "Cecília Meireles"}, {"id": "note|Cruzado Novo|200 cruzados novos|República", "pattern": "Cruzado Novo", "value": "200 cruzados novos", "year": "", "note": "República"}, {"id": "note|Cruzado Novo|500 cruzados novos|Augusto Ruschi", "pattern": "Cruzado Novo", "value": "500 cruzados novos", "year": "", "note": "Augusto Ruschi"}, {"id": "note|Cruzeiro 1990|50 cruzeiros|Carlos Drummond", "pattern": "Cruzeiro 1990", "value": "50 cruzeiros", "year": "", "note": "Carlos Drummond"}, {"id": "note|Cruzeiro 1990|100 cruzeiros|Cecília Meireles", "pattern": "Cruzeiro 1990", "value": "100 cruzeiros", "year": "", "note": "Cecília Meireles"}, {"id": "note|Cruzeiro 1990|200 cruzeiros|República", "pattern": "Cruzeiro 1990", "value": "200 cruzeiros", "year": "", "note": "República"}, {"id": "note|Cruzeiro 1990|500 cruzeiros|Augusto Ruschi", "pattern": "Cruzeiro 1990", "value": "500 cruzeiros", "year": "", "note": "Augusto Ruschi"}, {"id": "note|Cruzeiro 1990|1.000 cruzeiros|Rondon", "pattern": "Cruzeiro 1990", "value": "1.000 cruzeiros", "year": "", "note": "Rondon"}, {"id": "note|Cruzeiro 1990|5.000 cruzeiros|República / Carlos Gomes", "pattern": "Cruzeiro 1990", "value": "5.000 cruzeiros", "year": "", "note": "República / Carlos Gomes"}, {"id": "note|Cruzeiro 1990|10.000 cruzeiros|Vital Brazil", "pattern": "Cruzeiro 1990", "value": "10.000 cruzeiros", "year": "", "note": "Vital Brazil"}, {"id": "note|Cruzeiro 1990|50.000 cruzeiros|Câmara Cascudo", "pattern": "Cruzeiro 1990", "value": "50.000 cruzeiros", "year": "", "note": "Câmara Cascudo"}, {"id": "note|Cruzeiro 1990|100.000 cruzeiros|Meio Ambiente", "pattern": "Cruzeiro 1990", "value": "100.000 cruzeiros", "year": "", "note": "Meio Ambiente"}, {"id": "note|Cruzeiro 1990|500.000 cruzeiros|Mário de Andrade", "pattern": "Cruzeiro 1990", "value": "500.000 cruzeiros", "year": "", "note": "Mário de Andrade"}, {"id": "note|Cruzeiro Real|50 cruzeiros reais|Câmara Cascudo", "pattern": "Cruzeiro Real", "value": "50 cruzeiros reais", "year": "", "note": "Câmara Cascudo"}, {"id": "note|Cruzeiro Real|100 cruzeiros reais|Meio Ambiente", "pattern": "Cruzeiro Real", "value": "100 cruzeiros reais", "year": "", "note": "Meio Ambiente"}, {"id": "note|Cruzeiro Real|500 cruzeiros reais|Mário de Andrade", "pattern": "Cruzeiro Real", "value": "500 cruzeiros reais", "year": "", "note": "Mário de Andrade"}, {"id": "note|Cruzeiro Real|1.000 cruzeiros reais|Anísio Teixeira", "pattern": "Cruzeiro Real", "value": "1.000 cruzeiros reais", "year": "", "note": "Anísio Teixeira"}, {"id": "note|Cruzeiro Real|5.000 cruzeiros reais|Gaúcho", "pattern": "Cruzeiro Real", "value": "5.000 cruzeiros reais", "year": "", "note": "Gaúcho"}, {"id": "note|Cruzeiro Real|50.000 cruzeiros reais|Baiana", "pattern": "Cruzeiro Real", "value": "50.000 cruzeiros reais", "year": "", "note": "Baiana"}, {"id": "note|Real — 1ª família|R$ 1|Beija-flor", "pattern": "Real — 1ª família", "value": "R$ 1", "year": "", "note": "Beija-flor"}, {"id": "note|Real — 1ª família|R$ 2|Tartaruga-marinha", "pattern": "Real — 1ª família", "value": "R$ 2", "year": "", "note": "Tartaruga-marinha"}, {"id": "note|Real — 1ª família|R$ 5|Garça", "pattern": "Real — 1ª família", "value": "R$ 5", "year": "", "note": "Garça"}, {"id": "note|Real — 1ª família|R$ 10|Arara", "pattern": "Real — 1ª família", "value": "R$ 10", "year": "", "note": "Arara"}, {"id": "note|Real — 1ª família|R$ 10|Pedro Álvares Cabral — polímero", "pattern": "Real — 1ª família", "value": "R$ 10", "year": "", "note": "Pedro Álvares Cabral — polímero"}, {"id": "note|Real — 1ª família|R$ 20|Mico-leão-dourado", "pattern": "Real — 1ª família", "value": "R$ 20", "year": "", "note": "Mico-leão-dourado"}, {"id": "note|Real — 1ª família|R$ 50|Onça-pintada", "pattern": "Real — 1ª família", "value": "R$ 50", "year": "", "note": "Onça-pintada"}, {"id": "note|Real — 1ª família|R$ 100|Garoupa", "pattern": "Real — 1ª família", "value": "R$ 100", "year": "", "note": "Garoupa"}, {"id": "note|Real — 2ª família|R$ 2|Tartaruga-marinha", "pattern": "Real — 2ª família", "value": "R$ 2", "year": "", "note": "Tartaruga-marinha"}, {"id": "note|Real — 2ª família|R$ 5|Garça", "pattern": "Real — 2ª família", "value": "R$ 5", "year": "", "note": "Garça"}, {"id": "note|Real — 2ª família|R$ 10|Arara", "pattern": "Real — 2ª família", "value": "R$ 10", "year": "", "note": "Arara"}, {"id": "note|Real — 2ª família|R$ 20|Mico-leão-dourado", "pattern": "Real — 2ª família", "value": "R$ 20", "year": "", "note": "Mico-leão-dourado"}, {"id": "note|Real — 2ª família|R$ 50|Onça-pintada", "pattern": "Real — 2ª família", "value": "R$ 50", "year": "", "note": "Onça-pintada"}, {"id": "note|Real — 2ª família|R$ 100|Garoupa", "pattern": "Real — 2ª família", "value": "R$ 100", "year": "", "note": "Garoupa"}, {"id": "note|Real — 2ª família|R$ 200|Lobo-guará", "pattern": "Real — 2ª família", "value": "R$ 200", "year": "", "note": "Lobo-guará"}];
+
 
 const KEY = "colecao-moedas-paises-v1";
-
-const AI_ENDPOINT = "https://coin-ai.ricardo-phenrir.workers.dev";
-
 let owned = new Set(JSON.parse(localStorage.getItem(KEY) || "[]"));
 let currentTab = "missing";
-let selectedImageDataUrl = "";
-let currentMatchCountry = "";
-
-
-const BR_KEY = "colecao-moedas-brasil-v1";
-let brOwned = new Set(JSON.parse(localStorage.getItem(BR_KEY) || "[]"));
-let currentBrTab = "coins";
-
-const REAL_YEARS = {"1 centavo — 1ª família":[1994,1995,1996,1997],"5 centavos — 1ª família":[1994,1995,1996,1997],"10 centavos — 1ª família":[1994,1995,1996,1997],"25 centavos — 1ª família":[1994,1995,1996,1997],"50 centavos — 1ª família":[1994,1995,1996,1997],"1 real — 1ª família":[1994,1995,1996,1997],"1 centavo — 2ª família":[1998,1999,2000,2001,2002,2003,2004],"5 centavos — 2ª família":[1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030],"10 centavos — 2ª família":[1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030],"25 centavos — 2ª família":[1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030],"50 centavos — 2ª família":[1998,2000,2001,2002,2003,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030],"1 real — 2ª família":[1998,1999,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030]};
-const HISTORICAL_COINS = [["Réis — Império",["10 réis","20 réis","40 réis","80 réis","100 réis","200 réis","400 réis","500 réis","1.000 réis","2.000 réis"]],["Réis — República",["20 réis","40 réis","50 réis","100 réis","200 réis","400 réis","500 réis","1.000 réis","2.000 réis"]],["Cruzeiro — 1942",["10 centavos","20 centavos","50 centavos","1 cruzeiro","2 cruzeiros","5 cruzeiros","10 cruzeiros","20 cruzeiros","50 cruzeiros"]],["Cruzeiro Novo — 1967",["1 centavo","2 centavos","5 centavos","10 centavos","20 centavos","50 centavos"]],["Cruzeiro — 1970",["1 centavo","2 centavos","5 centavos","10 centavos","20 centavos","50 centavos","1 cruzeiro","5 cruzeiros","10 cruzeiros","20 cruzeiros","50 cruzeiros","100 cruzeiros","200 cruzeiros","500 cruzeiros"]],["Cruzado — 1986",["1 centavo","5 centavos","10 centavos","20 centavos","50 centavos","1 cruzado","5 cruzados","10 cruzados","100 cruzados"]],["Cruzado Novo — 1989",["1 centavo","5 centavos","10 centavos","50 centavos","1 cruzado novo","5 cruzados novos","10 cruzados novos","50 cruzados novos","100 cruzados novos"]],["Cruzeiro — 1990",["1 cruzeiro","5 cruzeiros","10 cruzeiros","50 cruzeiros","100 cruzeiros","500 cruzeiros","1.000 cruzeiros","2.000 cruzeiros","5.000 cruzeiros"]],["Cruzeiro Real — 1993",["5 cruzeiros reais","10 cruzeiros reais","50 cruzeiros reais","100 cruzeiros reais"]]];
-const BRAZIL_NOTES = [["Mil-réis / Réis",["1 mil-réis","2 mil-réis","5 mil-réis","10 mil-réis","20 mil-réis","50 mil-réis","100 mil-réis","200 mil-réis","500 mil-réis","1.000 mil-réis"]],["Cruzeiro — 1942",["1 cruzeiro","2 cruzeiros","5 cruzeiros","10 cruzeiros","20 cruzeiros","50 cruzeiros","100 cruzeiros","200 cruzeiros","500 cruzeiros","1.000 cruzeiros","5.000 cruzeiros","10.000 cruzeiros"]],["Cruzeiro Novo — 1967",["1 cruzeiro novo","5 cruzeiros novos","10 cruzeiros novos"]],["Cruzeiro — 1970",["1 cruzeiro","5 cruzeiros","10 cruzeiros","50 cruzeiros","100 cruzeiros","200 cruzeiros","500 cruzeiros","1.000 cruzeiros","5.000 cruzeiros","10.000 cruzeiros","50.000 cruzeiros","100.000 cruzeiros"]],["Cruzado — 1986",["10 cruzados","50 cruzados","100 cruzados","500 cruzados","1.000 cruzados","5.000 cruzados","10.000 cruzados"]],["Cruzado Novo — 1989",["1 cruzado novo","5 cruzados novos","10 cruzados novos","50 cruzados novos","100 cruzados novos","200 cruzados novos","500 cruzados novos"]],["Cruzeiro — 1990",["100 cruzeiros","200 cruzeiros","500 cruzeiros","1.000 cruzeiros","5.000 cruzeiros","10.000 cruzeiros","50.000 cruzeiros","100.000 cruzeiros","500.000 cruzeiros"]],["Cruzeiro Real — 1993",["50 cruzeiros reais","100 cruzeiros reais","500 cruzeiros reais","1.000 cruzeiros reais","5.000 cruzeiros reais","50.000 cruzeiros reais"]],["Real — 1ª família",["R$ 1","R$ 2","R$ 5","R$ 10","R$ 10 polímero","R$ 20","R$ 50","R$ 100"]],["Real — 2ª família",["R$ 2","R$ 5","R$ 10","R$ 20","R$ 50","R$ 100","R$ 200"]]];
-
-function brId(group, name){
-  return `${group}|||${name}`;
-}
-
-function saveBrazil(){
-  localStorage.setItem(BR_KEY, JSON.stringify([...brOwned]));
-}
-
-function toggleBrazil(id){
-  if(brOwned.has(id)) brOwned.delete(id);
-  else brOwned.add(id);
-  saveBrazil();
-  renderBrazil();
-}
-
-function makeBrCard(group, name, meta=""){
-  const id = brId(group, name);
-  const isOwned = brOwned.has(id);
-  const card = document.createElement("button");
-  card.type = "button";
-  card.className = "br-card" + (isOwned ? " owned" : "");
-  card.setAttribute("aria-pressed", isOwned ? "true" : "false");
-  card.innerHTML = `
-    <div class="br-name">${name}</div>
-    <div class="br-meta">${meta || group}</div>
-  `;
-  card.addEventListener("click",()=>toggleBrazil(id));
-  return card;
-}
-
-function renderBrazil(){
-  const wrap = document.getElementById("brazilWrap");
-  const content = document.getElementById("brContent");
-  const summary = document.getElementById("brSummary");
-
-  document.querySelectorAll(".br-subtab").forEach(btn=>{
-    btn.classList.toggle("active", btn.dataset.brtab === currentBrTab);
-  });
-
-  content.innerHTML = "";
-  let total = 0;
-
-  if(currentBrTab === "coins"){
-    // Mais antigos primeiro
-    HISTORICAL_COINS.forEach(([group, values])=>{
-      const family = document.createElement("div");
-      family.className = "br-family";
-
-      const title = document.createElement("div");
-      title.className = "br-section";
-      title.textContent = group;
-      family.appendChild(title);
-
-      const g = document.createElement("div");
-      g.className = "br-grid";
-      values.forEach(value=>{
-        total++;
-        g.appendChild(makeBrCard(group, value));
-      });
-
-      family.appendChild(g);
-      content.appendChild(family);
-    });
-
-    const realHeader = document.createElement("div");
-    realHeader.className = "br-section";
-    realHeader.textContent = "Plano Real — por ano (até 2030)";
-    content.appendChild(realHeader);
-
-    const futureNote = document.createElement("div");
-    futureNote.className = "br-summary";
-    futureNote.textContent = "2026–2030 ficam como espaços de coleção; a cunhagem futura pode variar.";
-    content.appendChild(futureNote);
-
-    const realByYear = {};
-    Object.entries(REAL_YEARS).forEach(([type, years])=>{
-      years.forEach(year=>{
-        if(!realByYear[year]) realByYear[year] = [];
-        realByYear[year].push(type);
-      });
-    });
-
-    const shortRealName = (type)=>{
-      const base = type.replace(/ — [12]ª família$/, "");
-      return base
-        .replace("1 centavo","1c")
-        .replace("5 centavos","5c")
-        .replace("10 centavos","10c")
-        .replace("25 centavos","25c")
-        .replace("50 centavos","50c")
-        .replace("1 real","R$1");
-    };
-
-    Object.keys(realByYear).map(Number).sort((a,b)=>a-b).forEach(year=>{
-      const block = document.createElement("div");
-      block.className = "real-year";
-
-      const title = document.createElement("div");
-      title.className = "real-year-title";
-      title.textContent = String(year);
-      block.appendChild(title);
-
-      const g = document.createElement("div");
-      g.className = "real-year-grid";
-
-      realByYear[year].forEach(type=>{
-        total++;
-        const familyLabel = type.includes("1ª família") ? "1ª fam." : "2ª fam.";
-        g.appendChild(makeBrCard(`Real — ${type}`, shortRealName(type), familyLabel));
-      });
-
-      block.appendChild(g);
-
-      if(year === 2015){
-        const note = document.createElement("div");
-        note.className = "br-summary";
-        note.textContent = "R$1 comum: não cunhada • houve R$1 comemorativas em circulação";
-        block.appendChild(note);
-      }
-
-      content.appendChild(block);
-    });
-  } else {
-    BRAZIL_NOTES.forEach(([group, values])=>{
-      const title = document.createElement("div");
-      title.className = "br-section";
-      title.textContent = group;
-      content.appendChild(title);
-
-      const g = document.createElement("div");
-      g.className = "br-grid";
-      values.forEach(value=>{
-        total++;
-        g.appendChild(makeBrCard(group, value, "1 de cada tipo/valor"));
-      });
-      content.appendChild(g);
-    });
-  }
-
-  const ownedInCurrent = [...brOwned].filter(id => {
-    if(currentBrTab === "coins") {
-      return id.startsWith("Real — ") || HISTORICAL_COINS.some(([group])=>id.startsWith(group+"|||"));
-    }
-    return BRAZIL_NOTES.some(([group])=>id.startsWith(group+"|||"));
-  }).length;
-
-  summary.textContent = `${ownedInCurrent} / ${total} itens desta seção`;
-}
-
 
 const grid = document.getElementById("grid");
 const empty = document.getElementById("empty");
@@ -790,178 +764,45 @@ function save(){
   localStorage.setItem(KEY, JSON.stringify([...owned]));
 }
 
-function downloadBackup(){
-  const data = {
-    app: "colecao-moedas",
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    owned: [...owned],
-    brazilOwned: [...brOwned]
-  };
-
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  const date = new Date().toISOString().slice(0,10);
-
-  a.href = url;
-  a.download = `colecao-moedas-backup-${date}.json`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-
-  setTimeout(()=>URL.revokeObjectURL(url), 1000);
-}
-
-async function importBackup(file){
-  if(!file) return;
-
-  try{
-    const text = await file.text();
-    const parsed = JSON.parse(text);
-
-    const imported = Array.isArray(parsed) ? parsed : parsed?.owned;
-    const importedBrazil = Array.isArray(parsed?.brazilOwned) ? parsed.brazilOwned : [];
-    if(!Array.isArray(imported)){
-      throw new Error("Arquivo de backup inválido.");
-    }
-
-    const cleaned = [...new Set(imported.filter(item => typeof item === "string" && item.trim()))];
-    const cleanedBrazil = [...new Set(importedBrazil.filter(item => typeof item === "string" && item.trim()))];
-
-    if(!confirm(`Importar ${cleaned.length} países e ${cleanedBrazil.length} itens do Brasil e substituir a coleção salva neste aparelho?`)){
-      return;
-    }
-
-    owned = new Set(cleaned);
-    brOwned = new Set(cleanedBrazil);
-    save();
-    saveBrazil();
-    render();
-    alert(`Coleção importada com sucesso.`);
-  }catch(err){
-    alert(err?.message || "Não foi possível importar esse backup.");
-  }
-}
-
-
-const COUNTRY_SHORT = {
-  "República Dominicana":"Rep. Dominicana",
-  "República Centro-Africana":"Rep. Centro-Africana",
-  "República Democrática do Congo":"R.D. Congo",
-  "República do Congo":"Rep. do Congo",
-  "Emirados Árabes Unidos":"Emirados Árabes",
-  "Estados Unidos":"EUA",
-  "Bósnia e Herzegovina":"Bósnia e Herz.",
-  "São Vicente e Granadinas":"S. Vicente e Granadinas",
-  "São Cristóvão e Névis":"S. Cristóvão e Névis"
-};
-
-const COUNTRY_CODES = {
-  "Afeganistão":"af","África do Sul":"za","Albânia":"al","Alemanha":"de","Andorra":"ad","Angola":"ao",
-  "Antígua e Barbuda":"ag","Arábia Saudita":"sa","Argélia":"dz","Argentina":"ar","Armênia":"am",
-  "Austrália":"au","Áustria":"at","Azerbaijão":"az","Bahamas":"bs","Bahrein":"bh","Bangladesh":"bd",
-  "Barbados":"bb","Bélgica":"be","Belize":"bz","Benim":"bj","Bielorrússia":"by","Bolívia":"bo",
-  "Bósnia e Herzegovina":"ba","Botsuana":"bw","Brasil":"br","Brunei":"bn","Bulgária":"bg",
-  "Burkina Faso":"bf","Burundi":"bi","Butão":"bt","Cabo Verde":"cv","Camarões":"cm","Camboja":"kh",
-  "Canadá":"ca","Catar":"qa","Cazaquistão":"kz","Chade":"td","Chile":"cl","China":"cn","Chipre":"cy",
-  "Colômbia":"co","Comores":"km","Coreia do Norte":"kp","Coreia do Sul":"kr","Costa Rica":"cr",
-  "Costa do Marfim":"ci","Croácia":"hr","Cuba":"cu","Dinamarca":"dk","Djibuti":"dj","Dominica":"dm",
-  "Egito":"eg","El Salvador":"sv","Emirados Árabes Unidos":"ae","Equador":"ec","Eritreia":"er",
-  "Eslováquia":"sk","Eslovênia":"si","Espanha":"es","Estados Unidos":"us","Estônia":"ee",
-  "Eswatini":"sz","Etiópia":"et","Fiji":"fj","Filipinas":"ph","Finlândia":"fi","França":"fr",
-  "Gabão":"ga","Gâmbia":"gm","Gana":"gh","Geórgia":"ge","Granada":"gd","Grécia":"gr",
-  "Guatemala":"gt","Guiana":"gy","Guiné":"gn","Guiné-Bissau":"gw","Guiné Equatorial":"gq",
-  "Haiti":"ht","Honduras":"hn","Hungria":"hu","Iêmen":"ye","Ilhas Marshall":"mh","Ilhas Salomão":"sb",
-  "Índia":"in","Indonésia":"id","Irã":"ir","Iraque":"iq","Irlanda":"ie","Islândia":"is","Israel":"il",
-  "Itália":"it","Jamaica":"jm","Japão":"jp","Jordânia":"jo","Kiribati":"ki","Kuwait":"kw",
-  "Laos":"la","Lesoto":"ls","Letônia":"lv","Líbano":"lb","Libéria":"lr","Líbia":"ly",
-  "Liechtenstein":"li","Lituânia":"lt","Luxemburgo":"lu","Macedônia do Norte":"mk","Madagascar":"mg",
-  "Malásia":"my","Malawi":"mw","Maldivas":"mv","Mali":"ml","Malta":"mt","Marrocos":"ma",
-  "Maurício":"mu","Mauritânia":"mr","México":"mx","Micronésia":"fm","Moçambique":"mz","Moldávia":"md",
-  "Mônaco":"mc","Mongólia":"mn","Montenegro":"me","Myanmar":"mm","Namíbia":"na","Nauru":"nr",
-  "Nepal":"np","Nicarágua":"ni","Níger":"ne","Nigéria":"ng","Noruega":"no","Nova Zelândia":"nz",
-  "Omã":"om","Países Baixos":"nl","Palau":"pw","Panamá":"pa","Papua-Nova Guiné":"pg",
-  "Paquistão":"pk","Paraguai":"py","Peru":"pe","Polônia":"pl","Portugal":"pt","Quênia":"ke",
-  "Quirguistão":"kg","Reino Unido":"gb","República Centro-Africana":"cf","República Democrática do Congo":"cd",
-  "República do Congo":"cg","República Dominicana":"do","Romênia":"ro","Ruanda":"rw","Rússia":"ru",
-  "Samoa":"ws","San Marino":"sm","Santa Lúcia":"lc","São Cristóvão e Névis":"kn",
-  "São Tomé e Príncipe":"st","São Vicente e Granadinas":"vc","Senegal":"sn","Serra Leoa":"sl",
-  "Sérvia":"rs","Seychelles":"sc","Singapura":"sg","Síria":"sy","Somália":"so","Sri Lanka":"lk",
-  "Sudão":"sd","Sudão do Sul":"ss","Suécia":"se","Suíça":"ch","Suriname":"sr","Tailândia":"th",
-  "Tajiquistão":"tj","Tanzânia":"tz","Timor-Leste":"tl","Togo":"tg","Tonga":"to",
-  "Trinidad e Tobago":"tt","Tunísia":"tn","Turcomenistão":"tm","Turquia":"tr","Tuvalu":"tv",
-  "Ucrânia":"ua","Uganda":"ug","Uruguai":"uy","Uzbequistão":"uz","Vanuatu":"vu","Vaticano":"va",
-  "Venezuela":"ve","Vietnã":"vn","Zâmbia":"zm","Zimbábue":"zw"
-};
-
-
-function flagUrl(country){
-  const code = COUNTRY_CODES[country];
-  return code ? `https://flagcdn.com/${code}.svg` : "";
-}
-
-function shortCountryName(country){
-  return COUNTRY_SHORT[country] || country;
-}
-
 function render(){
   const term = search.value.trim().toLocaleLowerCase("pt-BR");
-  const brazilMode = currentTab === "brazil";
-  document.getElementById("brazilWrap").classList.toggle("show", brazilMode);
-  grid.style.display = brazilMode ? "none" : "";
-  empty.style.display = brazilMode ? "none" : "";
-  search.style.display = brazilMode ? "none" : "";
-  document.getElementById("scanOpen").style.display = brazilMode ? "none" : "";
-  document.querySelector(".backup-row").style.display = brazilMode ? "none" : "";
-  document.querySelector(".backup-note").style.display = brazilMode ? "none" : "";
-
-  if(brazilMode){
-    renderBrazil();
-  }
 
   document.querySelectorAll(".tab").forEach(btn=>{
     btn.classList.toggle("active", btn.dataset.tab === currentTab);
   });
 
-  const filtered = brazilMode ? [] : coins.filter(([country,currency])=>{
+  const filtered = coins.filter(([country,currency,type])=>{
     const isOwned = owned.has(country);
     const tabMatch = currentTab === "owned" ? isOwned : !isOwned;
-    const searchMatch = !term || `${country} ${currency}`.toLocaleLowerCase("pt-BR").includes(term);
+    const searchMatch = !term || `${country} ${currency} ${type || ""}`.toLocaleLowerCase("pt-BR").includes(term);
     return tabMatch && searchMatch;
   });
 
   grid.innerHTML = "";
 
-  filtered.forEach(([country,currency])=>{
+  filtered.forEach(([country,currency,type])=>{
     const isOwned = owned.has(country);
-    const card = document.createElement("button");
-    card.type = "button";
-    card.className = "card" + (isOwned ? " owned" : "");
-    card.innerHTML = `
-      <div class="flag-wrap">
-        ${flagUrl(country) ? `<img class="flag-img" src="${flagUrl(country)}" alt="Bandeira de ${country}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">` : ""}
-        <span class="flag-fallback">${(COUNTRY_CODES[country] || country.slice(0,2)).toUpperCase()}</span>
-      </div>
-      <div class="country">${shortCountryName(country)}</div>
-      <div class="currency">${currency}</div>
-`;
 
+    const card = document.createElement("div");
+    card.className = "card" + (isOwned ? " owned" : "");
+    const flag = flagUrl(country);
+    card.innerHTML = `
+      ${flag ? `<img class="flag" src="${flag}" alt="" onerror="this.outerHTML=\'<div class=&quot;flag-fallback&quot;>—</div>\'">` : `<div class="flag-fallback">—</div>`}
+      <div class="country">${country}</div>
+      <div class="currency">${currency}</div>
+      <div class="type">${type || "Personalizado"}</div>
+    `;
     card.addEventListener("click", ()=>{
-      if(isOwned) owned.delete(country);
-      else owned.add(country);
-      save();
-      render();
+      if(isOwned) owned.delete(country); else owned.add(country);
+      save(); render();
     });
 
     grid.appendChild(card);
   });
 
-  if(!brazilMode){
-    empty.hidden = filtered.length > 0;
-  }
-  count.textContent = brazilMode ? brOwned.size : owned.size;
-  total.textContent = brazilMode ? "Brasil" : coins.length;
+  empty.hidden = filtered.length > 0;
+  count.textContent = owned.size;
+  total.textContent = coins.length;
 }
 
 document.querySelectorAll(".tab").forEach(btn=>{
@@ -971,200 +812,597 @@ document.querySelectorAll(".tab").forEach(btn=>{
   });
 });
 
+search.addEventListener("input", render);
+
+document.getElementById("reset").addEventListener("click", ()=>{
+  if(confirm("Limpar toda a coleção?")){
+    owned.clear();
+    save();
+    render();
+  }
+});
+
+
+const CUSTOM_KEY = "colecao-moedas-custom-v1";
+let customCoins = JSON.parse(localStorage.getItem(CUSTOM_KEY) || "[]");
+
+function saveCustom(){
+  localStorage.setItem(CUSTOM_KEY, JSON.stringify(customCoins));
+}
+
+function ensureCustomInList(){
+  for(const c of customCoins){
+    if(!coins.some(x => x[0] === c[0])){
+      coins.push(c);
+    }
+  }
+  coins.sort((a,b)=>a[0].localeCompare(b[0],"pt-BR"));
+}
+
+ensureCustomInList();
+
+const manualToggle = document.getElementById("manualToggle");
+const manualBox = document.getElementById("manualBox");
+const manualCountry = document.getElementById("manualCountry");
+const manualCurrency = document.getElementById("manualCurrency");
+const manualAdd = document.getElementById("manualAdd");
+
+manualToggle.addEventListener("click", ()=>{
+  manualBox.classList.toggle("open");
+});
+
+manualAdd.addEventListener("click", ()=>{
+  const country = manualCountry.value.trim();
+  const currency = manualCurrency.value.trim() || "Moeda não informada";
+  if(!country) return;
+
+  if(!coins.some(x => x[0].toLocaleLowerCase("pt-BR") === country.toLocaleLowerCase("pt-BR"))){
+    const item = [country,currency,"Personalizado"];
+    coins.push(item);
+    customCoins.push(item);
+    saveCustom();
+    coins.sort((a,b)=>a[0].localeCompare(b[0],"pt-BR"));
+  }
+
+  owned.add(country);
+  save();
+  manualCountry.value = "";
+  manualCurrency.value = "";
+  manualBox.classList.remove("open");
+  currentTab = "owned";
+  render();
+});
+
+
+
+const BR_KEY = "colecao-brasil-v1";
+let brOwned = new Set(JSON.parse(localStorage.getItem(BR_KEY) || "[]"));
+let brTab = "coins";
+let brState = "missing";
+let brFilter = "Todos";
+
+const worldSection = document.getElementById("worldSection");
+const brasilSection = document.getElementById("brasilSection");
+const brGrid = document.getElementById("brGrid");
+const brSearch = document.getElementById("brSearch");
+const brFilters = document.getElementById("brFilters");
+const brCount = document.getElementById("brCount");
+const brTotal = document.getElementById("brTotal");
+const brProgress = document.getElementById("brProgress");
+
+function saveBrazil(){ localStorage.setItem(BR_KEY, JSON.stringify([...brOwned])); }
+
+document.querySelectorAll(".main-tab").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const isBR = btn.dataset.main === "brasil";
+    document.querySelectorAll(".main-tab").forEach(x=>x.classList.toggle("active",x===btn));
+    worldSection.classList.toggle("hidden",isBR);
+    brasilSection.classList.toggle("active",isBR);
+    if(isBR) renderBrazil();
+  });
+});
+
 document.querySelectorAll(".br-subtab").forEach(btn=>{
   btn.addEventListener("click",()=>{
-    currentBrTab = btn.dataset.brtab;
+    brTab=btn.dataset.brtab;
+    brFilter="Todos";
+    document.querySelectorAll(".br-subtab").forEach(x=>x.classList.toggle("active",x===btn));
     renderBrazil();
   });
 });
 
-search.addEventListener("input", render);
 
-document.getElementById("exportBtn").addEventListener("click", downloadBackup);
-
-document.getElementById("importInput").addEventListener("change", async (e)=>{
-  await importBackup(e.target.files[0]);
-  e.target.value = "";
+document.querySelectorAll(".br-state-tab").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    brState = btn.dataset.brstate;
+    document.querySelectorAll(".br-state-tab").forEach(x=>x.classList.toggle("active",x===btn));
+    renderBrazil();
+  });
 });
 
+brSearch.addEventListener("input",renderBrazil);
 
-// ---------- Scanner IA ----------
-const modal = document.getElementById("scannerModal");
-const previewWrap = document.getElementById("previewWrap");
-const preview = document.getElementById("preview");
-const scanStatus = document.getElementById("scanStatus");
-const scanResult = document.getElementById("scanResult");
-const analyzeBtn = document.getElementById("analyzeBtn");
-const matchActions = document.getElementById("matchActions");
 
-function openScanner(){
-  modal.classList.add("open");
-  modal.setAttribute("aria-hidden","false");
-}
+function renderBrazil(){
+  const data = brTab === "coins" ? brazilCoins : brazilNotes;
+  const term = brSearch.value.trim().toLocaleLowerCase("pt-BR");
 
-function closeScanner(){
-  modal.classList.remove("open");
-  modal.setAttribute("aria-hidden","true");
-}
-
-document.getElementById("scanOpen").addEventListener("click", openScanner);
-document.getElementById("scannerClose").addEventListener("click", closeScanner);
-modal.addEventListener("click", (e)=>{ if(e.target === modal) closeScanner(); });
-
-function resizeImage(file, maxSide=1600, quality=.88){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onerror = reject;
-    reader.onload = ()=>{
-      const img = new Image();
-      img.onerror = reject;
-      img.onload = ()=>{
-        let w = img.width, h = img.height;
-        const scale = Math.min(1, maxSide / Math.max(w,h));
-        w = Math.round(w * scale);
-        h = Math.round(h * scale);
-
-        const canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img,0,0,w,h);
-        resolve(canvas.toDataURL("image/jpeg", quality));
-      };
-      img.src = reader.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-async function handleImage(file){
-  if(!file) return;
-  scanStatus.className = "status";
-  scanStatus.textContent = "Preparando foto...";
-  scanResult.classList.remove("show");
-  matchActions.style.display = "none";
-  currentMatchCountry = "";
-  try{
-    selectedImageDataUrl = await resizeImage(file);
-    preview.src = selectedImageDataUrl;
-    previewWrap.classList.add("show");
-    scanStatus.textContent = "Foto pronta para análise.";
-  }catch(err){
-    scanStatus.className = "status error";
-    scanStatus.textContent = "Não consegui abrir essa imagem.";
-  }
-}
-
-document.getElementById("cameraInput").addEventListener("change", e=>handleImage(e.target.files[0]));
-document.getElementById("galleryInput").addEventListener("change", e=>handleImage(e.target.files[0]));
-
-function setText(id, value){
-  document.getElementById(id).textContent = value || "—";
-}
-
-function normalize(s){
-  return (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
-}
-
-function findLocalMatch(country, currency){
-  const nc = normalize(country);
-  const ncur = normalize(currency);
-
-  let hit = coins.find(([c]) => normalize(c) === nc);
-  if(hit) return hit;
-
-  hit = coins.find(([c]) => nc && (normalize(c).includes(nc) || nc.includes(normalize(c))));
-  if(hit) return hit;
-
-  hit = coins.find(([c,cur]) => ncur && normalize(cur) === ncur);
-  return hit || null;
-}
-
-analyzeBtn.addEventListener("click", async ()=>{
-  if(!selectedImageDataUrl) return;
-
-  if(!AI_ENDPOINT || AI_ENDPOINT.includes("COLE_AQUI")){
-    scanStatus.className = "status error";
-    scanStatus.textContent = "Falta configurar a URL do Worker no HTML.";
-    return;
+  // Faltam mostra não marcadas; Já tenho mostra marcadas.
+  let missing = data.filter(x => brState === "owned" ? brOwned.has(x.id) : !brOwned.has(x.id));
+  if(term){
+    missing = missing.filter(x =>
+      `${x.pattern} ${x.value} ${x.year} ${x.note}`.toLocaleLowerCase("pt-BR").includes(term)
+    );
   }
 
-  analyzeBtn.disabled = true;
-  scanStatus.className = "status";
-  scanStatus.textContent = "A IA está examinando a moeda...";
-  scanResult.classList.remove("show");
-  matchActions.style.display = "none";
+  brFilters.innerHTML = "";
 
-  try{
-    const response = await fetch(AI_ENDPOINT, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        image:selectedImageDataUrl,
-        collection:coins
-      })
+  if(brTab === "coins"){
+    // Real gets year-by-year grid; everything else appears chronologically by era/pattern.
+    const real = missing.filter(x=>x.pattern==="Real");
+    const other = missing.filter(x=>x.pattern!=="Real");
+
+    // Chronological era order
+    const eraOrder = [
+      "Réis — Império","Réis — República","Cruzeiro 1942","Cruzeiro Novo",
+      "Cruzeiro 1970","Cruzado","Cruzado Novo","Cruzeiro 1990","Cruzeiro Real",
+      "Real — comemorativas"
+    ];
+    const eraRank = Object.fromEntries(eraOrder.map((x,i)=>[x,i]));
+
+    other.sort((a,b)=>{
+      const ra = eraRank[a.pattern] ?? 999;
+      const rb = eraRank[b.pattern] ?? 999;
+      if(ra !== rb) return ra-rb;
+      const ya = parseInt((a.year||"").match(/\d{4}/)?.[0] || "0");
+      const yb = parseInt((b.year||"").match(/\d{4}/)?.[0] || "0");
+      if(ya !== yb) return ya-yb;
+      return a.value.localeCompare(b.value,"pt-BR");
     });
 
-    const raw = await response.text();
-    let data;
-    try { data = JSON.parse(raw); }
-    catch { throw new Error(raw || "Resposta inválida do servidor."); }
+    let htmlOut = "";
 
-    if(!response.ok) throw new Error(data.error || "Falha na identificação.");
-
-    const localMatch = findLocalMatch(data.country, data.currency);
-    currentMatchCountry = localMatch ? localMatch[0] : "";
-
-    setText("rCountry", data.country);
-    setText("rCurrency", data.currency);
-    setText("rDenomination", data.denomination);
-    setText("rYear", data.year);
-    setText("rConfidence", data.confidence);
-    setText("rEvidence", Array.isArray(data.evidence) ? data.evidence.join(" • ") : data.evidence);
-    setText("rNotes", data.notes);
-    setText("rMatch", localMatch ? `${localMatch[0]} — ${localMatch[1]}` : "Não encontrei correspondência automática");
-
-    scanResult.classList.add("show");
-
-    if(localMatch){
-      matchActions.style.display = "grid";
-      document.getElementById("addMatch").textContent =
-        owned.has(localMatch[0]) ? "Já está na coleção" : "Adicionar à coleção";
-      document.getElementById("addMatch").disabled = owned.has(localMatch[0]);
+    if(other.length){
+      htmlOut += `<div class="br-chrono">`;
+      for(const x of other){
+        htmlOut += `
+          <div class="br-chrono-card" data-id="${encodeURIComponent(x.id)}" title="${x.pattern} · ${x.value}">
+            <div class="v">${x.value}</div>
+            <div class="y">${x.year || ""}</div>
+            <div class="p">${x.pattern}</div>
+          </div>`;
+      }
+      htmlOut += `</div>`;
     }
 
-    scanStatus.className = "status ok";
-    scanStatus.textContent = "Análise concluída. Confirme visualmente antes de catalogar.";
-  }catch(err){
-    scanStatus.className = "status error";
-    scanStatus.textContent = err.message || "Não foi possível analisar a moeda.";
-  }finally{
-    analyzeBtn.disabled = false;
+    if(real.length){
+      const denoms = ["1 centavo","5 centavos","10 centavos","25 centavos","50 centavos","1 real"];
+      const short = ["1c","5c","10c","25c","50c","1R"];
+      const years = [...new Set(real.map(x=>x.year))].sort((a,b)=>Number(a)-Number(b));
+
+      htmlOut += `<div style="margin-top:14px">`;
+      for(const y of years){
+        htmlOut += `<div class="br-year-block">
+          <div class="br-year-title">${y}</div>
+          <div class="br-year-coins">`;
+        for(let i=0;i<denoms.length;i++){
+          const item = real.find(x=>x.year===y && x.value===denoms[i]);
+          if(item){
+            htmlOut += `<button class="br-real-coin" data-id="${encodeURIComponent(item.id)}">${short[i]}</button>`;
+          } else {
+            htmlOut += `<div class="br-real-coin br-empty">${short[i]}</div>`;
+          }
+        }
+        htmlOut += `</div></div>`;
+      }
+      htmlOut += `</div>`;
+    }
+
+    brGrid.style.display = "block";
+    brGrid.innerHTML = htmlOut;
+
+    brGrid.querySelectorAll("[data-id]").forEach(el=>{
+      el.addEventListener("click",()=>{
+        const id = decodeURIComponent(el.dataset.id);
+        if(brOwned.has(id)) brOwned.delete(id);
+        else brOwned.add(id);
+        saveBrazil();
+        renderBrazil();
+      });
+    });
+
+  } else {
+    // Notes: chronological by monetary standard, circles, hide after click.
+    const noteOrder = [
+      "Réis","Cruzeiro 1942","Cruzeiro Novo","Cruzeiro 1970","Cruzado",
+      "Cruzado Novo","Cruzeiro 1990","Cruzeiro Real","Real — 1ª família","Real — 2ª família"
+    ];
+    const rank = Object.fromEntries(noteOrder.map((x,i)=>[x,i]));
+    missing.sort((a,b)=>{
+      const ra=rank[a.pattern]??999, rb=rank[b.pattern]??999;
+      if(ra!==rb) return ra-rb;
+      return a.value.localeCompare(b.value,"pt-BR");
+    });
+
+    brGrid.style.display = "grid";
+    brGrid.style.gridTemplateColumns = "repeat(5,minmax(0,1fr))";
+    brGrid.style.gap = "6px";
+    brGrid.innerHTML = "";
+
+    missing.forEach(x=>{
+      const card=document.createElement("div");
+      card.className="br-chrono-card";
+      card.innerHTML=`
+        <div class="v">${x.value}</div>
+        <div class="p">${x.pattern}${x.note ? "<br>"+x.note : ""}</div>`;
+      card.onclick=()=>{
+        if(brOwned.has(x.id)) brOwned.delete(x.id);
+        else brOwned.add(x.id);
+        saveBrazil();
+        renderBrazil();
+      };
+      brGrid.appendChild(card);
+    });
   }
-});
 
-document.getElementById("addMatch").addEventListener("click", ()=>{
-  if(!currentMatchCountry) return;
-  owned.add(currentMatchCountry);
-  save();
-  render();
-  document.getElementById("addMatch").textContent = "Já está na coleção";
-  document.getElementById("addMatch").disabled = true;
-  scanStatus.className = "status ok";
-  scanStatus.textContent = `${currentMatchCountry} foi adicionado à coleção.`;
-});
-
-document.getElementById("searchMatch").addEventListener("click", ()=>{
-  if(!currentMatchCountry) return;
-  currentTab = owned.has(currentMatchCountry) ? "owned" : "missing";
-  search.value = currentMatchCountry;
-  render();
-  closeScanner();
-  window.scrollTo({top:0,behavior:"smooth"});
-});
+  const totalAll=brazilCoins.length+brazilNotes.length;
+  const ownedValid=[...brOwned].filter(id=>brazilCoins.some(x=>x.id===id)||brazilNotes.some(x=>x.id===id)).length;
+  brCount.textContent=ownedValid;
+  brTotal.textContent=totalAll;
+  brProgress.textContent=`${brState==="owned"?"Já tenho":"Faltam"}: ${missing.length} ${brTab==="coins"?"moedas":"cédulas"}`;
+}
 
 render();
+
+
+
 </script>
+
+<style>
+#grid{gap:5px}
+.card{
+  padding:5px 3px;
+  gap:1px;
+}
+.flag{
+  width:22px;
+  height:15px;
+  margin-bottom:1px;
+}
+.country{
+  font-size:10.5px;
+  line-height:1.02;
+  font-weight:900;
+  max-width:94%;
+  overflow-wrap:anywhere;
+}
+.currency{
+  font-size:8.5px;
+  line-height:1.02;
+  max-width:92%;
+  overflow-wrap:anywhere;
+}
+.flag-fallback{
+  width:22px;
+  height:15px;
+  margin-bottom:1px;
+}
+.br-chrono-card{
+  padding:5px 3px;
+}
+.br-chrono-card .v{
+  font-size:9.5px;
+  line-height:1;
+}
+.br-chrono-card .y{
+  font-size:7.5px;
+  margin-top:1px;
+}
+.br-chrono-card .p{
+  font-size:6.8px;
+  line-height:1;
+  margin-top:1px;
+  max-width:92%;
+  overflow-wrap:anywhere;
+}
+.br-real-coin{
+  font-size:9px;
+}
+@media(max-width:420px){
+  .card{padding:4px 2px}
+  .country{font-size:9.5px}
+  .currency{font-size:7.8px}
+  .flag,.flag-fallback{width:20px;height:14px}
+  .br-chrono-card .v{font-size:8.8px}
+  .br-chrono-card .p{font-size:6.4px}
+}
+</style>
+
+
+<style>
+/* Tipografia máxima dentro dos círculos */
+.card{
+  padding:3px 2px !important;
+  gap:0 !important;
+}
+.card .flag,
+.card .flag-fallback{
+  width:24px !important;
+  height:16px !important;
+  margin:0 0 1px !important;
+  flex:0 0 auto;
+}
+.card .country{
+  width:96% !important;
+  max-width:96% !important;
+  font-size:clamp(10px, 2.85vw, 15px) !important;
+  line-height:.90 !important;
+  font-weight:900 !important;
+  letter-spacing:-.055em !important;
+  overflow-wrap:break-word !important;
+  hyphens:auto;
+}
+.card .currency{
+  width:96% !important;
+  max-width:96% !important;
+  font-size:clamp(8px, 2.15vw, 12px) !important;
+  line-height:.90 !important;
+  font-weight:800 !important;
+  letter-spacing:-.045em !important;
+  margin-top:2px !important;
+  overflow-wrap:break-word !important;
+  hyphens:auto;
+}
+.br-chrono-card{
+  padding:3px 2px !important;
+}
+.br-chrono-card .v{
+  width:96% !important;
+  max-width:96% !important;
+  font-size:clamp(10px,2.6vw,14px) !important;
+  line-height:.9 !important;
+  letter-spacing:-.045em !important;
+  overflow-wrap:break-word !important;
+}
+.br-chrono-card .y{
+  font-size:clamp(8px,2vw,11px) !important;
+  line-height:.9 !important;
+  margin-top:2px !important;
+}
+.br-chrono-card .p{
+  width:96% !important;
+  max-width:96% !important;
+  font-size:clamp(7px,1.8vw,10px) !important;
+  line-height:.88 !important;
+  letter-spacing:-.035em !important;
+  margin-top:2px !important;
+  overflow-wrap:break-word !important;
+}
+.br-real-coin{
+  font-size:clamp(10px,2.5vw,14px) !important;
+  font-weight:900 !important;
+}
+@media(max-width:420px){
+  .card .country{font-size:clamp(10px,2.85vw,13px) !important}
+  .card .currency{font-size:clamp(8px,2.15vw,10.5px) !important}
+}
+</style>
+
+
+<style>
+/* Círculos Brasil: usar praticamente toda a área interna */
+.br-chrono-card{
+  padding:8% !important;
+  justify-content:center !important;
+  gap:2px !important;
+}
+.br-chrono-card .v{
+  width:100% !important;
+  max-width:100% !important;
+  font-size:clamp(13px,3.6vw,20px) !important;
+  line-height:.88 !important;
+  font-weight:950 !important;
+  letter-spacing:-.06em !important;
+  text-wrap:balance;
+}
+.br-chrono-card .y{
+  width:100% !important;
+  font-size:clamp(9px,2.35vw,13px) !important;
+  line-height:.9 !important;
+  font-weight:850 !important;
+  margin-top:3px !important;
+}
+.br-chrono-card .p{
+  width:100% !important;
+  max-width:100% !important;
+  font-size:clamp(8px,2.05vw,11px) !important;
+  line-height:.88 !important;
+  font-weight:750 !important;
+  letter-spacing:-.04em !important;
+  margin-top:2px !important;
+  text-wrap:balance;
+}
+
+/* Mundo também aproveita mais o círculo */
+.card{
+  padding:7% !important;
+}
+.card .country{
+  font-size:clamp(12px,3.2vw,17px) !important;
+  line-height:.88 !important;
+  letter-spacing:-.06em !important;
+  text-wrap:balance;
+}
+.card .currency{
+  font-size:clamp(9px,2.45vw,13px) !important;
+  line-height:.88 !important;
+  letter-spacing:-.05em !important;
+  text-wrap:balance;
+}
+
+/* Real: números maiores */
+.br-real-coin{
+  font-size:clamp(12px,3vw,17px) !important;
+}
+
+/* Permite que palavras longas quebrem apenas quando necessário */
+.card .country,.card .currency,
+.br-chrono-card .v,.br-chrono-card .p{
+  overflow-wrap:anywhere !important;
+  word-break:normal !important;
+}
+</style>
+
+<script>
+/* Quebras pensadas para aproveitar a largura dos círculos */
+(function(){
+  const originalRenderBrazil = renderBrazil;
+  renderBrazil = function(){
+    originalRenderBrazil();
+
+    document.querySelectorAll(".br-chrono-card .v").forEach(el=>{
+      let t=el.textContent.trim();
+      const replacements = {
+        "1.000 réis":"1.000<br>réis",
+        "2.000 réis":"2.000<br>réis",
+        "5.000 réis":"5.000<br>réis",
+        "10.000 réis":"10.000<br>réis",
+        "20.000 réis":"20.000<br>réis",
+        "50.000 réis":"50.000<br>réis",
+        "100.000 réis":"100.000<br>réis",
+        "200.000 réis":"200.000<br>réis",
+        "500.000 réis":"500.000<br>réis",
+        "1 conto de réis":"1 conto<br>de réis"
+      };
+      if(replacements[t]) el.innerHTML=replacements[t];
+      else {
+        el.innerHTML=t
+          .replace(/ (cruzeiros reais)$/i,"<br>$1")
+          .replace(/ (cruzeiros novos)$/i,"<br>$1")
+          .replace(/ (cruzeiros)$/i,"<br>$1")
+          .replace(/ (cruzados novos)$/i,"<br>$1")
+          .replace(/ (cruzados)$/i,"<br>$1")
+          .replace(/ (centavos)$/i,"<br>$1");
+      }
+    });
+
+    document.querySelectorAll(".br-chrono-card .p").forEach(el=>{
+      let t=el.innerHTML;
+      t=t
+        .replace("Réis — Império","Réis<br>Império")
+        .replace("Réis — República","Réis<br>República")
+        .replace("Cruzeiro Novo","Cruzeiro<br>Novo")
+        .replace("Cruzado Novo","Cruzado<br>Novo")
+        .replace("Cruzeiro Real","Cruzeiro<br>Real")
+        .replace("Real — comemorativas","Real<br>comemorativa");
+      el.innerHTML=t;
+    });
+  };
+
+  /* Re-render if Brazil is already visible */
+  if(document.getElementById("brasilSection")?.classList.contains("active")){
+    renderBrazil();
+  }
+})();
+</script>
+
+
+<style>
+.br-state-tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin:0 0 8px;
+}
+.br-state-tab{
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--muted);
+  border-radius:8px;
+  padding:8px;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+.br-state-tab.active{
+  background:var(--accent);
+  color:var(--accent-dark);
+  border-color:var(--accent);
+}
+</style>
+
 </body>
 </html>
-<style>.br-action{display:none!important}.real-year-grid .br-card,.br-family .br-grid .br-card{cursor:pointer}</style>
+
+<style>
+#grid{gap:6px}
+.card{padding:6px 4px}
+.country{font-size:9px}
+.currency{font-size:7.5px}
+.type{display:none}
+.flag{width:20px;height:14px;margin-bottom:2px}
+@media(max-width:420px){
+  .card{padding:5px 3px}
+  .country{font-size:8px}
+  .currency{font-size:6.8px}
+  .flag{width:18px;height:12px}
+}
+.flag-fallback{
+  width:20px;height:14px;border-radius:2px;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-size:7px;color:var(--muted);margin-bottom:2px;
+}
+</style>
+
+<style>
+#brasilSection .br-subtabs{margin-bottom:6px}
+#brasilSection .br-filters{display:none!important}
+#brasilSection #brProgress{margin:4px 0 10px}
+#brasilSection #brSearch{margin-bottom:8px}
+.br-chrono{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:7px;
+}
+.br-chrono-card{
+  aspect-ratio:1/1;
+  border-radius:50%;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:7px 5px;
+  cursor:pointer;
+}
+.br-chrono-card .v{font-size:10px;font-weight:900;line-height:1.05}
+.br-chrono-card .y{font-size:8px;color:var(--accent);margin-top:2px}
+.br-chrono-card .p{font-size:7px;color:var(--muted);line-height:1.05;margin-top:2px}
+.br-year-block{margin-bottom:12px}
+.br-year-title{
+  font-size:11px;font-weight:900;color:var(--muted);
+  margin:6px 0 5px;padding-left:2px;
+}
+.br-year-coins{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:5px;
+}
+.br-real-coin{
+  aspect-ratio:1/1;border-radius:50%;border:1px solid var(--line);
+  background:var(--panel);color:var(--text);font-size:8px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.br-empty{opacity:.08;cursor:default}
+@media(max-width:420px){
+  .br-chrono{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+  .br-chrono-card{padding:5px 3px}
+  .br-chrono-card .v{font-size:8px}
+  .br-chrono-card .y{font-size:7px}
+  .br-chrono-card .p{font-size:6px}
+  .br-year-coins{gap:4px}
+}
+</style>
