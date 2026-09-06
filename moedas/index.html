@@ -479,6 +479,89 @@
 }
 </style>
 
+
+<style>
+/* Brasil v13 — proporções mais equilibradas */
+.br-era-items{
+  grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+  gap:5px !important;
+}
+.br-era-items .br-chrono-card{
+  transform:scale(.88);
+  transform-origin:center;
+  margin:-3px 0;
+}
+.br-note-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:8px !important;
+}
+.br-note-card{
+  min-height:86px !important;
+  padding:0 !important;
+  overflow:hidden;
+  position:relative;
+}
+.br-note-thumb{
+  width:100%;
+  aspect-ratio:1.75/1;
+  object-fit:cover;
+  display:block;
+  background:#111;
+  border-bottom:1px solid var(--line);
+}
+.br-note-info{
+  padding:8px 9px 9px;
+}
+.br-note-value{
+  font-size:13px !important;
+}
+.br-note-model{
+  font-size:9px !important;
+}
+.br-note-placeholder{
+  width:100%;
+  aspect-ratio:1.75/1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.035),rgba(255,255,255,.01));
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  border-bottom:1px solid var(--line);
+}
+.br-real-head,.br-real-row{
+  grid-template-columns:34px repeat(6,minmax(0,1fr)) !important;
+}
+.br-real-row .br-real-coin{
+  transform:scale(.9);
+}
+@media(max-width:420px){
+  .br-era-items{grid-template-columns:repeat(5,minmax(0,1fr)) !important}
+  .br-note-card{min-height:82px !important}
+}
+</style>
+
+
+<style>
+.br-note-thumb{
+  aspect-ratio:2.05/1 !important;
+  object-fit:contain !important;
+  background:#f3f3f3 !important;
+  padding:5px !important;
+}
+.br-note-placeholder.br-note-fallback{
+  aspect-ratio:2.05/1 !important;
+}
+.br-note-card{
+  min-height:104px !important;
+}
+.br-note-info{
+  padding-top:6px !important;
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -1191,14 +1274,176 @@ const coinPeriods = {
   "Letônia": "2014–hoje",
   "Lituânia": "2015–hoje",
   "Croácia": "2023–hoje",
-  "Bulgária": "2026–hoje"
+  "Bulgária": "2026–hoje",
+  "Afeganistão": "2002–hoje",
+  "Albânia": "1926–hoje",
+  "Andorra": "2002–hoje",
+  "Antígua e Barbuda": "1965–hoje",
+  "Arábia Saudita": "1925–hoje",
+  "Armênia": "1993–hoje",
+  "Azerbaijão": "2006–hoje",
+  "Bahamas": "1966–hoje",
+  "Bahrein": "1965–hoje",
+  "Bangladesh": "1972–hoje",
+  "Barbados": "1973–hoje",
+  "Belarus": "2016–hoje",
+  "Belize": "1973–hoje",
+  "Benim": "1945–hoje",
+  "Bósnia e Herzegovina": "1998–hoje",
+  "Botsuana": "1976–hoje",
+  "Brunei": "1967–hoje",
+  "Burkina Faso": "1945–hoje",
+  "Burundi": "1964–hoje",
+  "Butão": "1974–hoje",
+  "Camarões": "1945–hoje",
+  "Camboja": "1980–hoje",
+  "Catar": "1973–hoje",
+  "Cazaquistão": "1993–hoje",
+  "Chade": "1945–hoje",
+  "Comores": "1975–hoje",
+  "Coreia do Norte": "2009–hoje",
+  "Costa do Marfim": "1945–hoje",
+  "Dinamarca": "1875–hoje",
+  "Djibuti": "1949–hoje",
+  "Dominica": "1965–hoje",
+  "Emirados Árabes Unidos": "1973–hoje",
+  "Eritreia": "1997–hoje",
+  "Estados Unidos": "1792–hoje",
+  "Eswatini": "1974–hoje",
+  "Etiópia": "1945–hoje",
+  "Fiji": "1969–hoje",
+  "Filipinas": "1967–hoje",
+  "Gabão": "1945–hoje",
+  "Gâmbia": "1971–hoje",
+  "Gana": "2007–hoje",
+  "Geórgia": "1995–hoje",
+  "Granada": "1965–hoje",
+  "Guiana": "1966–hoje",
+  "Guiné": "1985–hoje",
+  "Guiné-Bissau": "1997–hoje",
+  "Guiné Equatorial": "1985–hoje",
+  "Haiti": "1813–hoje",
+  "Hungria": "1946–hoje",
+  "Iêmen": "1990–hoje",
+  "Ilhas Marshall": "1986–hoje",
+  "Ilhas Salomão": "1977–hoje",
+  "Indonésia": "1946–hoje",
+  "Irã": "1932–hoje",
+  "Iraque": "1932–hoje",
+  "Islândia": "1874–hoje",
+  "Jamaica": "1969–hoje",
+  "Jordânia": "1950–hoje",
+  "Kiribati": "1979–hoje",
+  "Kuwait": "1961–hoje",
+  "Laos": "1979–hoje",
+  "Lesoto": "1980–hoje",
+  "Líbano": "1939–hoje",
+  "Libéria": "1937–hoje",
+  "Líbia": "1971–hoje",
+  "Liechtenstein": "1920–hoje",
+  "Macedônia do Norte": "1993–hoje",
+  "Madagascar": "1961–hoje",
+  "Malawi": "1971–hoje",
+  "Maldivas": "1947–hoje",
+  "Mali": "1984–hoje",
+  "Maurício": "1876–hoje",
+  "Mauritânia": "2018–hoje",
+  "México": "1993–hoje",
+  "Micronésia": "1986–hoje",
+  "Moldávia": "1993–hoje",
+  "Mônaco": "2002–hoje",
+  "Mongólia": "1925–hoje",
+  "Montenegro": "2002–hoje",
+  "Myanmar": "1952–hoje",
+  "Namíbia": "1993–hoje",
+  "Nauru": "1968–hoje",
+  "Nepal": "1932–hoje",
+  "Níger": "1945–hoje",
+  "Nigéria": "1973–hoje",
+  "Noruega": "1875–hoje",
+  "Omã": "1970–hoje",
+  "Palau": "1994–hoje",
+  "Panamá": "1904–hoje",
+  "Papua-Nova Guiné": "1975–hoje",
+  "Polônia": "1995–hoje",
+  "Quênia": "1966–hoje",
+  "Quirguistão": "1993–hoje",
+  "Reino Unido": "1971–hoje",
+  "República Centro-Africana": "1945–hoje",
+  "República Democrática do Congo": "1997–hoje",
+  "República do Congo": "1945–hoje",
+  "República Tcheca": "1993–hoje",
+  "Romênia": "2005–hoje",
+  "Ruanda": "1964–hoje",
+  "Samoa": "1967–hoje",
+  "San Marino": "2002–hoje",
+  "Santa Lúcia": "1965–hoje",
+  "São Cristóvão e Névis": "1965–hoje",
+  "São Tomé e Príncipe": "2018–hoje",
+  "São Vicente e Granadinas": "1965–hoje",
+  "Senegal": "1945–hoje",
+  "Serra Leoa": "2022–hoje",
+  "Sérvia": "2006–hoje",
+  "Seychelles": "1914–hoje",
+  "Síria": "1948–hoje",
+  "Somália": "1962–hoje",
+  "Sudão": "2007–hoje",
+  "Sudão do Sul": "2011–hoje",
+  "Suécia": "1873–hoje",
+  "Suíça": "1850–hoje",
+  "Suriname": "2004–hoje",
+  "Tadjiquistão": "2000–hoje",
+  "Tailândia": "1902–hoje",
+  "Tanzânia": "1966–hoje",
+  "Timor-Leste": "2002–hoje",
+  "Togo": "1945–hoje",
+  "Tonga": "1967–hoje",
+  "Trinidad e Tobago": "1964–hoje",
+  "Turcomenistão": "2009–hoje",
+  "Tuvalu": "1976–hoje",
+  "Ucrânia": "1996–hoje",
+  "Uganda": "1987–hoje",
+  "Uzbequistão": "1994–hoje",
+  "Vanuatu": "1982–hoje",
+  "Vaticano": "2002–hoje",
+  "Vietnã": "1978–hoje",
+  "Zâmbia": "2013–hoje",
+  "Zimbábue": "2024–hoje",
+  "Aruba": "1986–hoje",
+  "Curaçao": "2025–hoje",
+  "Sint Maarten": "2025–hoje",
+  "Bermudas": "1970–hoje",
+  "Ilhas Cayman": "1972–hoje",
+  "Ilhas Falkland": "1899–hoje",
+  "Gibraltar": "1927–hoje",
+  "Ilha de Man": "1971–hoje",
+  "Jersey": "1971–hoje",
+  "Guernsey": "1971–hoje",
+  "Santa Helena": "1976–hoje",
+  "Ascensão": "1976–hoje",
+  "Ilhas Cook": "1972–hoje",
+  "Niue": "1966–hoje",
+  "Tokelau": "2012–hoje",
+  "Macau": "1894–hoje",
+  "Polinésia Francesa": "1945–hoje",
+  "Nova Caledônia": "1945–hoje",
+  "Wallis e Futuna": "1945–hoje",
+  "Groenlândia": "1875–hoje",
+  "Ilhas Faroé": "1940–hoje",
+  "Porto Rico": "1898–hoje",
+  "Ilhas Virgens Britânicas": "1959–hoje",
+  "Montserrat": "1965–hoje",
+  "Anguilla": "1965–hoje",
+  "Ilhas Turcas e Caicos": "1973–hoje",
+  "Ilhas Pitcairn": "1967–hoje",
+  "Território Britânico do Oceano Índico": "2018–hoje"
 };
 
 function coinPeriod(country, currency, type){
   if (coinPeriods[country]) return coinPeriods[country];
 
-  // For entries without a specific mapping, don't invent a date.
-  return type === "Histórico" ? "período histórico" : "";
+  // Fallback visual: every entry shows a period.
+  return type === "Histórico" ? "período histórico" : "vigente hoje";
 }
 
 function render(){
@@ -1353,6 +1598,45 @@ document.querySelectorAll(".br-state-tab").forEach(btn=>{
 brSearch.addEventListener("input",renderBrazil);
 
 
+
+const brazilNoteThumbs = {
+  // REAL — 2ª família
+  "Real — 2ª família|2 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/2%20Brazil%20real%20Second%20Obverse.jpg?width=700",
+  "Real — 2ª família|5 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/5%20Brazil%20real%20Second%20Obverse.jpg?width=700",
+  "Real — 2ª família|10 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/10%20Brazil%20real%20Second%20Obverse.jpg?width=700",
+  "Real — 2ª família|20 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/20%20Brazil%20real%20Second%20Obverse.jpg?width=700",
+  "Real — 2ª família|50 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/50%20Brazil%20real%20Second%20Obverse.jpg?width=700",
+  "Real — 2ª família|100 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/100%20Brazil%20real%20Second%20Obverse.jpg?width=700",
+  "Real — 2ª família|200 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/200%20Brazil%20real%20Second%20Obverse.jpg?width=700",
+
+  // REAL — 1ª família
+  "Real — 1ª família|1 real":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Brazil%20real%20First%20Obverse%2001.jpg?width=700",
+  "Real — 1ª família|2 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/2real.jpg?width=700",
+  "Real — 1ª família|5 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/5%20Brazil%20real%20First%20Obverse.jpg?width=700",
+  "Real — 1ª família|10 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/10%20Reais.jpg?width=700",
+  "Real — 1ª família|20 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/20%20Reais.jpg?width=700",
+  "Real — 1ª família|50 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/50real%202.jpg?width=700",
+  "Real — 1ª família|100 reais":
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/Nota%20de%20100%20reais%20%28dinheiro%20do%20Brasil%29.jpg?width=700"
+};
+
+function brazilNoteThumb(item){
+  return brazilNoteThumbs[`${item.pattern}|${item.value}`] || "";
+}
+
 function renderBrazil(){
   const term = brSearch.value.trim().toLocaleLowerCase("pt-BR");
 
@@ -1476,12 +1760,21 @@ function renderBrazil(){
   function noteCards(items){
     if(!items.length) return "";
     return `<div class="br-note-grid">${
-      items.sort(sortValue).map(x=>`
+      items.sort(sortValue).map(x=>{
+        const thumb = brazilNoteThumb(x);
+        return `
         <div class="br-note-card br-collection-item" data-id="${encodeURIComponent(x.id)}"
              title="${x.pattern} · ${x.value}">
-          <div class="br-note-value">${x.value}</div>
-          ${x.note ? `<div class="br-note-model">${x.note}</div>` : ""}
-        </div>`).join("")
+          ${thumb
+            ? `<img class="br-note-thumb" src="${thumb}" alt="${x.value}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"><div class="br-note-placeholder br-note-fallback" style="display:none">${x.pattern.replace(" — ","<br>")}</div>`
+            : `<div class="br-note-placeholder">${x.pattern.replace(" — ","<br>")}</div>`
+          }
+          <div class="br-note-info">
+            <div class="br-note-value">${x.value}</div>
+            ${x.note ? `<div class="br-note-model">${x.note}</div>` : ""}
+          </div>
+        </div>`;
+      }).join("")
     }</div>`;
   }
 
