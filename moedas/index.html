@@ -732,6 +732,108 @@
 }
 </style>
 
+
+<style>
+/* v18 — fotos reais das cédulas do Real */
+.real-note-wrap{
+  width:100%;
+  aspect-ratio:2.05/1;
+  position:relative;
+  overflow:hidden;
+  background:#e7e5df;
+  border-bottom:1px solid var(--line);
+}
+.br-note-photo{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  background:#e7e5df!important;
+  padding:4px!important;
+  box-sizing:border-box!important;
+}
+.no-value-mark{
+  pointer-events:none;
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%) rotate(-18deg);
+  font-size:clamp(11px,3.2vw,17px);
+  font-weight:950;
+  letter-spacing:.08em;
+  color:rgba(120,25,25,.56);
+  border:2px solid rgba(120,25,25,.42);
+  padding:2px 7px;
+  white-space:nowrap;
+}
+.br-note-no-photo{
+  width:100%;
+  aspect-ratio:2.05/1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  background:var(--panel2);
+  border-bottom:1px solid var(--line);
+  text-align:center;
+  padding:7px;
+  box-sizing:border-box;
+}
+.br-note-no-photo span{font-size:8px;color:var(--muted);font-weight:800}
+.br-note-no-photo strong{font-size:14px}
+.br-note-no-photo small{font-size:7px;color:var(--muted)}
+.br-note-card{min-height:122px!important}
+</style>
+
+
+<style>
+/* v19 — todas as 86 cédulas exibem fotografia real */
+.all-note-photo-wrap{
+  width:100%;
+  aspect-ratio:2.05/1;
+  position:relative;
+  overflow:hidden;
+  background:#e7e4dc;
+  border-bottom:1px solid var(--line);
+}
+.all-note-photo{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  background:#e7e4dc!important;
+  padding:3px!important;
+  box-sizing:border-box!important;
+}
+.note-photo-tag{
+  position:absolute;
+  left:4px;
+  bottom:4px;
+  padding:2px 4px;
+  border-radius:4px;
+  background:rgba(0,0,0,.66);
+  color:#fff;
+  font-size:5.5px;
+  font-weight:900;
+  letter-spacing:.04em;
+}
+.photo-error::after{
+  content:"IMAGEM NÃO CARREGOU";
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--panel2);
+  color:var(--muted);
+  font-size:8px;
+  font-weight:900;
+}
+.br-note-card{min-height:124px!important}
+.br-note-info{padding:7px 8px 9px!important}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -1770,57 +1872,23 @@ brSearch.addEventListener("input",renderBrazil);
 
 
 
-const realBanknoteVisuals = {
-  "Real — 1ª família|1 real":   {bg:"#a8c89d", accent:"#6c9368", animal:"Beija-flor"},
-  "Real — 1ª família|2 reais":  {bg:"#b6d4de", accent:"#688fa4", animal:"Tartaruga"},
-  "Real — 1ª família|5 reais":  {bg:"#d6b0ca", accent:"#9b678f", animal:"Garça"},
-  "Real — 1ª família|10 reais": {bg:"#e6b09d", accent:"#b76f5f", animal:"Arara"},
-  "Real — 1ª família|20 reais": {bg:"#e6c88d", accent:"#b89245", animal:"Mico-leão"},
-  "Real — 1ª família|50 reais": {bg:"#d3c2a4", accent:"#9a7d52", animal:"Onça-pintada"},
-  "Real — 1ª família|100 reais":{bg:"#b8d7d7", accent:"#699b9b", animal:"Garoupa"},
 
-  "Real — 2ª família|2 reais":  {bg:"#a9c9db", accent:"#527e9b", animal:"Tartaruga"},
-  "Real — 2ª família|5 reais":  {bg:"#c9b0cf", accent:"#865a93", animal:"Garça"},
-  "Real — 2ª família|10 reais": {bg:"#e5b09f", accent:"#aa604d", animal:"Arara"},
-  "Real — 2ª família|20 reais": {bg:"#e4c27d", accent:"#ad852f", animal:"Mico-leão"},
-  "Real — 2ª família|50 reais": {bg:"#d2b88f", accent:"#927040", animal:"Onça-pintada"},
-  "Real — 2ª família|100 reais":{bg:"#a8d0cf", accent:"#4f8d8b", animal:"Garoupa"},
-  "Real — 2ª família|200 reais":{bg:"#b7b7af", accent:"#77776f", animal:"Lobo-guará"}
-};
 
-function banknoteVisualData(item){
-  return realBanknoteVisuals[`${item.pattern}|${item.value}`] || null;
-}
+const brazilAllBanknotePhotos = {"note|Réis|1 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|2 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/2-mil-reis-1923-anverso.png","note|Réis|5 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|10 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/10-mil-reis-1833-anverso.jpg","note|Réis|20 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|50 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|100 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|200 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|500 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|1 conto de réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Cruzeiro 1942|1 cruzeiro|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|2 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/2-cruzeiros-1958-anverso.png","note|Cruzeiro 1942|5 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5-cruzeiros-1961-anverso.png","note|Cruzeiro 1942|10 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|20 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|50 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/50%20Cruzeioros%20%28%201942%20-1967%29.png","note|Cruzeiro 1942|100 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1964-anverso.png","note|Cruzeiro 1942|200 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/200-cruzeiros-1961-anverso.png","note|Cruzeiro 1942|500 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|1.000 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|5.000 cruzeiros|Tiradentes":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|10.000 cruzeiros|Santos Dumont":"https://commons.wikimedia.org/wiki/Special:Redirect/file/C%C3%A9dula%20do%20Santos%20Dumont.png","note|Cruzeiro Novo|1 centavo|Getúlio Vargas — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|5 centavos|Princesa Isabel — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|10 centavos|D. Pedro II — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|50 centavos|D. João VI — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|1 cruzeiro novo|Pedro Álvares Cabral — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|5 cruzeiros novos|Tiradentes — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|10 cruzeiros novos|Santos Dumont — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro 1970|1 cruzeiro|República":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|5 cruzeiros|D. Pedro I":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|10 cruzeiros|D. Pedro II":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|50 cruzeiros|Deodoro da Fonseca":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|100 cruzeiros|Floriano Peixoto / Duque de Caxias":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1984-anverso.png","note|Cruzeiro 1970|200 cruzeiros|Princesa Isabel":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|500 cruzeiros|Evolução Étnica / Deodoro":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20500%20cruzeiros%20banknote%201981%20reverse.png","note|Cruzeiro 1970|1.000 cruzeiros|Barão do Rio Branco":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|5.000 cruzeiros|Castello Branco":"https://commons.wikimedia.org/wiki/Special:Redirect/file/C%C3%A9dula%205000%20Cruzeiros%20Castelo%20Branco%20AnvRev.jpg","note|Cruzeiro 1970|10.000 cruzeiros|Rui Barbosa":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|50.000 cruzeiros|Oswaldo Cruz":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|100.000 cruzeiros|Juscelino Kubitschek":"https://commons.wikimedia.org/wiki/Special:Redirect/file/C%C3%A9dula%20100000%20Cruzeiros%20Juscelino%20Kubitschek%20AnvRev.jpg","note|Cruzado|10 cruzados|Rui Barbosa":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazilian%201000%20cruzados%20obverse.jpg","note|Cruzado|50 cruzados|Oswaldo Cruz":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazilian%201000%20cruzados%20obverse.jpg","note|Cruzado|100 cruzados|Juscelino Kubitschek":"https://commons.wikimedia.org/wiki/Special:Redirect/file/C%C3%A9dula%20de%20100%20Cruzados.jpg","note|Cruzado|500 cruzados|Villa-Lobos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazilian%201000%20cruzados%20obverse.jpg","note|Cruzado|1.000 cruzados|Machado de Assis":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazilian%201000%20cruzados%20obverse.jpg","note|Cruzado|5.000 cruzados|Portinari":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazilian%201000%20cruzados%20obverse.jpg","note|Cruzado|10.000 cruzados|Carlos Chagas":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil-10cruzados-banknote%20003.JPG","note|Cruzado Novo|1 cruzado novo|Machado de Assis":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20cruzado%20novo%20on%201000%20cruzados%20obverse.jpg","note|Cruzado Novo|5 cruzados novos|Portinari":"https://commons.wikimedia.org/wiki/Special:Redirect/file/200%20cruzados%20novos%20anv%20%28cropped%29.jpg","note|Cruzado Novo|10 cruzados novos|Carlos Chagas":"https://commons.wikimedia.org/wiki/Special:Redirect/file/200%20cruzados%20novos%20anv%20%28cropped%29.jpg","note|Cruzado Novo|50 cruzados novos|Carlos Drummond":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Nuovo%20cruzado%20-%20banconota%20da%2050%20cruzado%20nuovo%20fronte.jpg","note|Cruzado Novo|100 cruzados novos|Cecília Meireles":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Nuovo%20cruzado%20-%20banconota%20da%20100%20cruzado%20nuovo%20fronte.jpg","note|Cruzado Novo|200 cruzados novos|República":"https://commons.wikimedia.org/wiki/Special:Redirect/file/200%20cruzados%20novos%20anv%20%28cropped%29.jpg","note|Cruzado Novo|500 cruzados novos|Augusto Ruschi":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Nuovo%20cruzado%20-%20banconota%20da%20500%20cruzado%20nuovo%20fronte.jpg","note|Cruzeiro 1990|50 cruzeiros|Carlos Drummond":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|100 cruzeiros|Cecília Meireles":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|200 cruzeiros|República":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|500 cruzeiros|Augusto Ruschi":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|1.000 cruzeiros|Rondon":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1000%20cruzeiros%201990%20regular%20fronte.jpg","note|Cruzeiro 1990|5.000 cruzeiros|República / Carlos Gomes":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|10.000 cruzeiros|Vital Brazil":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|50.000 cruzeiros|Câmara Cascudo":"https://commons.wikimedia.org/wiki/Special:Redirect/file/50000%20cruzeiros%201990%20regular%20fronte.jpg","note|Cruzeiro 1990|100.000 cruzeiros|Meio Ambiente":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|500.000 cruzeiros|Mário de Andrade":"https://commons.wikimedia.org/wiki/Special:Redirect/file/500000%20cruzeiros%201990%20regular%20fronte.jpg","note|Cruzeiro Real|50 cruzeiros reais|Câmara Cascudo":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5000-cruzeiros-reais-anverso.png","note|Cruzeiro Real|100 cruzeiros reais|Meio Ambiente":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5000-cruzeiros-reais-anverso.png","note|Cruzeiro Real|500 cruzeiros reais|Mário de Andrade":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5000-cruzeiros-reais-anverso.png","note|Cruzeiro Real|1.000 cruzeiros reais|Anísio Teixeira":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5000-cruzeiros-reais-anverso.png","note|Cruzeiro Real|5.000 cruzeiros reais|Gaúcho":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5000-cruzeiros-reais-anverso.png","note|Cruzeiro Real|50.000 cruzeiros reais|Baiana":"https://commons.wikimedia.org/wiki/Special:Redirect/file/50%2C000-cruzeiros-reais-anverso.png","note|Real — 1ª família|R$ 1|Beija-flor":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Brazil%20real%20First%20Obverse%2001.jpg","note|Real — 1ª família|R$ 2|Tartaruga-marinha":"https://commons.wikimedia.org/wiki/Special:Redirect/file/2%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 5|Garça":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 10|Arara":"https://commons.wikimedia.org/wiki/Special:Redirect/file/10%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 10|Pedro Álvares Cabral — polímero":"https://commons.wikimedia.org/wiki/Special:Redirect/file/10%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 20|Mico-leão-dourado":"https://commons.wikimedia.org/wiki/Special:Redirect/file/20%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 50|Onça-pintada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/50%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 100|Garoupa":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100%20Brazil%20real%20First%20Obverse.jpg","note|Real — 2ª família|R$ 2|Tartaruga-marinha":"https://commons.wikimedia.org/wiki/Special:Redirect/file/2%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 5|Garça":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 10|Arara":"https://commons.wikimedia.org/wiki/Special:Redirect/file/10%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 20|Mico-leão-dourado":"https://commons.wikimedia.org/wiki/Special:Redirect/file/20%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 50|Onça-pintada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/50%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 100|Garoupa":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 200|Lobo-guará":"https://commons.wikimedia.org/wiki/Special:Redirect/file/200%20Brazil%20real%20Second%20Obverse.jpg"};
+const brazilExactBanknotePhoto = {"note|R\u00e9is|1 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|2 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":true,"note|R\u00e9is|5 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|10 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":true,"note|R\u00e9is|20 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|50 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|100 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|200 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|500 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|1 conto de r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":true,"note|Cruzeiro 1942|1 cruzeiro|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|2 cruzeiros|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|5 cruzeiros|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|10 cruzeiros|modelos do padr\u00e3o":false,"note|Cruzeiro 1942|20 cruzeiros|modelos do padr\u00e3o":false,"note|Cruzeiro 1942|50 cruzeiros|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|100 cruzeiros|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|200 cruzeiros|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|500 cruzeiros|modelos do padr\u00e3o":false,"note|Cruzeiro 1942|1.000 cruzeiros|modelos do padr\u00e3o":false,"note|Cruzeiro 1942|5.000 cruzeiros|Tiradentes":false,"note|Cruzeiro 1942|10.000 cruzeiros|Santos Dumont":true,"note|Cruzeiro Novo|1 centavo|Get\u00falio Vargas \u2014 carimbada":false,"note|Cruzeiro Novo|5 centavos|Princesa Isabel \u2014 carimbada":false,"note|Cruzeiro Novo|10 centavos|D. Pedro II \u2014 carimbada":false,"note|Cruzeiro Novo|50 centavos|D. Jo\u00e3o VI \u2014 carimbada":false,"note|Cruzeiro Novo|1 cruzeiro novo|Pedro \u00c1lvares Cabral \u2014 carimbada":false,"note|Cruzeiro Novo|5 cruzeiros novos|Tiradentes \u2014 carimbada":false,"note|Cruzeiro Novo|10 cruzeiros novos|Santos Dumont \u2014 carimbada":false,"note|Cruzeiro 1970|1 cruzeiro|Rep\u00fablica":true,"note|Cruzeiro 1970|5 cruzeiros|D. Pedro I":false,"note|Cruzeiro 1970|10 cruzeiros|D. Pedro II":false,"note|Cruzeiro 1970|50 cruzeiros|Deodoro da Fonseca":false,"note|Cruzeiro 1970|100 cruzeiros|Floriano Peixoto / Duque de Caxias":true,"note|Cruzeiro 1970|200 cruzeiros|Princesa Isabel":false,"note|Cruzeiro 1970|500 cruzeiros|Evolu\u00e7\u00e3o \u00c9tnica / Deodoro":true,"note|Cruzeiro 1970|1.000 cruzeiros|Bar\u00e3o do Rio Branco":false,"note|Cruzeiro 1970|5.000 cruzeiros|Castello Branco":true,"note|Cruzeiro 1970|10.000 cruzeiros|Rui Barbosa":false,"note|Cruzeiro 1970|50.000 cruzeiros|Oswaldo Cruz":false,"note|Cruzeiro 1970|100.000 cruzeiros|Juscelino Kubitschek":true,"note|Cruzado|10 cruzados|Rui Barbosa":false,"note|Cruzado|50 cruzados|Oswaldo Cruz":false,"note|Cruzado|100 cruzados|Juscelino Kubitschek":true,"note|Cruzado|500 cruzados|Villa-Lobos":false,"note|Cruzado|1.000 cruzados|Machado de Assis":true,"note|Cruzado|5.000 cruzados|Portinari":false,"note|Cruzado|10.000 cruzados|Carlos Chagas":true,"note|Cruzado Novo|1 cruzado novo|Machado de Assis":true,"note|Cruzado Novo|5 cruzados novos|Portinari":false,"note|Cruzado Novo|10 cruzados novos|Carlos Chagas":false,"note|Cruzado Novo|50 cruzados novos|Carlos Drummond":true,"note|Cruzado Novo|100 cruzados novos|Cec\u00edlia Meireles":true,"note|Cruzado Novo|200 cruzados novos|Rep\u00fablica":true,"note|Cruzado Novo|500 cruzados novos|Augusto Ruschi":true,"note|Cruzeiro 1990|50 cruzeiros|Carlos Drummond":false,"note|Cruzeiro 1990|100 cruzeiros|Cec\u00edlia Meireles":true,"note|Cruzeiro 1990|200 cruzeiros|Rep\u00fablica":false,"note|Cruzeiro 1990|500 cruzeiros|Augusto Ruschi":false,"note|Cruzeiro 1990|1.000 cruzeiros|Rondon":true,"note|Cruzeiro 1990|5.000 cruzeiros|Rep\u00fablica / Carlos Gomes":false,"note|Cruzeiro 1990|10.000 cruzeiros|Vital Brazil":false,"note|Cruzeiro 1990|50.000 cruzeiros|C\u00e2mara Cascudo":true,"note|Cruzeiro 1990|100.000 cruzeiros|Meio Ambiente":false,"note|Cruzeiro 1990|500.000 cruzeiros|M\u00e1rio de Andrade":true,"note|Cruzeiro Real|50 cruzeiros reais|C\u00e2mara Cascudo":false,"note|Cruzeiro Real|100 cruzeiros reais|Meio Ambiente":false,"note|Cruzeiro Real|500 cruzeiros reais|M\u00e1rio de Andrade":false,"note|Cruzeiro Real|1.000 cruzeiros reais|An\u00edsio Teixeira":false,"note|Cruzeiro Real|5.000 cruzeiros reais|Ga\u00facho":true,"note|Cruzeiro Real|50.000 cruzeiros reais|Baiana":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 1|Beija-flor":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 2|Tartaruga-marinha":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 5|Gar\u00e7a":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 10|Arara":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 10|Pedro \u00c1lvares Cabral \u2014 pol\u00edmero":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 20|Mico-le\u00e3o-dourado":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 50|On\u00e7a-pintada":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 100|Garoupa":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 2|Tartaruga-marinha":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 5|Gar\u00e7a":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 10|Arara":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 20|Mico-le\u00e3o-dourado":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 50|On\u00e7a-pintada":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 100|Garoupa":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 200|Lobo-guar\u00e1":true};
 
 function banknoteThumbHTML(item){
-  const v = banknoteVisualData(item);
-  const value = item.value.replace(" reais","").replace(" real","");
-  const patternShort = item.pattern
-    .replace("Real — ","")
-    .replace("Cruzeiro ","Cr$ ")
-    .replace("Cruzeiro Novo","NCr$")
-    .replace("Cruzeiro Real","CR$")
-    .replace("Cruzado Novo","NCz$")
-    .replace("Cruzado","Cz$");
-
-  if(v){
-    return `
-      <div class="embedded-note" style="--note-bg:${v.bg};--note-accent:${v.accent}">
-        <div class="embedded-note-band"></div>
-        <div class="embedded-note-num">${value}</div>
-        <div class="embedded-note-face"></div>
-        <div class="embedded-note-family">${patternShort}</div>
-        <div class="embedded-note-animal">${v.animal}</div>
-      </div>`;
-  }
-
-  // Historical notes: self-contained identification card.
-  // It is not a photographic reproduction, but remains visible offline.
+  const src = brazilAllBanknotePhotos[item.id] || "";
+  const exact = !!brazilExactBanknotePhoto[item.id];
   return `
-    <div class="embedded-note historical-note">
-      <div class="historical-note-pattern">${item.pattern}</div>
-      <div class="historical-note-value">${item.value}</div>
-      <div class="historical-note-mark">CÉDULA</div>
+    <div class="all-note-photo-wrap">
+      <img class="all-note-photo"
+           src="${src}"
+           alt="${item.pattern} ${item.value}"
+           loading="lazy"
+           referrerpolicy="no-referrer"
+           onerror="this.onerror=null;this.closest('.all-note-photo-wrap').classList.add('photo-error');">
+      <div class="note-photo-tag">${exact ? "IMAGEM DO MODELO" : "REFERÊNCIA DO PADRÃO"}</div>
     </div>`;
 }
 
