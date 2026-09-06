@@ -241,7 +241,7 @@
   }
 
 
-  .main-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+  .main-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
   .main-tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:9px;padding:10px 6px;font-weight:800;cursor:pointer}
   .main-tab.active{background:#f5f7fa;color:#111;border-color:#f5f7fa}
   .brasil-section{display:none}
@@ -834,12 +834,314 @@
 .br-note-info{padding:7px 8px 9px!important}
 </style>
 
+
+<style>
+/* v20 — cédulas sem imagem; pessoa/figura em destaque */
+.br-note-grid-text{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:7px !important;
+}
+.br-note-text-card{
+  min-height:72px !important;
+  padding:9px 10px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  background:var(--panel) !important;
+  border:1px solid var(--line) !important;
+  border-radius:10px !important;
+  overflow:hidden !important;
+}
+.br-note-text-card .br-note-value{
+  font-size:13px !important;
+  line-height:1.05 !important;
+  font-weight:950 !important;
+  color:var(--accent) !important;
+  margin:0 0 5px !important;
+}
+.br-note-person{
+  font-size:10px;
+  line-height:1.16;
+  font-weight:850;
+  color:var(--text);
+  text-wrap:balance;
+}
+.br-note-photo,.all-note-photo-wrap,.real-note-wrap,.embedded-note,
+.note-photo-tag,.no-value-mark,.br-note-no-photo{
+  display:none !important;
+}
+@media(max-width:420px){
+  .br-note-grid-text{gap:6px !important}
+  .br-note-text-card{min-height:68px !important;padding:8px !important}
+  .br-note-text-card .br-note-value{font-size:12px !important}
+  .br-note-person{font-size:9px}
+}
+</style>
+
+
+<style>
+/* v21 — cédulas com textos mais destacados e legíveis */
+.br-note-grid-text{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:9px !important;
+}
+.br-note-text-card{
+  min-height:92px !important;
+  padding:12px 12px !important;
+  border-radius:12px !important;
+}
+.br-note-text-card .br-note-value{
+  font-size:16px !important;
+  line-height:1.05 !important;
+  font-weight:950 !important;
+  margin:0 0 8px !important;
+  letter-spacing:.01em !important;
+}
+.br-note-person{
+  font-size:13px !important;
+  line-height:1.22 !important;
+  font-weight:900 !important;
+  color:var(--text) !important;
+  text-wrap:balance;
+}
+@media(max-width:420px){
+  .br-note-grid-text{
+    grid-template-columns:1fr !important;
+    gap:8px !important;
+  }
+  .br-note-text-card{
+    min-height:84px !important;
+    padding:11px 12px !important;
+  }
+  .br-note-text-card .br-note-value{
+    font-size:17px !important;
+    margin-bottom:7px !important;
+  }
+  .br-note-person{
+    font-size:13.5px !important;
+    line-height:1.22 !important;
+  }
+}
+</style>
+
+
+<style>
+/* v22 — seção de comemorativas reorganizada */
+.comm-v22-wrap{
+  margin-top:14px;
+}
+.comm-v22-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  margin-bottom:10px;
+  padding:0 2px;
+}
+.comm-v22-title{
+  font-size:15px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:.02em;
+  color:var(--text);
+}
+.comm-v22-sub{
+  margin-top:4px;
+  font-size:9px;
+  font-weight:800;
+  color:var(--muted);
+}
+.comm-v22-section{
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px solid var(--line);
+}
+.comm-v22-section-title{
+  font-size:10px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:.08em;
+  color:var(--accent);
+}
+.comm-v22-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+  margin-top:8px;
+}
+.comm-v22-card{
+  min-height:78px;
+  padding:9px 10px 10px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:var(--panel);
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  transition:transform .12s ease,border-color .12s ease;
+}
+.comm-v22-card:active{
+  transform:scale(.985);
+}
+.comm-v22-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+  margin-bottom:7px;
+}
+.comm-v22-year{
+  display:inline-flex;
+  align-items:center;
+  min-height:21px;
+  padding:0 7px;
+  border-radius:999px;
+  background:var(--accent);
+  color:#111;
+  font-size:10px;
+  line-height:1;
+  font-weight:950;
+}
+.comm-v22-value{
+  font-size:9px;
+  line-height:1;
+  font-weight:900;
+  color:var(--muted);
+}
+.comm-v22-name{
+  font-size:11px;
+  line-height:1.15;
+  font-weight:950;
+  color:var(--text);
+  text-wrap:balance;
+}
+.comm-v22-series-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.comm-v22-series-sub{
+  margin-top:3px;
+  font-size:10px;
+  font-weight:900;
+  color:var(--text);
+}
+.comm-v22-series-count{
+  flex:0 0 auto;
+  font-size:9px;
+  font-weight:900;
+  color:var(--muted);
+}
+.comm-v22-year-block{
+  margin-top:11px;
+}
+.comm-v22-year-title{
+  font-size:12px;
+  font-weight:950;
+  color:var(--text);
+  padding-left:2px;
+}
+@media(max-width:420px){
+  .comm-v22-title{font-size:16px}
+  .comm-v22-sub{font-size:10px}
+  .comm-v22-grid{
+    grid-template-columns:1fr;
+    gap:7px;
+  }
+  .comm-v22-card{
+    min-height:72px;
+    padding:10px 11px;
+  }
+  .comm-v22-year{
+    font-size:11px;
+    min-height:22px;
+  }
+  .comm-v22-name{
+    font-size:13px;
+    line-height:1.17;
+  }
+  .comm-v22-value{font-size:10px}
+  .comm-v22-section-title{font-size:11px}
+  .comm-v22-series-sub{font-size:11px}
+}
+</style>
+
+
+<style>
+.map-section{display:none}
+.map-section.active{display:block}
+.map-header{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:10px;margin-bottom:10px
+}
+.map-subtitle{font-size:10px;color:var(--muted);font-weight:800;margin-top:4px}
+.map-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:8px;
+  overflow:hidden;
+}
+.world-map{
+  width:100%;
+  min-height:330px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.world-map > div{width:100%!important}
+.map-loading{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:900;
+}
+.map-legend{
+  display:flex;
+  gap:16px;
+  align-items:center;
+  justify-content:center;
+  padding:8px 4px 4px;
+  border-top:1px solid var(--line);
+  font-size:9px;
+  font-weight:900;
+  color:var(--muted);
+}
+.legend-dot{
+  display:inline-block;
+  width:9px;height:9px;border-radius:50%;
+  margin-right:5px;vertical-align:-1px
+}
+.owned-dot{background:#d5a928}
+.missing-dot{background:#d7d9dd}
+.map-info{
+  margin-top:9px;
+  padding:11px 12px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:var(--panel);
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.35;
+  font-weight:800;
+}
+.map-info strong{color:var(--text);font-size:12px}
+.map-info .map-country-count{color:var(--accent);font-weight:950}
+@media(max-width:520px){
+  .world-map{min-height:255px}
+  .map-card{padding:4px}
+  .map-header h1{font-size:18px}
+  .map-subtitle{font-size:9px}
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
   <div class="main-tabs">
     <button class="main-tab active" data-main="world">Mundo</button>
     <button class="main-tab" data-main="brasil">Brasil</button>
+    <button class="main-tab" data-main="mapa">Mapa</button>
   </div>
   <div id="worldSection" class="world-section">
   <header>
@@ -888,8 +1190,33 @@
     <div id="brGrid" class="grid"></div>
   </div>
 
+  <div id="mapSection" class="map-section">
+    <header class="map-header">
+      <div>
+        <h1>Meu mapa</h1>
+        <div class="map-subtitle">Países onde você já marcou pelo menos uma moeda</div>
+      </div>
+      <div class="count"><strong id="mapCount">0</strong></div>
+    </header>
+
+    <div class="map-card">
+      <div id="worldMap" class="world-map">
+        <div class="map-loading">Carregando mapa…</div>
+      </div>
+      <div class="map-legend">
+        <span><i class="legend-dot owned-dot"></i> Já tenho</span>
+        <span><i class="legend-dot missing-dot"></i> Ainda não</span>
+      </div>
+    </div>
+
+    <div id="mapInfo" class="map-info">
+      Toque em um país pintado para ver quantas moedas/emissões você já marcou.
+    </div>
+  </div>
+
 </div>
 
+<script src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
 const coins = [
 ["Afeganistão", "Afegane", "Atual"],
@@ -1294,7 +1621,7 @@ const flagMap = {"Afeganistão": "af", "África do Sul": "za", "Albânia": "al",
 function flagUrl(country){const code=flagMap[country];return code?`https://flagcdn.com/w40/${code}.png`:"";}
 
 const brazilCoins = [{"id": "coin|Réis — Império|20 réis", "pattern": "Réis — Império", "value": "20 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|40 réis", "pattern": "Réis — Império", "value": "40 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|80 réis", "pattern": "Réis — Império", "value": "80 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|100 réis", "pattern": "Réis — Império", "value": "100 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|200 réis", "pattern": "Réis — Império", "value": "200 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|400 réis", "pattern": "Réis — Império", "value": "400 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|500 réis", "pattern": "Réis — Império", "value": "500 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — Império|1.000 réis", "pattern": "Réis — Império", "value": "1.000 réis", "year": "1823–1889", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|20 réis", "pattern": "Réis — República", "value": "20 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|40 réis", "pattern": "Réis — República", "value": "40 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|100 réis", "pattern": "Réis — República", "value": "100 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|200 réis", "pattern": "Réis — República", "value": "200 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|400 réis", "pattern": "Réis — República", "value": "400 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|500 réis", "pattern": "Réis — República", "value": "500 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|1.000 réis", "pattern": "Réis — República", "value": "1.000 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Réis — República|2.000 réis", "pattern": "Réis — República", "value": "2.000 réis", "year": "1889–1942", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|10 centavos", "pattern": "Cruzeiro 1942", "value": "10 centavos", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|20 centavos", "pattern": "Cruzeiro 1942", "value": "20 centavos", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|50 centavos", "pattern": "Cruzeiro 1942", "value": "50 centavos", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|1 cruzeiro", "pattern": "Cruzeiro 1942", "value": "1 cruzeiro", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|2 cruzeiros", "pattern": "Cruzeiro 1942", "value": "2 cruzeiros", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|5 cruzeiros", "pattern": "Cruzeiro 1942", "value": "5 cruzeiros", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|10 cruzeiros", "pattern": "Cruzeiro 1942", "value": "10 cruzeiros", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|20 cruzeiros", "pattern": "Cruzeiro 1942", "value": "20 cruzeiros", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1942|50 cruzeiros", "pattern": "Cruzeiro 1942", "value": "50 cruzeiros", "year": "1942–1967", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|1 centavo", "pattern": "Cruzeiro Novo", "value": "1 centavo", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|2 centavos", "pattern": "Cruzeiro Novo", "value": "2 centavos", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|5 centavos", "pattern": "Cruzeiro Novo", "value": "5 centavos", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|10 centavos", "pattern": "Cruzeiro Novo", "value": "10 centavos", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|20 centavos", "pattern": "Cruzeiro Novo", "value": "20 centavos", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Novo|50 centavos", "pattern": "Cruzeiro Novo", "value": "50 centavos", "year": "1967–1970", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|1 centavo", "pattern": "Cruzeiro 1970", "value": "1 centavo", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|2 centavos", "pattern": "Cruzeiro 1970", "value": "2 centavos", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|5 centavos", "pattern": "Cruzeiro 1970", "value": "5 centavos", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|10 centavos", "pattern": "Cruzeiro 1970", "value": "10 centavos", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|20 centavos", "pattern": "Cruzeiro 1970", "value": "20 centavos", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|50 centavos", "pattern": "Cruzeiro 1970", "value": "50 centavos", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|1 cruzeiro", "pattern": "Cruzeiro 1970", "value": "1 cruzeiro", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|5 cruzeiros", "pattern": "Cruzeiro 1970", "value": "5 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|10 cruzeiros", "pattern": "Cruzeiro 1970", "value": "10 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|20 cruzeiros", "pattern": "Cruzeiro 1970", "value": "20 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|50 cruzeiros", "pattern": "Cruzeiro 1970", "value": "50 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|100 cruzeiros", "pattern": "Cruzeiro 1970", "value": "100 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|200 cruzeiros", "pattern": "Cruzeiro 1970", "value": "200 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1970|500 cruzeiros", "pattern": "Cruzeiro 1970", "value": "500 cruzeiros", "year": "1970–1986", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|1 centavo", "pattern": "Cruzado", "value": "1 centavo", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|5 centavos", "pattern": "Cruzado", "value": "5 centavos", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|10 centavos", "pattern": "Cruzado", "value": "10 centavos", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|50 centavos", "pattern": "Cruzado", "value": "50 centavos", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|1 cruzado", "pattern": "Cruzado", "value": "1 cruzado", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|5 cruzados", "pattern": "Cruzado", "value": "5 cruzados", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado|10 cruzados", "pattern": "Cruzado", "value": "10 cruzados", "year": "1986–1989", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado Novo|1 centavo", "pattern": "Cruzado Novo", "value": "1 centavo", "year": "1989–1990", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado Novo|5 centavos", "pattern": "Cruzado Novo", "value": "5 centavos", "year": "1989–1990", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado Novo|10 centavos", "pattern": "Cruzado Novo", "value": "10 centavos", "year": "1989–1990", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado Novo|50 centavos", "pattern": "Cruzado Novo", "value": "50 centavos", "year": "1989–1990", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzado Novo|1 cruzado novo", "pattern": "Cruzado Novo", "value": "1 cruzado novo", "year": "1989–1990", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|1 cruzeiro", "pattern": "Cruzeiro 1990", "value": "1 cruzeiro", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|5 cruzeiros", "pattern": "Cruzeiro 1990", "value": "5 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|10 cruzeiros", "pattern": "Cruzeiro 1990", "value": "10 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|50 cruzeiros", "pattern": "Cruzeiro 1990", "value": "50 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|100 cruzeiros", "pattern": "Cruzeiro 1990", "value": "100 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|500 cruzeiros", "pattern": "Cruzeiro 1990", "value": "500 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|1.000 cruzeiros", "pattern": "Cruzeiro 1990", "value": "1.000 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro 1990|5.000 cruzeiros", "pattern": "Cruzeiro 1990", "value": "5.000 cruzeiros", "year": "1990–1993", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Real|5 cruzeiros reais", "pattern": "Cruzeiro Real", "value": "5 cruzeiros reais", "year": "1993–1994", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Real|10 cruzeiros reais", "pattern": "Cruzeiro Real", "value": "10 cruzeiros reais", "year": "1993–1994", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Real|50 cruzeiros reais", "pattern": "Cruzeiro Real", "value": "50 cruzeiros reais", "year": "1993–1994", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Cruzeiro Real|100 cruzeiros reais", "pattern": "Cruzeiro Real", "value": "100 cruzeiros reais", "year": "1993–1994", "note": "1 exemplar desta versão/valor"}, {"id": "coin|Real|1 centavo|1994", "pattern": "Real", "value": "1 centavo", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|1 centavo|1995", "pattern": "Real", "value": "1 centavo", "year": "1995", "note": "1ª família"}, {"id": "coin|Real|1 centavo|1996", "pattern": "Real", "value": "1 centavo", "year": "1996", "note": "1ª família"}, {"id": "coin|Real|1 centavo|1997", "pattern": "Real", "value": "1 centavo", "year": "1997", "note": "1ª família"}, {"id": "coin|Real|1 centavo|1998", "pattern": "Real", "value": "1 centavo", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|1 centavo|1999", "pattern": "Real", "value": "1 centavo", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|1 centavo|2000", "pattern": "Real", "value": "1 centavo", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|1 centavo|2001", "pattern": "Real", "value": "1 centavo", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|1 centavo|2002", "pattern": "Real", "value": "1 centavo", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|1 centavo|2003", "pattern": "Real", "value": "1 centavo", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|1 centavo|2004", "pattern": "Real", "value": "1 centavo", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|5 centavos|1994", "pattern": "Real", "value": "5 centavos", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|5 centavos|1995", "pattern": "Real", "value": "5 centavos", "year": "1995", "note": "1ª família"}, {"id": "coin|Real|5 centavos|1996", "pattern": "Real", "value": "5 centavos", "year": "1996", "note": "1ª família"}, {"id": "coin|Real|5 centavos|1997", "pattern": "Real", "value": "5 centavos", "year": "1997", "note": "1ª família"}, {"id": "coin|Real|5 centavos|1998", "pattern": "Real", "value": "5 centavos", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|5 centavos|1999", "pattern": "Real", "value": "5 centavos", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2000", "pattern": "Real", "value": "5 centavos", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2001", "pattern": "Real", "value": "5 centavos", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2002", "pattern": "Real", "value": "5 centavos", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2003", "pattern": "Real", "value": "5 centavos", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2004", "pattern": "Real", "value": "5 centavos", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2005", "pattern": "Real", "value": "5 centavos", "year": "2005", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2006", "pattern": "Real", "value": "5 centavos", "year": "2006", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2007", "pattern": "Real", "value": "5 centavos", "year": "2007", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2008", "pattern": "Real", "value": "5 centavos", "year": "2008", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2009", "pattern": "Real", "value": "5 centavos", "year": "2009", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2010", "pattern": "Real", "value": "5 centavos", "year": "2010", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2011", "pattern": "Real", "value": "5 centavos", "year": "2011", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2012", "pattern": "Real", "value": "5 centavos", "year": "2012", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2013", "pattern": "Real", "value": "5 centavos", "year": "2013", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2014", "pattern": "Real", "value": "5 centavos", "year": "2014", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2015", "pattern": "Real", "value": "5 centavos", "year": "2015", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2016", "pattern": "Real", "value": "5 centavos", "year": "2016", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2017", "pattern": "Real", "value": "5 centavos", "year": "2017", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2018", "pattern": "Real", "value": "5 centavos", "year": "2018", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2019", "pattern": "Real", "value": "5 centavos", "year": "2019", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2020", "pattern": "Real", "value": "5 centavos", "year": "2020", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2021", "pattern": "Real", "value": "5 centavos", "year": "2021", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2022", "pattern": "Real", "value": "5 centavos", "year": "2022", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2023", "pattern": "Real", "value": "5 centavos", "year": "2023", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2024", "pattern": "Real", "value": "5 centavos", "year": "2024", "note": "2ª família"}, {"id": "coin|Real|5 centavos|2025", "pattern": "Real", "value": "5 centavos", "year": "2025", "note": "2ª família"}, {"id": "coin|Real|10 centavos|1994", "pattern": "Real", "value": "10 centavos", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|10 centavos|1995", "pattern": "Real", "value": "10 centavos", "year": "1995", "note": "1ª família"}, {"id": "coin|Real|10 centavos|1996", "pattern": "Real", "value": "10 centavos", "year": "1996", "note": "1ª família"}, {"id": "coin|Real|10 centavos|1997", "pattern": "Real", "value": "10 centavos", "year": "1997", "note": "1ª família"}, {"id": "coin|Real|10 centavos|1998", "pattern": "Real", "value": "10 centavos", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|10 centavos|1999", "pattern": "Real", "value": "10 centavos", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2000", "pattern": "Real", "value": "10 centavos", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2001", "pattern": "Real", "value": "10 centavos", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2002", "pattern": "Real", "value": "10 centavos", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2003", "pattern": "Real", "value": "10 centavos", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2004", "pattern": "Real", "value": "10 centavos", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2005", "pattern": "Real", "value": "10 centavos", "year": "2005", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2006", "pattern": "Real", "value": "10 centavos", "year": "2006", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2007", "pattern": "Real", "value": "10 centavos", "year": "2007", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2008", "pattern": "Real", "value": "10 centavos", "year": "2008", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2009", "pattern": "Real", "value": "10 centavos", "year": "2009", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2010", "pattern": "Real", "value": "10 centavos", "year": "2010", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2011", "pattern": "Real", "value": "10 centavos", "year": "2011", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2012", "pattern": "Real", "value": "10 centavos", "year": "2012", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2013", "pattern": "Real", "value": "10 centavos", "year": "2013", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2014", "pattern": "Real", "value": "10 centavos", "year": "2014", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2015", "pattern": "Real", "value": "10 centavos", "year": "2015", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2016", "pattern": "Real", "value": "10 centavos", "year": "2016", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2017", "pattern": "Real", "value": "10 centavos", "year": "2017", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2018", "pattern": "Real", "value": "10 centavos", "year": "2018", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2019", "pattern": "Real", "value": "10 centavos", "year": "2019", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2020", "pattern": "Real", "value": "10 centavos", "year": "2020", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2021", "pattern": "Real", "value": "10 centavos", "year": "2021", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2022", "pattern": "Real", "value": "10 centavos", "year": "2022", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2023", "pattern": "Real", "value": "10 centavos", "year": "2023", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2024", "pattern": "Real", "value": "10 centavos", "year": "2024", "note": "2ª família"}, {"id": "coin|Real|10 centavos|2025", "pattern": "Real", "value": "10 centavos", "year": "2025", "note": "2ª família"}, {"id": "coin|Real|25 centavos|1994", "pattern": "Real", "value": "25 centavos", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|25 centavos|1995", "pattern": "Real", "value": "25 centavos", "year": "1995", "note": "1ª família"}, {"id": "coin|Real|25 centavos|1996", "pattern": "Real", "value": "25 centavos", "year": "1996", "note": "1ª família"}, {"id": "coin|Real|25 centavos|1997", "pattern": "Real", "value": "25 centavos", "year": "1997", "note": "1ª família"}, {"id": "coin|Real|25 centavos|1998", "pattern": "Real", "value": "25 centavos", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|25 centavos|1999", "pattern": "Real", "value": "25 centavos", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2000", "pattern": "Real", "value": "25 centavos", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2001", "pattern": "Real", "value": "25 centavos", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2002", "pattern": "Real", "value": "25 centavos", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2003", "pattern": "Real", "value": "25 centavos", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2004", "pattern": "Real", "value": "25 centavos", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2005", "pattern": "Real", "value": "25 centavos", "year": "2005", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2006", "pattern": "Real", "value": "25 centavos", "year": "2006", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2007", "pattern": "Real", "value": "25 centavos", "year": "2007", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2008", "pattern": "Real", "value": "25 centavos", "year": "2008", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2009", "pattern": "Real", "value": "25 centavos", "year": "2009", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2010", "pattern": "Real", "value": "25 centavos", "year": "2010", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2011", "pattern": "Real", "value": "25 centavos", "year": "2011", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2012", "pattern": "Real", "value": "25 centavos", "year": "2012", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2013", "pattern": "Real", "value": "25 centavos", "year": "2013", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2014", "pattern": "Real", "value": "25 centavos", "year": "2014", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2015", "pattern": "Real", "value": "25 centavos", "year": "2015", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2016", "pattern": "Real", "value": "25 centavos", "year": "2016", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2017", "pattern": "Real", "value": "25 centavos", "year": "2017", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2018", "pattern": "Real", "value": "25 centavos", "year": "2018", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2019", "pattern": "Real", "value": "25 centavos", "year": "2019", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2020", "pattern": "Real", "value": "25 centavos", "year": "2020", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2021", "pattern": "Real", "value": "25 centavos", "year": "2021", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2022", "pattern": "Real", "value": "25 centavos", "year": "2022", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2023", "pattern": "Real", "value": "25 centavos", "year": "2023", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2024", "pattern": "Real", "value": "25 centavos", "year": "2024", "note": "2ª família"}, {"id": "coin|Real|25 centavos|2025", "pattern": "Real", "value": "25 centavos", "year": "2025", "note": "2ª família"}, {"id": "coin|Real|50 centavos|1994", "pattern": "Real", "value": "50 centavos", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|50 centavos|1995", "pattern": "Real", "value": "50 centavos", "year": "1995", "note": "1ª família"}, {"id": "coin|Real|50 centavos|1996", "pattern": "Real", "value": "50 centavos", "year": "1996", "note": "1ª família"}, {"id": "coin|Real|50 centavos|1997", "pattern": "Real", "value": "50 centavos", "year": "1997", "note": "1ª família"}, {"id": "coin|Real|50 centavos|1998", "pattern": "Real", "value": "50 centavos", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|50 centavos|1999", "pattern": "Real", "value": "50 centavos", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2000", "pattern": "Real", "value": "50 centavos", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2001", "pattern": "Real", "value": "50 centavos", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2002", "pattern": "Real", "value": "50 centavos", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2003", "pattern": "Real", "value": "50 centavos", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2004", "pattern": "Real", "value": "50 centavos", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2005", "pattern": "Real", "value": "50 centavos", "year": "2005", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2006", "pattern": "Real", "value": "50 centavos", "year": "2006", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2007", "pattern": "Real", "value": "50 centavos", "year": "2007", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2008", "pattern": "Real", "value": "50 centavos", "year": "2008", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2009", "pattern": "Real", "value": "50 centavos", "year": "2009", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2010", "pattern": "Real", "value": "50 centavos", "year": "2010", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2011", "pattern": "Real", "value": "50 centavos", "year": "2011", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2012", "pattern": "Real", "value": "50 centavos", "year": "2012", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2013", "pattern": "Real", "value": "50 centavos", "year": "2013", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2014", "pattern": "Real", "value": "50 centavos", "year": "2014", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2015", "pattern": "Real", "value": "50 centavos", "year": "2015", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2016", "pattern": "Real", "value": "50 centavos", "year": "2016", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2017", "pattern": "Real", "value": "50 centavos", "year": "2017", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2018", "pattern": "Real", "value": "50 centavos", "year": "2018", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2019", "pattern": "Real", "value": "50 centavos", "year": "2019", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2020", "pattern": "Real", "value": "50 centavos", "year": "2020", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2021", "pattern": "Real", "value": "50 centavos", "year": "2021", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2022", "pattern": "Real", "value": "50 centavos", "year": "2022", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2023", "pattern": "Real", "value": "50 centavos", "year": "2023", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2024", "pattern": "Real", "value": "50 centavos", "year": "2024", "note": "2ª família"}, {"id": "coin|Real|50 centavos|2025", "pattern": "Real", "value": "50 centavos", "year": "2025", "note": "2ª família"}, {"id": "coin|Real|1 real|1994", "pattern": "Real", "value": "1 real", "year": "1994", "note": "1ª família"}, {"id": "coin|Real|1 real|1998", "pattern": "Real", "value": "1 real", "year": "1998", "note": "2ª família"}, {"id": "coin|Real|1 real|1999", "pattern": "Real", "value": "1 real", "year": "1999", "note": "2ª família"}, {"id": "coin|Real|1 real|2000", "pattern": "Real", "value": "1 real", "year": "2000", "note": "2ª família"}, {"id": "coin|Real|1 real|2001", "pattern": "Real", "value": "1 real", "year": "2001", "note": "2ª família"}, {"id": "coin|Real|1 real|2002", "pattern": "Real", "value": "1 real", "year": "2002", "note": "2ª família"}, {"id": "coin|Real|1 real|2003", "pattern": "Real", "value": "1 real", "year": "2003", "note": "2ª família"}, {"id": "coin|Real|1 real|2004", "pattern": "Real", "value": "1 real", "year": "2004", "note": "2ª família"}, {"id": "coin|Real|1 real|2005", "pattern": "Real", "value": "1 real", "year": "2005", "note": "2ª família"}, {"id": "coin|Real|1 real|2006", "pattern": "Real", "value": "1 real", "year": "2006", "note": "2ª família"}, {"id": "coin|Real|1 real|2007", "pattern": "Real", "value": "1 real", "year": "2007", "note": "2ª família"}, {"id": "coin|Real|1 real|2008", "pattern": "Real", "value": "1 real", "year": "2008", "note": "2ª família"}, {"id": "coin|Real|1 real|2009", "pattern": "Real", "value": "1 real", "year": "2009", "note": "2ª família"}, {"id": "coin|Real|1 real|2010", "pattern": "Real", "value": "1 real", "year": "2010", "note": "2ª família"}, {"id": "coin|Real|1 real|2011", "pattern": "Real", "value": "1 real", "year": "2011", "note": "2ª família"}, {"id": "coin|Real|1 real|2012", "pattern": "Real", "value": "1 real", "year": "2012", "note": "2ª família"}, {"id": "coin|Real|1 real|2013", "pattern": "Real", "value": "1 real", "year": "2013", "note": "2ª família"}, {"id": "coin|Real|1 real|2014", "pattern": "Real", "value": "1 real", "year": "2014", "note": "2ª família"}, {"id": "coin|Real|1 real|2015", "pattern": "Real", "value": "1 real", "year": "2015", "note": "2ª família"}, {"id": "coin|Real|1 real|2016", "pattern": "Real", "value": "1 real", "year": "2016", "note": "2ª família"}, {"id": "coin|Real|1 real|2017", "pattern": "Real", "value": "1 real", "year": "2017", "note": "2ª família"}, {"id": "coin|Real|1 real|2018", "pattern": "Real", "value": "1 real", "year": "2018", "note": "2ª família"}, {"id": "coin|Real|1 real|2019", "pattern": "Real", "value": "1 real", "year": "2019", "note": "2ª família"}, {"id": "coin|Real|1 real|2020", "pattern": "Real", "value": "1 real", "year": "2020", "note": "2ª família"}, {"id": "coin|Real|1 real|2021", "pattern": "Real", "value": "1 real", "year": "2021", "note": "2ª família"}, {"id": "coin|Real|1 real|2022", "pattern": "Real", "value": "1 real", "year": "2022", "note": "2ª família"}, {"id": "coin|Real|1 real|2023", "pattern": "Real", "value": "1 real", "year": "2023", "note": "2ª família"}, {"id": "coin|Real|1 real|2024", "pattern": "Real", "value": "1 real", "year": "2024", "note": "2ª família"}, {"id": "coin|Real|1 real|2025", "pattern": "Real", "value": "1 real", "year": "2025", "note": "2ª família"}, {"id": "coin|Real Comemorativa|50 anos da Declaração Universal dos Direitos Humanos|1998", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "1998", "note": "50 anos da Declaração Universal dos Direitos Humanos"}, {"id": "coin|Real Comemorativa|Centenário de Juscelino Kubitschek|2002", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2002", "note": "Centenário de Juscelino Kubitschek"}, {"id": "coin|Real Comemorativa|40 anos do Banco Central|2005", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2005", "note": "40 anos do Banco Central"}, {"id": "coin|Real Comemorativa|Entrega da Bandeira Olímpica|2012", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2012", "note": "Entrega da Bandeira Olímpica"}, {"id": "coin|Real Comemorativa|50 anos do Banco Central|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "50 anos do Banco Central"}, {"id": "coin|Real Comemorativa|Olimpíadas — Atletismo|2014", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2014", "note": "Olimpíadas — Atletismo"}, {"id": "coin|Real Comemorativa|Olimpíadas — Natação|2014", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2014", "note": "Olimpíadas — Natação"}, {"id": "coin|Real Comemorativa|Olimpíadas — Paratriatlo|2014", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2014", "note": "Olimpíadas — Paratriatlo"}, {"id": "coin|Real Comemorativa|Olimpíadas — Golfe|2014", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2014", "note": "Olimpíadas — Golfe"}, {"id": "coin|Real Comemorativa|Olimpíadas — Basquetebol|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Basquetebol"}, {"id": "coin|Real Comemorativa|Olimpíadas — Vela|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Vela"}, {"id": "coin|Real Comemorativa|Olimpíadas — Paracanoagem|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Paracanoagem"}, {"id": "coin|Real Comemorativa|Olimpíadas — Rugby|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Rugby"}, {"id": "coin|Real Comemorativa|Olimpíadas — Futebol|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Futebol"}, {"id": "coin|Real Comemorativa|Olimpíadas — Voleibol|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Voleibol"}, {"id": "coin|Real Comemorativa|Olimpíadas — Atletismo Paralímpico|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Atletismo Paralímpico"}, {"id": "coin|Real Comemorativa|Olimpíadas — Judô|2015", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2015", "note": "Olimpíadas — Judô"}, {"id": "coin|Real Comemorativa|Olimpíadas — Boxe|2016", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2016", "note": "Olimpíadas — Boxe"}, {"id": "coin|Real Comemorativa|Olimpíadas — Natação Paralímpica|2016", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2016", "note": "Olimpíadas — Natação Paralímpica"}, {"id": "coin|Real Comemorativa|Olimpíadas — Mascote Vinicius|2016", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2016", "note": "Olimpíadas — Mascote Vinicius"}, {"id": "coin|Real Comemorativa|Paralimpíadas — Mascote Tom|2016", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2016", "note": "Paralimpíadas — Mascote Tom"}, {"id": "coin|Real Comemorativa|25 anos do Plano Real|2019", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2019", "note": "25 anos do Plano Real"}, {"id": "coin|Real Comemorativa|30 anos do Real|2024", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2024", "note": "30 anos do Real"}, {"id": "coin|Real Comemorativa|60 anos do Banco Central|2025", "pattern": "Real — comemorativas", "value": "R$ 1", "year": "2025", "note": "60 anos do Banco Central"}];
-const brazilNotes = [{"id": "note|Réis|1 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "1 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|2 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "2 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|5 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "5 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|10 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "10 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|20 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "20 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|50 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "50 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|100 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "100 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|200 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "200 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|500 mil-réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "500 mil-réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Réis|1 conto de réis|Tesouro Nacional / modelos históricos", "pattern": "Réis", "value": "1 conto de réis", "year": "", "note": "Tesouro Nacional / modelos históricos"}, {"id": "note|Cruzeiro 1942|1 cruzeiro|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "1 cruzeiro", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|2 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "2 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|5 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "5 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|10 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "10 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|20 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "20 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|50 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "50 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|100 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "100 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|200 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "200 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|500 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "500 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|1.000 cruzeiros|modelos do padrão", "pattern": "Cruzeiro 1942", "value": "1.000 cruzeiros", "year": "", "note": "modelos do padrão"}, {"id": "note|Cruzeiro 1942|5.000 cruzeiros|Tiradentes", "pattern": "Cruzeiro 1942", "value": "5.000 cruzeiros", "year": "", "note": "Tiradentes"}, {"id": "note|Cruzeiro 1942|10.000 cruzeiros|Santos Dumont", "pattern": "Cruzeiro 1942", "value": "10.000 cruzeiros", "year": "", "note": "Santos Dumont"}, {"id": "note|Cruzeiro Novo|1 centavo|Getúlio Vargas — carimbada", "pattern": "Cruzeiro Novo", "value": "1 centavo", "year": "", "note": "Getúlio Vargas — carimbada"}, {"id": "note|Cruzeiro Novo|5 centavos|Princesa Isabel — carimbada", "pattern": "Cruzeiro Novo", "value": "5 centavos", "year": "", "note": "Princesa Isabel — carimbada"}, {"id": "note|Cruzeiro Novo|10 centavos|D. Pedro II — carimbada", "pattern": "Cruzeiro Novo", "value": "10 centavos", "year": "", "note": "D. Pedro II — carimbada"}, {"id": "note|Cruzeiro Novo|50 centavos|D. João VI — carimbada", "pattern": "Cruzeiro Novo", "value": "50 centavos", "year": "", "note": "D. João VI — carimbada"}, {"id": "note|Cruzeiro Novo|1 cruzeiro novo|Pedro Álvares Cabral — carimbada", "pattern": "Cruzeiro Novo", "value": "1 cruzeiro novo", "year": "", "note": "Pedro Álvares Cabral — carimbada"}, {"id": "note|Cruzeiro Novo|5 cruzeiros novos|Tiradentes — carimbada", "pattern": "Cruzeiro Novo", "value": "5 cruzeiros novos", "year": "", "note": "Tiradentes — carimbada"}, {"id": "note|Cruzeiro Novo|10 cruzeiros novos|Santos Dumont — carimbada", "pattern": "Cruzeiro Novo", "value": "10 cruzeiros novos", "year": "", "note": "Santos Dumont — carimbada"}, {"id": "note|Cruzeiro 1970|1 cruzeiro|República", "pattern": "Cruzeiro 1970", "value": "1 cruzeiro", "year": "", "note": "República"}, {"id": "note|Cruzeiro 1970|5 cruzeiros|D. Pedro I", "pattern": "Cruzeiro 1970", "value": "5 cruzeiros", "year": "", "note": "D. Pedro I"}, {"id": "note|Cruzeiro 1970|10 cruzeiros|D. Pedro II", "pattern": "Cruzeiro 1970", "value": "10 cruzeiros", "year": "", "note": "D. Pedro II"}, {"id": "note|Cruzeiro 1970|50 cruzeiros|Deodoro da Fonseca", "pattern": "Cruzeiro 1970", "value": "50 cruzeiros", "year": "", "note": "Deodoro da Fonseca"}, {"id": "note|Cruzeiro 1970|100 cruzeiros|Floriano Peixoto / Duque de Caxias", "pattern": "Cruzeiro 1970", "value": "100 cruzeiros", "year": "", "note": "Floriano Peixoto / Duque de Caxias"}, {"id": "note|Cruzeiro 1970|200 cruzeiros|Princesa Isabel", "pattern": "Cruzeiro 1970", "value": "200 cruzeiros", "year": "", "note": "Princesa Isabel"}, {"id": "note|Cruzeiro 1970|500 cruzeiros|Evolução Étnica / Deodoro", "pattern": "Cruzeiro 1970", "value": "500 cruzeiros", "year": "", "note": "Evolução Étnica / Deodoro"}, {"id": "note|Cruzeiro 1970|1.000 cruzeiros|Barão do Rio Branco", "pattern": "Cruzeiro 1970", "value": "1.000 cruzeiros", "year": "", "note": "Barão do Rio Branco"}, {"id": "note|Cruzeiro 1970|5.000 cruzeiros|Castello Branco", "pattern": "Cruzeiro 1970", "value": "5.000 cruzeiros", "year": "", "note": "Castello Branco"}, {"id": "note|Cruzeiro 1970|10.000 cruzeiros|Rui Barbosa", "pattern": "Cruzeiro 1970", "value": "10.000 cruzeiros", "year": "", "note": "Rui Barbosa"}, {"id": "note|Cruzeiro 1970|50.000 cruzeiros|Oswaldo Cruz", "pattern": "Cruzeiro 1970", "value": "50.000 cruzeiros", "year": "", "note": "Oswaldo Cruz"}, {"id": "note|Cruzeiro 1970|100.000 cruzeiros|Juscelino Kubitschek", "pattern": "Cruzeiro 1970", "value": "100.000 cruzeiros", "year": "", "note": "Juscelino Kubitschek"}, {"id": "note|Cruzado|10 cruzados|Rui Barbosa", "pattern": "Cruzado", "value": "10 cruzados", "year": "", "note": "Rui Barbosa"}, {"id": "note|Cruzado|50 cruzados|Oswaldo Cruz", "pattern": "Cruzado", "value": "50 cruzados", "year": "", "note": "Oswaldo Cruz"}, {"id": "note|Cruzado|100 cruzados|Juscelino Kubitschek", "pattern": "Cruzado", "value": "100 cruzados", "year": "", "note": "Juscelino Kubitschek"}, {"id": "note|Cruzado|500 cruzados|Villa-Lobos", "pattern": "Cruzado", "value": "500 cruzados", "year": "", "note": "Villa-Lobos"}, {"id": "note|Cruzado|1.000 cruzados|Machado de Assis", "pattern": "Cruzado", "value": "1.000 cruzados", "year": "", "note": "Machado de Assis"}, {"id": "note|Cruzado|5.000 cruzados|Portinari", "pattern": "Cruzado", "value": "5.000 cruzados", "year": "", "note": "Portinari"}, {"id": "note|Cruzado|10.000 cruzados|Carlos Chagas", "pattern": "Cruzado", "value": "10.000 cruzados", "year": "", "note": "Carlos Chagas"}, {"id": "note|Cruzado Novo|1 cruzado novo|Machado de Assis", "pattern": "Cruzado Novo", "value": "1 cruzado novo", "year": "", "note": "Machado de Assis"}, {"id": "note|Cruzado Novo|5 cruzados novos|Portinari", "pattern": "Cruzado Novo", "value": "5 cruzados novos", "year": "", "note": "Portinari"}, {"id": "note|Cruzado Novo|10 cruzados novos|Carlos Chagas", "pattern": "Cruzado Novo", "value": "10 cruzados novos", "year": "", "note": "Carlos Chagas"}, {"id": "note|Cruzado Novo|50 cruzados novos|Carlos Drummond", "pattern": "Cruzado Novo", "value": "50 cruzados novos", "year": "", "note": "Carlos Drummond"}, {"id": "note|Cruzado Novo|100 cruzados novos|Cecília Meireles", "pattern": "Cruzado Novo", "value": "100 cruzados novos", "year": "", "note": "Cecília Meireles"}, {"id": "note|Cruzado Novo|200 cruzados novos|República", "pattern": "Cruzado Novo", "value": "200 cruzados novos", "year": "", "note": "República"}, {"id": "note|Cruzado Novo|500 cruzados novos|Augusto Ruschi", "pattern": "Cruzado Novo", "value": "500 cruzados novos", "year": "", "note": "Augusto Ruschi"}, {"id": "note|Cruzeiro 1990|50 cruzeiros|Carlos Drummond", "pattern": "Cruzeiro 1990", "value": "50 cruzeiros", "year": "", "note": "Carlos Drummond"}, {"id": "note|Cruzeiro 1990|100 cruzeiros|Cecília Meireles", "pattern": "Cruzeiro 1990", "value": "100 cruzeiros", "year": "", "note": "Cecília Meireles"}, {"id": "note|Cruzeiro 1990|200 cruzeiros|República", "pattern": "Cruzeiro 1990", "value": "200 cruzeiros", "year": "", "note": "República"}, {"id": "note|Cruzeiro 1990|500 cruzeiros|Augusto Ruschi", "pattern": "Cruzeiro 1990", "value": "500 cruzeiros", "year": "", "note": "Augusto Ruschi"}, {"id": "note|Cruzeiro 1990|1.000 cruzeiros|Rondon", "pattern": "Cruzeiro 1990", "value": "1.000 cruzeiros", "year": "", "note": "Rondon"}, {"id": "note|Cruzeiro 1990|5.000 cruzeiros|República / Carlos Gomes", "pattern": "Cruzeiro 1990", "value": "5.000 cruzeiros", "year": "", "note": "República / Carlos Gomes"}, {"id": "note|Cruzeiro 1990|10.000 cruzeiros|Vital Brazil", "pattern": "Cruzeiro 1990", "value": "10.000 cruzeiros", "year": "", "note": "Vital Brazil"}, {"id": "note|Cruzeiro 1990|50.000 cruzeiros|Câmara Cascudo", "pattern": "Cruzeiro 1990", "value": "50.000 cruzeiros", "year": "", "note": "Câmara Cascudo"}, {"id": "note|Cruzeiro 1990|100.000 cruzeiros|Meio Ambiente", "pattern": "Cruzeiro 1990", "value": "100.000 cruzeiros", "year": "", "note": "Meio Ambiente"}, {"id": "note|Cruzeiro 1990|500.000 cruzeiros|Mário de Andrade", "pattern": "Cruzeiro 1990", "value": "500.000 cruzeiros", "year": "", "note": "Mário de Andrade"}, {"id": "note|Cruzeiro Real|50 cruzeiros reais|Câmara Cascudo", "pattern": "Cruzeiro Real", "value": "50 cruzeiros reais", "year": "", "note": "Câmara Cascudo"}, {"id": "note|Cruzeiro Real|100 cruzeiros reais|Meio Ambiente", "pattern": "Cruzeiro Real", "value": "100 cruzeiros reais", "year": "", "note": "Meio Ambiente"}, {"id": "note|Cruzeiro Real|500 cruzeiros reais|Mário de Andrade", "pattern": "Cruzeiro Real", "value": "500 cruzeiros reais", "year": "", "note": "Mário de Andrade"}, {"id": "note|Cruzeiro Real|1.000 cruzeiros reais|Anísio Teixeira", "pattern": "Cruzeiro Real", "value": "1.000 cruzeiros reais", "year": "", "note": "Anísio Teixeira"}, {"id": "note|Cruzeiro Real|5.000 cruzeiros reais|Gaúcho", "pattern": "Cruzeiro Real", "value": "5.000 cruzeiros reais", "year": "", "note": "Gaúcho"}, {"id": "note|Cruzeiro Real|50.000 cruzeiros reais|Baiana", "pattern": "Cruzeiro Real", "value": "50.000 cruzeiros reais", "year": "", "note": "Baiana"}, {"id": "note|Real — 1ª família|R$ 1|Beija-flor", "pattern": "Real — 1ª família", "value": "R$ 1", "year": "", "note": "Beija-flor"}, {"id": "note|Real — 1ª família|R$ 2|Tartaruga-marinha", "pattern": "Real — 1ª família", "value": "R$ 2", "year": "", "note": "Tartaruga-marinha"}, {"id": "note|Real — 1ª família|R$ 5|Garça", "pattern": "Real — 1ª família", "value": "R$ 5", "year": "", "note": "Garça"}, {"id": "note|Real — 1ª família|R$ 10|Arara", "pattern": "Real — 1ª família", "value": "R$ 10", "year": "", "note": "Arara"}, {"id": "note|Real — 1ª família|R$ 10|Pedro Álvares Cabral — polímero", "pattern": "Real — 1ª família", "value": "R$ 10", "year": "", "note": "Pedro Álvares Cabral — polímero"}, {"id": "note|Real — 1ª família|R$ 20|Mico-leão-dourado", "pattern": "Real — 1ª família", "value": "R$ 20", "year": "", "note": "Mico-leão-dourado"}, {"id": "note|Real — 1ª família|R$ 50|Onça-pintada", "pattern": "Real — 1ª família", "value": "R$ 50", "year": "", "note": "Onça-pintada"}, {"id": "note|Real — 1ª família|R$ 100|Garoupa", "pattern": "Real — 1ª família", "value": "R$ 100", "year": "", "note": "Garoupa"}, {"id": "note|Real — 2ª família|R$ 2|Tartaruga-marinha", "pattern": "Real — 2ª família", "value": "R$ 2", "year": "", "note": "Tartaruga-marinha"}, {"id": "note|Real — 2ª família|R$ 5|Garça", "pattern": "Real — 2ª família", "value": "R$ 5", "year": "", "note": "Garça"}, {"id": "note|Real — 2ª família|R$ 10|Arara", "pattern": "Real — 2ª família", "value": "R$ 10", "year": "", "note": "Arara"}, {"id": "note|Real — 2ª família|R$ 20|Mico-leão-dourado", "pattern": "Real — 2ª família", "value": "R$ 20", "year": "", "note": "Mico-leão-dourado"}, {"id": "note|Real — 2ª família|R$ 50|Onça-pintada", "pattern": "Real — 2ª família", "value": "R$ 50", "year": "", "note": "Onça-pintada"}, {"id": "note|Real — 2ª família|R$ 100|Garoupa", "pattern": "Real — 2ª família", "value": "R$ 100", "year": "", "note": "Garoupa"}, {"id": "note|Real — 2ª família|R$ 200|Lobo-guará", "pattern": "Real — 2ª família", "value": "R$ 200", "year": "", "note": "Lobo-guará"}];
+const brazilNotes = [{"id":"note|Réis|1 mil-réis|Tesouro Nacional / modelos históricos","pattern":"Réis","value":"1 mil-réis","year":"","note":"Retrato varia conforme a emissão"},{"id":"note|Réis|2 mil-réis|Tesouro Nacional / modelos históricos","pattern":"Réis","value":"2 mil-réis","year":"","note":"Retrato varia conforme a emissão"},{"id":"note|Réis|5 mil-réis|Tesouro Nacional / modelos históricos","pattern":"Réis","value":"5 mil-réis","year":"","note":"Retrato varia conforme a emissão"},{"id":"note|Réis|10 mil-réis|Tesouro Nacional / modelos históricos","pattern":"Réis","value":"10 mil-réis","year":"","note":"Retrato varia conforme a emissão"},{"id":"note|Réis|20 mil-réis|Tesouro Nacional / modelos históricos","pattern":"Réis","value":"20 mil-réis","year":"","note":"Retrato varia conforme a emissão"},{"id":"note|Réis|50 mil-réis|Tesouro Nacional / modelos históricos","pattern":"Réis","value":"50 mil-réis","year":"","note":"Retrato varia conforme a emissão"},{"id":"note|Réis|100 mil-réis|Tesouro Nacional / modelos históricos","pattern":"Réis","value":"100 mil-réis","year":"","note":"Retrato varia conforme a emissão"},{"id":"note|Réis|200 mil-réis|Tesouro Nacional / modelos históricos","pattern":"Réis","value":"200 mil-réis","year":"","note":"Retrato varia conforme a emissão"},{"id":"note|Réis|500 mil-réis|Tesouro Nacional / modelos históricos","pattern":"Réis","value":"500 mil-réis","year":"","note":"Retrato varia conforme a emissão"},{"id":"note|Réis|1 conto de réis|Tesouro Nacional / modelos históricos","pattern":"Réis","value":"1 conto de réis","year":"","note":"Retrato varia conforme a emissão"},{"id":"note|Cruzeiro 1942|1 cruzeiro|modelos do padrão","pattern":"Cruzeiro 1942","value":"1 cruzeiro","year":"","note":"Marquês de Tamandaré"},{"id":"note|Cruzeiro 1942|2 cruzeiros|modelos do padrão","pattern":"Cruzeiro 1942","value":"2 cruzeiros","year":"","note":"Duque de Caxias"},{"id":"note|Cruzeiro 1942|5 cruzeiros|modelos do padrão","pattern":"Cruzeiro 1942","value":"5 cruzeiros","year":"","note":"Barão do Rio Branco"},{"id":"note|Cruzeiro 1942|10 cruzeiros|modelos do padrão","pattern":"Cruzeiro 1942","value":"10 cruzeiros","year":"","note":"Getúlio Vargas"},{"id":"note|Cruzeiro 1942|20 cruzeiros|modelos do padrão","pattern":"Cruzeiro 1942","value":"20 cruzeiros","year":"","note":"Deodoro da Fonseca"},{"id":"note|Cruzeiro 1942|50 cruzeiros|modelos do padrão","pattern":"Cruzeiro 1942","value":"50 cruzeiros","year":"","note":"Princesa Isabel"},{"id":"note|Cruzeiro 1942|100 cruzeiros|modelos do padrão","pattern":"Cruzeiro 1942","value":"100 cruzeiros","year":"","note":"D. Pedro II"},{"id":"note|Cruzeiro 1942|200 cruzeiros|modelos do padrão","pattern":"Cruzeiro 1942","value":"200 cruzeiros","year":"","note":"D. Pedro I"},{"id":"note|Cruzeiro 1942|500 cruzeiros|modelos do padrão","pattern":"Cruzeiro 1942","value":"500 cruzeiros","year":"","note":"D. João VI"},{"id":"note|Cruzeiro 1942|1.000 cruzeiros|modelos do padrão","pattern":"Cruzeiro 1942","value":"1.000 cruzeiros","year":"","note":"Pedro Álvares Cabral"},{"id":"note|Cruzeiro 1942|5.000 cruzeiros|Tiradentes","pattern":"Cruzeiro 1942","value":"5.000 cruzeiros","year":"","note":"Tiradentes"},{"id":"note|Cruzeiro 1942|10.000 cruzeiros|Santos Dumont","pattern":"Cruzeiro 1942","value":"10.000 cruzeiros","year":"","note":"Santos Dumont"},{"id":"note|Cruzeiro Novo|1 centavo|Getúlio Vargas — carimbada","pattern":"Cruzeiro Novo","value":"1 centavo","year":"","note":"Getúlio Vargas — carimbada"},{"id":"note|Cruzeiro Novo|5 centavos|Princesa Isabel — carimbada","pattern":"Cruzeiro Novo","value":"5 centavos","year":"","note":"Princesa Isabel — carimbada"},{"id":"note|Cruzeiro Novo|10 centavos|D. Pedro II — carimbada","pattern":"Cruzeiro Novo","value":"10 centavos","year":"","note":"D. Pedro II — carimbada"},{"id":"note|Cruzeiro Novo|50 centavos|D. João VI — carimbada","pattern":"Cruzeiro Novo","value":"50 centavos","year":"","note":"D. João VI — carimbada"},{"id":"note|Cruzeiro Novo|1 cruzeiro novo|Pedro Álvares Cabral — carimbada","pattern":"Cruzeiro Novo","value":"1 cruzeiro novo","year":"","note":"Pedro Álvares Cabral — carimbada"},{"id":"note|Cruzeiro Novo|5 cruzeiros novos|Tiradentes — carimbada","pattern":"Cruzeiro Novo","value":"5 cruzeiros novos","year":"","note":"Tiradentes — carimbada"},{"id":"note|Cruzeiro Novo|10 cruzeiros novos|Santos Dumont — carimbada","pattern":"Cruzeiro Novo","value":"10 cruzeiros novos","year":"","note":"Santos Dumont — carimbada"},{"id":"note|Cruzeiro 1970|1 cruzeiro|República","pattern":"Cruzeiro 1970","value":"1 cruzeiro","year":"","note":"República"},{"id":"note|Cruzeiro 1970|5 cruzeiros|D. Pedro I","pattern":"Cruzeiro 1970","value":"5 cruzeiros","year":"","note":"D. Pedro I"},{"id":"note|Cruzeiro 1970|10 cruzeiros|D. Pedro II","pattern":"Cruzeiro 1970","value":"10 cruzeiros","year":"","note":"D. Pedro II"},{"id":"note|Cruzeiro 1970|50 cruzeiros|Deodoro da Fonseca","pattern":"Cruzeiro 1970","value":"50 cruzeiros","year":"","note":"Deodoro da Fonseca"},{"id":"note|Cruzeiro 1970|100 cruzeiros|Floriano Peixoto / Duque de Caxias","pattern":"Cruzeiro 1970","value":"100 cruzeiros","year":"","note":"Floriano Peixoto / Duque de Caxias"},{"id":"note|Cruzeiro 1970|200 cruzeiros|Princesa Isabel","pattern":"Cruzeiro 1970","value":"200 cruzeiros","year":"","note":"Princesa Isabel"},{"id":"note|Cruzeiro 1970|500 cruzeiros|Evolução Étnica / Deodoro","pattern":"Cruzeiro 1970","value":"500 cruzeiros","year":"","note":"Evolução Étnica / Deodoro"},{"id":"note|Cruzeiro 1970|1.000 cruzeiros|Barão do Rio Branco","pattern":"Cruzeiro 1970","value":"1.000 cruzeiros","year":"","note":"Barão do Rio Branco"},{"id":"note|Cruzeiro 1970|5.000 cruzeiros|Castello Branco","pattern":"Cruzeiro 1970","value":"5.000 cruzeiros","year":"","note":"Castello Branco"},{"id":"note|Cruzeiro 1970|10.000 cruzeiros|Rui Barbosa","pattern":"Cruzeiro 1970","value":"10.000 cruzeiros","year":"","note":"Rui Barbosa"},{"id":"note|Cruzeiro 1970|50.000 cruzeiros|Oswaldo Cruz","pattern":"Cruzeiro 1970","value":"50.000 cruzeiros","year":"","note":"Oswaldo Cruz"},{"id":"note|Cruzeiro 1970|100.000 cruzeiros|Juscelino Kubitschek","pattern":"Cruzeiro 1970","value":"100.000 cruzeiros","year":"","note":"Juscelino Kubitschek"},{"id":"note|Cruzado|10 cruzados|Rui Barbosa","pattern":"Cruzado","value":"10 cruzados","year":"","note":"Rui Barbosa"},{"id":"note|Cruzado|50 cruzados|Oswaldo Cruz","pattern":"Cruzado","value":"50 cruzados","year":"","note":"Oswaldo Cruz"},{"id":"note|Cruzado|100 cruzados|Juscelino Kubitschek","pattern":"Cruzado","value":"100 cruzados","year":"","note":"Juscelino Kubitschek"},{"id":"note|Cruzado|500 cruzados|Villa-Lobos","pattern":"Cruzado","value":"500 cruzados","year":"","note":"Villa-Lobos"},{"id":"note|Cruzado|1.000 cruzados|Machado de Assis","pattern":"Cruzado","value":"1.000 cruzados","year":"","note":"Machado de Assis"},{"id":"note|Cruzado|5.000 cruzados|Portinari","pattern":"Cruzado","value":"5.000 cruzados","year":"","note":"Portinari"},{"id":"note|Cruzado|10.000 cruzados|Carlos Chagas","pattern":"Cruzado","value":"10.000 cruzados","year":"","note":"Carlos Chagas"},{"id":"note|Cruzado Novo|1 cruzado novo|Machado de Assis","pattern":"Cruzado Novo","value":"1 cruzado novo","year":"","note":"Machado de Assis"},{"id":"note|Cruzado Novo|5 cruzados novos|Portinari","pattern":"Cruzado Novo","value":"5 cruzados novos","year":"","note":"Portinari"},{"id":"note|Cruzado Novo|10 cruzados novos|Carlos Chagas","pattern":"Cruzado Novo","value":"10 cruzados novos","year":"","note":"Carlos Chagas"},{"id":"note|Cruzado Novo|50 cruzados novos|Carlos Drummond","pattern":"Cruzado Novo","value":"50 cruzados novos","year":"","note":"Carlos Drummond"},{"id":"note|Cruzado Novo|100 cruzados novos|Cecília Meireles","pattern":"Cruzado Novo","value":"100 cruzados novos","year":"","note":"Cecília Meireles"},{"id":"note|Cruzado Novo|200 cruzados novos|República","pattern":"Cruzado Novo","value":"200 cruzados novos","year":"","note":"República"},{"id":"note|Cruzado Novo|500 cruzados novos|Augusto Ruschi","pattern":"Cruzado Novo","value":"500 cruzados novos","year":"","note":"Augusto Ruschi"},{"id":"note|Cruzeiro 1990|50 cruzeiros|Carlos Drummond","pattern":"Cruzeiro 1990","value":"50 cruzeiros","year":"","note":"Carlos Drummond"},{"id":"note|Cruzeiro 1990|100 cruzeiros|Cecília Meireles","pattern":"Cruzeiro 1990","value":"100 cruzeiros","year":"","note":"Cecília Meireles"},{"id":"note|Cruzeiro 1990|200 cruzeiros|República","pattern":"Cruzeiro 1990","value":"200 cruzeiros","year":"","note":"República"},{"id":"note|Cruzeiro 1990|500 cruzeiros|Augusto Ruschi","pattern":"Cruzeiro 1990","value":"500 cruzeiros","year":"","note":"Augusto Ruschi"},{"id":"note|Cruzeiro 1990|1.000 cruzeiros|Rondon","pattern":"Cruzeiro 1990","value":"1.000 cruzeiros","year":"","note":"Rondon"},{"id":"note|Cruzeiro 1990|5.000 cruzeiros|República / Carlos Gomes","pattern":"Cruzeiro 1990","value":"5.000 cruzeiros","year":"","note":"República / Carlos Gomes"},{"id":"note|Cruzeiro 1990|10.000 cruzeiros|Vital Brazil","pattern":"Cruzeiro 1990","value":"10.000 cruzeiros","year":"","note":"Vital Brazil"},{"id":"note|Cruzeiro 1990|50.000 cruzeiros|Câmara Cascudo","pattern":"Cruzeiro 1990","value":"50.000 cruzeiros","year":"","note":"Câmara Cascudo"},{"id":"note|Cruzeiro 1990|100.000 cruzeiros|Meio Ambiente","pattern":"Cruzeiro 1990","value":"100.000 cruzeiros","year":"","note":"Meio Ambiente"},{"id":"note|Cruzeiro 1990|500.000 cruzeiros|Mário de Andrade","pattern":"Cruzeiro 1990","value":"500.000 cruzeiros","year":"","note":"Mário de Andrade"},{"id":"note|Cruzeiro Real|50 cruzeiros reais|Câmara Cascudo","pattern":"Cruzeiro Real","value":"50 cruzeiros reais","year":"","note":"Câmara Cascudo"},{"id":"note|Cruzeiro Real|100 cruzeiros reais|Meio Ambiente","pattern":"Cruzeiro Real","value":"100 cruzeiros reais","year":"","note":"Meio Ambiente"},{"id":"note|Cruzeiro Real|500 cruzeiros reais|Mário de Andrade","pattern":"Cruzeiro Real","value":"500 cruzeiros reais","year":"","note":"Mário de Andrade"},{"id":"note|Cruzeiro Real|1.000 cruzeiros reais|Anísio Teixeira","pattern":"Cruzeiro Real","value":"1.000 cruzeiros reais","year":"","note":"Anísio Teixeira"},{"id":"note|Cruzeiro Real|5.000 cruzeiros reais|Gaúcho","pattern":"Cruzeiro Real","value":"5.000 cruzeiros reais","year":"","note":"Gaúcho"},{"id":"note|Cruzeiro Real|50.000 cruzeiros reais|Baiana","pattern":"Cruzeiro Real","value":"50.000 cruzeiros reais","year":"","note":"Baiana"},{"id":"note|Real — 1ª família|R$ 1|Beija-flor","pattern":"Real — 1ª família","value":"R$ 1","year":"","note":"Efígie da República / Beija-flor"},{"id":"note|Real — 1ª família|R$ 2|Tartaruga-marinha","pattern":"Real — 1ª família","value":"R$ 2","year":"","note":"Efígie da República / Tartaruga-marinha"},{"id":"note|Real — 1ª família|R$ 5|Garça","pattern":"Real — 1ª família","value":"R$ 5","year":"","note":"Efígie da República / Garça"},{"id":"note|Real — 1ª família|R$ 10|Arara","pattern":"Real — 1ª família","value":"R$ 10","year":"","note":"Efígie da República / Arara"},{"id":"note|Real — 1ª família|R$ 10|Pedro Álvares Cabral — polímero","pattern":"Real — 1ª família","value":"R$ 10","year":"","note":"Pedro Álvares Cabral — cédula comemorativa de polímero"},{"id":"note|Real — 1ª família|R$ 20|Mico-leão-dourado","pattern":"Real — 1ª família","value":"R$ 20","year":"","note":"Efígie da República / Mico-leão-dourado"},{"id":"note|Real — 1ª família|R$ 50|Onça-pintada","pattern":"Real — 1ª família","value":"R$ 50","year":"","note":"Efígie da República / Onça-pintada"},{"id":"note|Real — 1ª família|R$ 100|Garoupa","pattern":"Real — 1ª família","value":"R$ 100","year":"","note":"Efígie da República / Garoupa"},{"id":"note|Real — 2ª família|R$ 2|Tartaruga-marinha","pattern":"Real — 2ª família","value":"R$ 2","year":"","note":"Efígie da República / Tartaruga-marinha"},{"id":"note|Real — 2ª família|R$ 5|Garça","pattern":"Real — 2ª família","value":"R$ 5","year":"","note":"Efígie da República / Garça"},{"id":"note|Real — 2ª família|R$ 10|Arara","pattern":"Real — 2ª família","value":"R$ 10","year":"","note":"Efígie da República / Arara"},{"id":"note|Real — 2ª família|R$ 20|Mico-leão-dourado","pattern":"Real — 2ª família","value":"R$ 20","year":"","note":"Efígie da República / Mico-leão-dourado"},{"id":"note|Real — 2ª família|R$ 50|Onça-pintada","pattern":"Real — 2ª família","value":"R$ 50","year":"","note":"Efígie da República / Onça-pintada"},{"id":"note|Real — 2ª família|R$ 100|Garoupa","pattern":"Real — 2ª família","value":"R$ 100","year":"","note":"Efígie da República / Garoupa"},{"id":"note|Real — 2ª família|R$ 200|Lobo-guará","pattern":"Real — 2ª família","value":"R$ 200","year":"","note":"Efígie da República / Lobo-guará"}];
 
 
 const KEY = "colecao-moedas-paises-v1";
@@ -1309,6 +1636,7 @@ const total = document.getElementById("total");
 
 function save(){
   localStorage.setItem(KEY, JSON.stringify([...owned]));
+  if(typeof mapSection !== "undefined" && mapSection?.classList.contains("active")) renderWorldMap();
 }
 
 const coinPeriods = {
@@ -1846,15 +2174,21 @@ const brCount = document.getElementById("brCount");
 const brTotal = document.getElementById("brTotal");
 const brProgress = document.getElementById("brProgress");
 
-function saveBrazil(){ localStorage.setItem(BR_KEY, JSON.stringify([...brOwned])); }
+function saveBrazil(){ localStorage.setItem(BR_KEY, JSON.stringify([...brOwned])); if(mapSection?.classList.contains("active")) renderWorldMap(); }
+
+const mapSection = document.getElementById("mapSection");
 
 document.querySelectorAll(".main-tab").forEach(btn=>{
   btn.addEventListener("click",()=>{
-    const isBR = btn.dataset.main === "brasil";
+    const target = btn.dataset.main;
     document.querySelectorAll(".main-tab").forEach(x=>x.classList.toggle("active",x===btn));
-    worldSection.classList.toggle("hidden",isBR);
-    brasilSection.classList.toggle("active",isBR);
-    if(isBR) renderBrazil();
+
+    worldSection.classList.toggle("hidden", target !== "world");
+    brasilSection.classList.toggle("active", target === "brasil");
+    mapSection.classList.toggle("active", target === "mapa");
+
+    if(target === "brasil") renderBrazil();
+    if(target === "mapa") renderWorldMap();
   });
 });
 
@@ -1874,23 +2208,119 @@ brSearch.addEventListener("input",renderBrazil);
 
 
 
-const brazilAllBanknotePhotos = {"note|Réis|1 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|2 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/2-mil-reis-1923-anverso.png","note|Réis|5 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|10 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/10-mil-reis-1833-anverso.jpg","note|Réis|20 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|50 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|100 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|200 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|500 mil-réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Réis|1 conto de réis|Tesouro Nacional / modelos históricos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Conto%20de%20R%C3%A9is%20caixa%20de%20convers%C3%A3o.jpg","note|Cruzeiro 1942|1 cruzeiro|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|2 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/2-cruzeiros-1958-anverso.png","note|Cruzeiro 1942|5 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5-cruzeiros-1961-anverso.png","note|Cruzeiro 1942|10 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|20 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|50 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/50%20Cruzeioros%20%28%201942%20-1967%29.png","note|Cruzeiro 1942|100 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1964-anverso.png","note|Cruzeiro 1942|200 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/200-cruzeiros-1961-anverso.png","note|Cruzeiro 1942|500 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|1.000 cruzeiros|modelos do padrão":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|5.000 cruzeiros|Tiradentes":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Cruzeiro%20de%201942%20%28Marqu%C3%AAs%20de%20Tamandar%C3%A9%29.jpg","note|Cruzeiro 1942|10.000 cruzeiros|Santos Dumont":"https://commons.wikimedia.org/wiki/Special:Redirect/file/C%C3%A9dula%20do%20Santos%20Dumont.png","note|Cruzeiro Novo|1 centavo|Getúlio Vargas — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|5 centavos|Princesa Isabel — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|10 centavos|D. Pedro II — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|50 centavos|D. João VI — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|1 cruzeiro novo|Pedro Álvares Cabral — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|5 cruzeiros novos|Tiradentes — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro Novo|10 cruzeiros novos|Santos Dumont — carimbada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20G3aa.jpg","note|Cruzeiro 1970|1 cruzeiro|República":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|5 cruzeiros|D. Pedro I":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|10 cruzeiros|D. Pedro II":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|50 cruzeiros|Deodoro da Fonseca":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|100 cruzeiros|Floriano Peixoto / Duque de Caxias":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1984-anverso.png","note|Cruzeiro 1970|200 cruzeiros|Princesa Isabel":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|500 cruzeiros|Evolução Étnica / Deodoro":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil%20500%20cruzeiros%20banknote%201981%20reverse.png","note|Cruzeiro 1970|1.000 cruzeiros|Barão do Rio Branco":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|5.000 cruzeiros|Castello Branco":"https://commons.wikimedia.org/wiki/Special:Redirect/file/C%C3%A9dula%205000%20Cruzeiros%20Castelo%20Branco%20AnvRev.jpg","note|Cruzeiro 1970|10.000 cruzeiros|Rui Barbosa":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|50.000 cruzeiros|Oswaldo Cruz":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1-cruzeiro-1975-anverso.png","note|Cruzeiro 1970|100.000 cruzeiros|Juscelino Kubitschek":"https://commons.wikimedia.org/wiki/Special:Redirect/file/C%C3%A9dula%20100000%20Cruzeiros%20Juscelino%20Kubitschek%20AnvRev.jpg","note|Cruzado|10 cruzados|Rui Barbosa":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazilian%201000%20cruzados%20obverse.jpg","note|Cruzado|50 cruzados|Oswaldo Cruz":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazilian%201000%20cruzados%20obverse.jpg","note|Cruzado|100 cruzados|Juscelino Kubitschek":"https://commons.wikimedia.org/wiki/Special:Redirect/file/C%C3%A9dula%20de%20100%20Cruzados.jpg","note|Cruzado|500 cruzados|Villa-Lobos":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazilian%201000%20cruzados%20obverse.jpg","note|Cruzado|1.000 cruzados|Machado de Assis":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazilian%201000%20cruzados%20obverse.jpg","note|Cruzado|5.000 cruzados|Portinari":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazilian%201000%20cruzados%20obverse.jpg","note|Cruzado|10.000 cruzados|Carlos Chagas":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Brazil-10cruzados-banknote%20003.JPG","note|Cruzado Novo|1 cruzado novo|Machado de Assis":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20cruzado%20novo%20on%201000%20cruzados%20obverse.jpg","note|Cruzado Novo|5 cruzados novos|Portinari":"https://commons.wikimedia.org/wiki/Special:Redirect/file/200%20cruzados%20novos%20anv%20%28cropped%29.jpg","note|Cruzado Novo|10 cruzados novos|Carlos Chagas":"https://commons.wikimedia.org/wiki/Special:Redirect/file/200%20cruzados%20novos%20anv%20%28cropped%29.jpg","note|Cruzado Novo|50 cruzados novos|Carlos Drummond":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Nuovo%20cruzado%20-%20banconota%20da%2050%20cruzado%20nuovo%20fronte.jpg","note|Cruzado Novo|100 cruzados novos|Cecília Meireles":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Nuovo%20cruzado%20-%20banconota%20da%20100%20cruzado%20nuovo%20fronte.jpg","note|Cruzado Novo|200 cruzados novos|República":"https://commons.wikimedia.org/wiki/Special:Redirect/file/200%20cruzados%20novos%20anv%20%28cropped%29.jpg","note|Cruzado Novo|500 cruzados novos|Augusto Ruschi":"https://commons.wikimedia.org/wiki/Special:Redirect/file/Nuovo%20cruzado%20-%20banconota%20da%20500%20cruzado%20nuovo%20fronte.jpg","note|Cruzeiro 1990|50 cruzeiros|Carlos Drummond":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|100 cruzeiros|Cecília Meireles":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|200 cruzeiros|República":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|500 cruzeiros|Augusto Ruschi":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|1.000 cruzeiros|Rondon":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1000%20cruzeiros%201990%20regular%20fronte.jpg","note|Cruzeiro 1990|5.000 cruzeiros|República / Carlos Gomes":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|10.000 cruzeiros|Vital Brazil":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|50.000 cruzeiros|Câmara Cascudo":"https://commons.wikimedia.org/wiki/Special:Redirect/file/50000%20cruzeiros%201990%20regular%20fronte.jpg","note|Cruzeiro 1990|100.000 cruzeiros|Meio Ambiente":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100-cruzeiros-1990-anverso.png","note|Cruzeiro 1990|500.000 cruzeiros|Mário de Andrade":"https://commons.wikimedia.org/wiki/Special:Redirect/file/500000%20cruzeiros%201990%20regular%20fronte.jpg","note|Cruzeiro Real|50 cruzeiros reais|Câmara Cascudo":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5000-cruzeiros-reais-anverso.png","note|Cruzeiro Real|100 cruzeiros reais|Meio Ambiente":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5000-cruzeiros-reais-anverso.png","note|Cruzeiro Real|500 cruzeiros reais|Mário de Andrade":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5000-cruzeiros-reais-anverso.png","note|Cruzeiro Real|1.000 cruzeiros reais|Anísio Teixeira":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5000-cruzeiros-reais-anverso.png","note|Cruzeiro Real|5.000 cruzeiros reais|Gaúcho":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5000-cruzeiros-reais-anverso.png","note|Cruzeiro Real|50.000 cruzeiros reais|Baiana":"https://commons.wikimedia.org/wiki/Special:Redirect/file/50%2C000-cruzeiros-reais-anverso.png","note|Real — 1ª família|R$ 1|Beija-flor":"https://commons.wikimedia.org/wiki/Special:Redirect/file/1%20Brazil%20real%20First%20Obverse%2001.jpg","note|Real — 1ª família|R$ 2|Tartaruga-marinha":"https://commons.wikimedia.org/wiki/Special:Redirect/file/2%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 5|Garça":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 10|Arara":"https://commons.wikimedia.org/wiki/Special:Redirect/file/10%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 10|Pedro Álvares Cabral — polímero":"https://commons.wikimedia.org/wiki/Special:Redirect/file/10%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 20|Mico-leão-dourado":"https://commons.wikimedia.org/wiki/Special:Redirect/file/20%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 50|Onça-pintada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/50%20Brazil%20real%20First%20Obverse.jpg","note|Real — 1ª família|R$ 100|Garoupa":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100%20Brazil%20real%20First%20Obverse.jpg","note|Real — 2ª família|R$ 2|Tartaruga-marinha":"https://commons.wikimedia.org/wiki/Special:Redirect/file/2%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 5|Garça":"https://commons.wikimedia.org/wiki/Special:Redirect/file/5%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 10|Arara":"https://commons.wikimedia.org/wiki/Special:Redirect/file/10%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 20|Mico-leão-dourado":"https://commons.wikimedia.org/wiki/Special:Redirect/file/20%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 50|Onça-pintada":"https://commons.wikimedia.org/wiki/Special:Redirect/file/50%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 100|Garoupa":"https://commons.wikimedia.org/wiki/Special:Redirect/file/100%20Brazil%20real%20Second%20Obverse.jpg","note|Real — 2ª família|R$ 200|Lobo-guará":"https://commons.wikimedia.org/wiki/Special:Redirect/file/200%20Brazil%20real%20Second%20Obverse.jpg"};
-const brazilExactBanknotePhoto = {"note|R\u00e9is|1 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|2 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":true,"note|R\u00e9is|5 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|10 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":true,"note|R\u00e9is|20 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|50 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|100 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|200 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|500 mil-r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":false,"note|R\u00e9is|1 conto de r\u00e9is|Tesouro Nacional / modelos hist\u00f3ricos":true,"note|Cruzeiro 1942|1 cruzeiro|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|2 cruzeiros|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|5 cruzeiros|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|10 cruzeiros|modelos do padr\u00e3o":false,"note|Cruzeiro 1942|20 cruzeiros|modelos do padr\u00e3o":false,"note|Cruzeiro 1942|50 cruzeiros|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|100 cruzeiros|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|200 cruzeiros|modelos do padr\u00e3o":true,"note|Cruzeiro 1942|500 cruzeiros|modelos do padr\u00e3o":false,"note|Cruzeiro 1942|1.000 cruzeiros|modelos do padr\u00e3o":false,"note|Cruzeiro 1942|5.000 cruzeiros|Tiradentes":false,"note|Cruzeiro 1942|10.000 cruzeiros|Santos Dumont":true,"note|Cruzeiro Novo|1 centavo|Get\u00falio Vargas \u2014 carimbada":false,"note|Cruzeiro Novo|5 centavos|Princesa Isabel \u2014 carimbada":false,"note|Cruzeiro Novo|10 centavos|D. Pedro II \u2014 carimbada":false,"note|Cruzeiro Novo|50 centavos|D. Jo\u00e3o VI \u2014 carimbada":false,"note|Cruzeiro Novo|1 cruzeiro novo|Pedro \u00c1lvares Cabral \u2014 carimbada":false,"note|Cruzeiro Novo|5 cruzeiros novos|Tiradentes \u2014 carimbada":false,"note|Cruzeiro Novo|10 cruzeiros novos|Santos Dumont \u2014 carimbada":false,"note|Cruzeiro 1970|1 cruzeiro|Rep\u00fablica":true,"note|Cruzeiro 1970|5 cruzeiros|D. Pedro I":false,"note|Cruzeiro 1970|10 cruzeiros|D. Pedro II":false,"note|Cruzeiro 1970|50 cruzeiros|Deodoro da Fonseca":false,"note|Cruzeiro 1970|100 cruzeiros|Floriano Peixoto / Duque de Caxias":true,"note|Cruzeiro 1970|200 cruzeiros|Princesa Isabel":false,"note|Cruzeiro 1970|500 cruzeiros|Evolu\u00e7\u00e3o \u00c9tnica / Deodoro":true,"note|Cruzeiro 1970|1.000 cruzeiros|Bar\u00e3o do Rio Branco":false,"note|Cruzeiro 1970|5.000 cruzeiros|Castello Branco":true,"note|Cruzeiro 1970|10.000 cruzeiros|Rui Barbosa":false,"note|Cruzeiro 1970|50.000 cruzeiros|Oswaldo Cruz":false,"note|Cruzeiro 1970|100.000 cruzeiros|Juscelino Kubitschek":true,"note|Cruzado|10 cruzados|Rui Barbosa":false,"note|Cruzado|50 cruzados|Oswaldo Cruz":false,"note|Cruzado|100 cruzados|Juscelino Kubitschek":true,"note|Cruzado|500 cruzados|Villa-Lobos":false,"note|Cruzado|1.000 cruzados|Machado de Assis":true,"note|Cruzado|5.000 cruzados|Portinari":false,"note|Cruzado|10.000 cruzados|Carlos Chagas":true,"note|Cruzado Novo|1 cruzado novo|Machado de Assis":true,"note|Cruzado Novo|5 cruzados novos|Portinari":false,"note|Cruzado Novo|10 cruzados novos|Carlos Chagas":false,"note|Cruzado Novo|50 cruzados novos|Carlos Drummond":true,"note|Cruzado Novo|100 cruzados novos|Cec\u00edlia Meireles":true,"note|Cruzado Novo|200 cruzados novos|Rep\u00fablica":true,"note|Cruzado Novo|500 cruzados novos|Augusto Ruschi":true,"note|Cruzeiro 1990|50 cruzeiros|Carlos Drummond":false,"note|Cruzeiro 1990|100 cruzeiros|Cec\u00edlia Meireles":true,"note|Cruzeiro 1990|200 cruzeiros|Rep\u00fablica":false,"note|Cruzeiro 1990|500 cruzeiros|Augusto Ruschi":false,"note|Cruzeiro 1990|1.000 cruzeiros|Rondon":true,"note|Cruzeiro 1990|5.000 cruzeiros|Rep\u00fablica / Carlos Gomes":false,"note|Cruzeiro 1990|10.000 cruzeiros|Vital Brazil":false,"note|Cruzeiro 1990|50.000 cruzeiros|C\u00e2mara Cascudo":true,"note|Cruzeiro 1990|100.000 cruzeiros|Meio Ambiente":false,"note|Cruzeiro 1990|500.000 cruzeiros|M\u00e1rio de Andrade":true,"note|Cruzeiro Real|50 cruzeiros reais|C\u00e2mara Cascudo":false,"note|Cruzeiro Real|100 cruzeiros reais|Meio Ambiente":false,"note|Cruzeiro Real|500 cruzeiros reais|M\u00e1rio de Andrade":false,"note|Cruzeiro Real|1.000 cruzeiros reais|An\u00edsio Teixeira":false,"note|Cruzeiro Real|5.000 cruzeiros reais|Ga\u00facho":true,"note|Cruzeiro Real|50.000 cruzeiros reais|Baiana":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 1|Beija-flor":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 2|Tartaruga-marinha":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 5|Gar\u00e7a":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 10|Arara":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 10|Pedro \u00c1lvares Cabral \u2014 pol\u00edmero":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 20|Mico-le\u00e3o-dourado":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 50|On\u00e7a-pintada":true,"note|Real \u2014 1\u00aa fam\u00edlia|R$ 100|Garoupa":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 2|Tartaruga-marinha":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 5|Gar\u00e7a":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 10|Arara":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 20|Mico-le\u00e3o-dourado":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 50|On\u00e7a-pintada":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 100|Garoupa":true,"note|Real \u2014 2\u00aa fam\u00edlia|R$ 200|Lobo-guar\u00e1":true};
 
-function banknoteThumbHTML(item){
-  const src = brazilAllBanknotePhotos[item.id] || "";
-  const exact = !!brazilExactBanknotePhoto[item.id];
-  return `
-    <div class="all-note-photo-wrap">
-      <img class="all-note-photo"
-           src="${src}"
-           alt="${item.pattern} ${item.value}"
-           loading="lazy"
-           referrerpolicy="no-referrer"
-           onerror="this.onerror=null;this.closest('.all-note-photo-wrap').classList.add('photo-error');">
-      <div class="note-photo-tag">${exact ? "IMAGEM DO MODELO" : "REFERÊNCIA DO PADRÃO"}</div>
-    </div>`;
+let geoChartReady = false;
+let geoChart = null;
+
+function normalizeIssuerForMap(name){
+  if(flagMap[name]) return flagMap[name].toUpperCase();
+
+  // Historical names normally already have a fallback in flagMap.
+  // These extra aliases cover manual/common variants.
+  const aliases = {
+    "URSS":"RU","União Soviética":"RU","RDA":"DE","RFA":"DE",
+    "Checoslováquia":"CZ","Czechoslovakia":"CZ","Iugoslávia":"RS",
+    "Império Russo":"RU","Império Alemão":"DE","Império Otomano":"TR",
+    "Brasil Império":"BR","Império do Brasil":"BR"
+  };
+  return aliases[name] || "";
 }
+
+function mapOwnedStats(){
+  const byCode = {};
+
+  coins.forEach(item=>{
+    const issuer = item[0];
+    if(!owned.has(issuer)) return;
+    const code = normalizeIssuerForMap(issuer);
+    if(!code) return;
+
+    if(!byCode[code]) byCode[code] = {count:0, issuers:[]};
+    byCode[code].count++;
+    byCode[code].issuers.push(issuer);
+  });
+
+  // Any Brazilian collection item also paints Brazil.
+  if(brOwned && brOwned.size){
+    if(!byCode.BR) byCode.BR = {count:0, issuers:[]};
+    byCode.BR.count += brOwned.size;
+    byCode.BR.issuers.push("Coleção Brasil");
+  }
+
+  return byCode;
+}
+
+function renderWorldMap(){
+  const el = document.getElementById("worldMap");
+  const info = document.getElementById("mapInfo");
+  const counter = document.getElementById("mapCount");
+  if(!el) return;
+
+  const stats = mapOwnedStats();
+  const codes = Object.keys(stats);
+  counter.textContent = `${codes.length} países`;
+
+  if(!(window.google && google.charts)){
+    el.innerHTML = `<div class="map-loading">Mapa precisa de internet para carregar.</div>`;
+    return;
+  }
+
+  const draw = ()=>{
+    const rows = [["País","Moedas / emissões"]];
+    codes.forEach(code=>rows.push([code, stats[code].count]));
+
+    const data = google.visualization.arrayToDataTable(rows);
+    geoChart = new google.visualization.GeoChart(el);
+
+    google.visualization.events.addListener(geoChart,"select",()=>{
+      const sel = geoChart.getSelection();
+      if(!sel.length) return;
+      const row = sel[0].row;
+      if(row == null) return;
+
+      const code = data.getValue(row,0);
+      const s = stats[code];
+      const unique = [...new Set(s.issuers)];
+      const label = unique.length ? unique.join(", ") : code;
+
+      info.innerHTML = `
+        <strong>${label}</strong><br>
+        <span class="map-country-count">${s.count} item${s.count===1?"":"s"} marcado${s.count===1?"":"s"}</span>
+      `;
+    });
+
+    geoChart.draw(data,{
+      region:"world",
+      resolution:"countries",
+      backgroundColor:"transparent",
+      datalessRegionColor:"#d7d9dd",
+      defaultColor:"#d7d9dd",
+      colorAxis:{
+        minValue:1,
+        colors:["#e7c85b","#b98712"]
+      },
+      legend:"none",
+      tooltip:{textStyle:{fontSize:11}},
+      keepAspectRatio:true,
+      enableRegionInteractivity:true
+    });
+    geoChartReady = true;
+  };
+
+  if(google.visualization && google.visualization.GeoChart){
+    draw();
+  } else {
+    google.charts.load("current",{packages:["geochart"]});
+    google.charts.setOnLoadCallback(draw);
+  }
+}
+
+window.addEventListener("resize",()=>{
+  if(mapSection && mapSection.classList.contains("active") && geoChartReady){
+    clearTimeout(window.__mapResizeTimer);
+    window.__mapResizeTimer=setTimeout(renderWorldMap,120);
+  }
+});
 
 function renderBrazil(){
   const term = brSearch.value.trim().toLocaleLowerCase("pt-BR");
@@ -2020,17 +2450,86 @@ function renderBrazil(){
     }</div>`;
   }
 
+
+  function commemorativeCards(items){
+    if(!items.length) return "";
+
+    const olympic = items.filter(x =>
+      /Olimp|Paralimp/i.test(x.note || "") ||
+      /Mascote Vinicius|Mascote Tom|Atletismo|Natação|Paratriatlo|Golfe|Basquetebol|Vela|Paracanoagem|Rugby|Futebol|Voleibol|Judô|Boxe/i.test(x.note || "")
+    );
+    const avulsas = items.filter(x => !olympic.includes(x));
+
+    const cleanOlympicName = (name="") => name
+      .replace(/^Olimpíadas\s*—\s*/i,"")
+      .replace(/^Paralimpíadas\s*—\s*/i,"");
+
+    const card = (x, isOlympic=false) => `
+      <div class="comm-v22-card br-collection-item"
+           data-id="${encodeURIComponent(x.id)}"
+           title="${x.note || ""} · ${x.year || ""} · ${x.value}">
+        <div class="comm-v22-top">
+          <span class="comm-v22-year">${x.year || ""}</span>
+          <span class="comm-v22-value">${x.value}</span>
+        </div>
+        <div class="comm-v22-name">${isOlympic ? cleanOlympicName(x.note) : (x.note || x.value)}</div>
+      </div>`;
+
+    const byYear = olympic.reduce((acc,x)=>{
+      (acc[x.year] ||= []).push(x);
+      return acc;
+    },{});
+
+    let out = `<div class="comm-v22-head">
+      <div>
+        <div class="comm-v22-title">MOEDAS COMEMORATIVAS DE R$ 1</div>
+        <div class="comm-v22-sub">${items.length} modelos para colecionar</div>
+      </div>
+    </div>`;
+
+    if(avulsas.length){
+      out += `<div class="comm-v22-section">
+        <div class="comm-v22-section-title">EDIÇÕES ESPECIAIS</div>
+        <div class="comm-v22-grid">
+          ${avulsas.sort((a,b)=>(Number(a.year)||0)-(Number(b.year)||0)).map(x=>card(x,false)).join("")}
+        </div>
+      </div>`;
+    }
+
+    if(olympic.length){
+      out += `<div class="comm-v22-section comm-v22-olympic">
+        <div class="comm-v22-series-head">
+          <div>
+            <div class="comm-v22-section-title">RIO 2016</div>
+            <div class="comm-v22-series-sub">Série Olímpica e Paralímpica</div>
+          </div>
+          <div class="comm-v22-series-count">${olympic.length} moedas</div>
+        </div>`;
+
+      Object.keys(byYear).sort().forEach(year=>{
+        out += `<div class="comm-v22-year-block">
+          <div class="comm-v22-year-title">${year}</div>
+          <div class="comm-v22-grid">
+            ${byYear[year].map(x=>card(x,true)).join("")}
+          </div>
+        </div>`;
+      });
+
+      out += `</div>`;
+    }
+
+    return `<div class="comm-v22-wrap">${out}</div>`;
+  }
+
   function noteCards(items){
     if(!items.length) return "";
-    return `<div class="br-note-grid">${
+    return `<div class="br-note-grid br-note-grid-text">${
       items.sort(sortValue).map(x=>`
-        <div class="br-note-card br-collection-item" data-id="${encodeURIComponent(x.id)}"
+        <div class="br-note-card br-note-text-card br-collection-item"
+             data-id="${encodeURIComponent(x.id)}"
              title="${x.pattern} · ${x.value}${x.note ? " · "+x.note : ""}">
-          ${banknoteThumbHTML(x)}
-          <div class="br-note-info">
-            <div class="br-note-value">${x.value}</div>
-            ${x.note ? `<div class="br-note-model">${x.note}</div>` : ""}
-          </div>
+          <div class="br-note-value">${x.value}</div>
+          <div class="br-note-person">${x.note || "Sem identificação cadastrada"}</div>
         </div>`).join("")
     }</div>`;
   }
@@ -2087,7 +2586,7 @@ function renderBrazil(){
         if(era.key==="real"){
           inner += realCoinGrid(regularReal);
           if(commReal.length){
-            inner += `<div class="br-mini-title">COMEMORATIVAS</div>${coinCards(commReal)}`;
+            inner += commemorativeCards(commReal);
           }
         }else{
           inner += coinCards(groupCoins);
