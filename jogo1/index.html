@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Imagem & Ação</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f0f0f;--card:#1c1c1c;--stroke:#2a2a2a;--accent:#ff7a00;--text:#f2f2f2;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:'Montserrat',sans-serif;color:var(--text);display:flex;justify-content:center;}
+.container{width:100%;max-width:420px;padding:20px;}
+h1{text-align:center;font-size:28px;font-weight:700;margin:10px 0 16px;}
+.levels{display:flex;gap:8px;margin-bottom:16px;}
+.levels button{flex:1;padding:8px;border-radius:12px;border:1px solid var(--stroke);background:#111;color:var(--text);font-weight:600;cursor:pointer;}
+.levels button.active{background:var(--accent);color:#000;}
+.card{background:var(--card);border:1px solid var(--stroke);border-radius:16px;padding:16px;}
+.row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.circle{width:44px;height:44px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.circle.small{width:38px;height:38px;font-size:14px;}
+.word{flex:1;background:#111;border:1px solid var(--stroke);border-radius:12px;padding:12px 14px;font-size:15px;font-weight:600;}
+.footer{margin-top:20px;}
+.footer button{width:100%;padding:14px;font-size:16px;font-weight:700;border-radius:14px;border:none;cursor:pointer;background:var(--accent);color:#000;}
+#timerWrap{margin-top:14px;text-align:center;}
+#timer{font-size:22px;font-weight:700;color:var(--accent);margin-bottom:8px;}
+#startTimerBtn{padding:8px 16px;border-radius:10px;border:1px solid var(--stroke);background:#111;color:var(--accent);font-weight:700;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Imagem & Ação</h1>
+
+<div class="levels">
+  <button onclick="setNivel('junior')" id="btn-junior">Júnior</button>
+  <button onclick="setNivel('medio')" id="btn-medio" class="active">Médio</button>
+  <button onclick="setNivel('hardcore')" id="btn-hardcore">Hardcore</button>
+</div>
+
+<div class="card" id="carta"></div>
+
+<div class="footer">
+  <button onclick="gerarCarta()">Gerar nova carta</button>
+</div>
+
+<div id="timerWrap">
+  <div id="timer">60</div>
+  <button id="startTimerBtn" onclick="startTimer()">Iniciar tempo</button>
+</div>
+
+</div>
+
+<script>
+// ===== CONFIG =====
+const TEMPO_INICIAL = 60;
+
+// ===== DICIONÁRIOS (VOCÊ COLA AS PALAVRAS AQUI) =====
+const dicionarios = {
+  junior: {
+    P: ["Cachorro","Gato","Cavalo","Vaca","Porco","Galinha","Pato","Peixe","Tartaruga","Coelho", "Leão","Elefante","Macaco","Girafa","Urso","Zebra","Pinguim","Golfinho","Baleia","Polvo", 	"Caranguejo","Borboleta","Abelha","Formiga","Aranha","Passarinho","Papagaio","Coruja","Pomba","Galo", 	"Professor","Médico","Bombeiro","Policial","Cozinheiro","Padeiro","Motorista","Piloto","Pirata","Astronauta", 	"Rei","Rainha","Príncipe","Princesa","Palhaço","Mágico","Fada","Bruxa","Super-herói","Vilão", "Criança","Bebê","Menino","Menina","Pai","Mãe","Avô","Avó","Tio","Tia",
+  	"Batman (DC Comics)","Superman (DC Comics)","Homem-Aranha (Marvel)","Mulher-Maravilha (DC Comics)", "Mickey Mouse (Disney)","Pato Donald (Disney)","Pateta (Disney)","Scooby-Doo 	(Hanna-Barbera)", "Bob Esponja (Nickelodeon)","Pikachu (Pokémon)","Mario (Super Mario)","Luigi (Super Mario)", "Sonic (Sonic the Hedgehog)","Buzz Lightyear (Toy Story)","Woody (Toy 	Story)", "Elsa (Frozen)","Olaf (Frozen)"],
+    O: [ "Bola","Boneca","Carrinho","Bicicleta","Patinete","Skate","Cadeira","Mesa","Sofá","Cama",
+  "Travesseiro","Cobertor","Almofada","Tapete","Televisão","Controle remoto","Celular","Telefone","Rádio","Computador",
+  "Mouse","Teclado","Fone de ouvido","Relógio","Óculos","Boné","Chapéu","Camisa","Calça","Tênis",
+  "Sapato","Meia","Mochila","Bolsa","Estojo","Lápis","Caneta","Caderno","Livro","Borracha",
+  "Apontador","Tesoura","Cola","Papel","Envelope","Caixa","Presente","Bola de futebol","Bola de basquete","Raquete",
+  "Peteca","Corda","Pipa","Balão","Bexiga","Guarda-chuva","Copo","Prato","Garfo","Faca",
+  "Colher","Panela","Frigideira","Tampa","Garrafa","Mamadeira","Chupeta","Escova de dentes","Pasta de dente","Sabonete",
+  "Toalha","Escova de cabelo","Pente","Espelho","Lanterna","Chave","Porta","Janela","Campainha","Lixeira",
+  "Balde","Vassoura","Rodo","Pá","Bola de praia","Cofrinho","Abajur","Quadro","Relógio de parede","Ventilador"],
+    A: ["Correr","Pular","Andar","Sentar","Levantar","Deitar","Dormir","Acordar","Comer","Beber",
+  "Rir","Chorar","Gritar","Falar","Cantar","Dançar","Bater palmas","Abraçar","Beijar","Acenar",
+  "Apontar","Segurar","Soltar","Puxar","Empurrar","Chutar","Arremessar","Pegar","Largar","Rodar",
+  "Girar","Brincar","Esconder","Procurar","Mostrar","Olhar","Fechar os olhos","Abrir os olhos","Coçar","Espirrar",
+  "Tossir","Soprar","Assoprar vela","Desenhar","Colorir","Escrever","Apagar","Rasgar papel","Dobrar papel","Cortar",
+  "Colar","Empilhar","Derrubar","Subir","Descer","Escalar","Rolar","Equilibrar","Balançar","Nadar",
+  "Mergulhar","Pedalar","Correr devagar","Correr rápido","Pular alto","Pular longe","Bater o pé","Marchar","Imitar animal","Fazer careta",
+  "Assustar","Esconder o rosto","Bater na porta","Tocar campainha","Fingir dormir","Fingir chorar","Fingir rir","Rodopiar","Alongar","Espreguiçar"],
+    D: ["Quebra-cabeça","Labirinto","Sombra","Reflexo","Eco","Imitar animal","Imitar pessoa",
+  "Desenhar sem olhar","Desenhar de olhos fechados","Desenhar com a mão errada",
+  "Andar em linha reta","Equilibrar em um pé","Equilibrar objeto",
+  "Caminhar devagar","Caminhar rápido","Movimento lento","Movimento rápido",
+  "Cena congelada","Estátua","Robô","Fantasma","Gigante","Anão",
+  "Objeto pesado","Objeto leve","Objeto quente","Objeto frio",
+  "Som alto","Som baixo","Som longo","Som curto",
+  "Careta triste","Careta feliz","Careta brava","Careta surpresa",
+  "Dormindo em pé","Andar nas pontas dos pés","Andar como robô","Andar como velho",
+  "Imitar bebê","Imitar idoso","Imitar monstro","Imitar herói",
+  "Objeto invisível","Bola invisível","Corda invisível",
+  "Abrir porta pesada","Abrir porta leve","Empurrar parede","Puxar corda",
+  "Subir escada","Descer escada","Cair devagar","Levantar devagar",
+  "Chover","Ventania","Tempestade","Sol forte","Frio","Calor",
+  "Assustar de brincadeira","Esconder algo","Procurar algo",
+  "Achar tesouro","Segredo","Surpresa",
+  "Tamanho grande","Tamanho pequeno","Tamanho médio",
+  "Rápido","Devagar","Muito cansado","Muito feliz"],
+    L: ["Futebol","Basquete","Vôlei","Natação","Corrida","Bicicleta","Skate","Patins","Pular corda","Queimada",
+  "Esconde-esconde","Pega-pega","Amarelinha","Bola ao cesto","Cabra-cega","Caça ao tesouro","Brincar no parque","Brincar na praia","Brincar no quintal","Brincar na escola",
+  "Desenho animado","Filme","Cinema","Teatro","Show","Circo","Música","Cantar","Dançar","Karaokê",
+  "Videogame","Jogo de tabuleiro","Quebra-cabeça","Dominó","Cartas","Baralho","Xadrez","Damas","Jogo da memória","Ludo",
+  "Minecraft","Roblox","Super Mario","Sonic","Pokémon","Mario Kart","Among Us","Fortnite","Brawl Stars","Subway Surfers",
+  "Desenhar","Colorir","Pintar","Artesanato","Recortar","Colar","Massinha","Lego","Blocos de montar","Quebra-cabeça infantil",
+  "Ler livro","Contar histórias","Ouvir histórias","Teatro de fantoches","Fantoche","Bonecos","Boneca","Carrinho","Trenzinho","Pipa",
+  "Brincar com água","Piscina","Praia","Parque aquático","Acampamento","Piquenique","Passeio","Viagem","Festa","Aniversário"],
+    M: ["Cachorro","Gato","Bola","Boneca","Carrinho","Bicicleta","Patinete","Skate","Cadeira","Mesa",
+  "Professor","Bombeiro","Pirata","Astronauta","Palhaço","Mágico","Fada","Bruxa","Super-herói","Vilão",
+  "Correr","Pular","Andar","Dançar","Cantar","Desenhar","Colorir","Brincar","Esconder","Procurar",
+  "Quebra-cabeça","Labirinto","Sombra","Reflexo","Objeto invisível","Cena congelada","Robô","Fantasma","Gigante","Anão",
+  "Futebol","Basquete","Vôlei","Natação","Videogame","Desenho animado","Filme","Cinema","Circo","Show",
+  "Minecraft","Roblox","Super Mario","Sonic","Pokémon","Mario Kart","Among Us","Fortnite","Subway Surfers","Brawl Stars",
+  "Lápis","Caderno","Livro","Mochila","Lanterna","Espelho","Guarda-chuva","Relógio","Óculos","Boné",
+  "Rir","Chorar","Fazer careta","Imitar animal","Assustar","Abraçar","Acenar","Rodopiar","Equilibrar","Balançar"]
+  },
+  medio: {
+    P: [ "Detetive","Investigador","Policial","Delegado","Perito","Advogado","Juiz","Promotor","Jornalista","Repórter",
+  "Fotógrafo","Cinegrafista","Editor","Apresentador","Radialista","Escritor","Poeta","Roteirista","Diretor de cinema","Produtor",
+  "Professor","Professor universitário","Pesquisador","Cientista","Biólogo","Químico","Físico","Astrônomo","Matemático","Historiador",
+  "Médico","Cirurgião","Enfermeiro","Fisioterapeuta","Psicólogo","Psiquiatra","Nutricionista","Farmacêutico","Dentista","Veterinário",
+  "Bombeiro","Socorrista","Paramédico","Salva-vidas","Guarda florestal","Militar","Soldado","Oficial","Capitão","General",
+  "Engenheiro","Arquiteto","Designer","Ilustrador","Artista plástico","Pintor","Escultor","Grafiteiro","Cartunista","Animador",
+  "Programador","Desenvolvedor","Analista de sistemas","Hacker","Especialista em segurança","Administrador de redes","Técnico em informática","Operador de dados","Game designer","Streamer",
+  "Ator","Atriz","Dublador","Cantor","Harry Potter (Harry Potter)","Hermione Granger (Harry Potter)","Voldemort (Harry Potter)","Darth Vader (Star Wars)","Luke Skywalker (Star Wars)","Yoda (Star Wars)","Indiana Jones (Indiana Jones)","Han Solo (Star Wars)","Leia Organa (Star Wars)","Frodo (Senhor dos Anéis)","Gandalf (Senhor dos Anéis)","Aragorn (Senhor dos Anéis)",
+"Neo (Matrix)","Morpheus (Matrix)","Trinity (Matrix)","Jack Sparrow (Piratas do Caribe)","Barbossa (Piratas do Caribe)","Batman (DC Comics)","Coringa (DC Comics)","Mulher-Maravilha (DC Comics)","Homem-Aranha (Marvel)","Homem de Ferro (Marvel)","Capitão América (Marvel)","Thanos (Marvel)","Deadpool (Marvel)","Geralt de Rívia (The Witcher)","Kratos (God of War)", "Lara Croft (Tomb Raider)","Nathan Drake (Uncharted)","Link (The Legend of Zelda)","Zelda (The Legend of Zelda)","Mario (Super Mario)","Luigi (Super Mario)", "Sonic (Sonic the Hedgehog)","Shadow (Sonic the Hedgehog)","Goku (Dragon Ball)","Vegeta (Dragon Ball)","Freeza (Dragon Ball)","Naruto (Naruto)","Sasuke (Naruto)","Kakashi (Naruto)","Luffy (One Piece)","Zoro (One Piece)","Michael Jackson","Elvis Presley","Freddie Mercury","Madonna","Beyoncé","Rihanna","Taylor Swift","Lady Gaga","Bruno Mars","Adele","Bob Marley","Jimi Hendrix","Kurt Cobain","Paul McCartney","John Lennon","David Bowie","Prince","Amy Winehouse","Billie Eilish","The Weeknd","Anitta","Ivete Sangalo","Caetano Veloso","Gilberto Gil","Rita Lee","Chico Buarque","Djavan","Milton Nascimento","Cazuza","Raul Seixas","Pelé","Neymar","Lionel Messi","Cristiano Ronaldo","Ronaldinho Gaúcho","Michael Jordan","LeBron James","Muhammad Ali","Usain Bolt","Serena Williams","Ayrton Senna","Lewis Hamilton","Valentino Rossi","Silvio Santos","Faustão","Luciano Huck","Xuxa","Ana Maria Braga","Oprah Winfrey","Ellen DeGeneres","Jimmy Fallon"
+],
+    O: ["Guarda-chuva","Maleta","Mochila","Lanterna","Bússola","Mapa","Binóculo","Câmera fotográfica","Tripé","Microfone","Violão","Guitarra","Baixo","Bateria","Teclado musical","Fone de ouvido","Caixa de som","Amplificador","Pedal de guitarra","Disco de vinil","Controle de videogame","Console","Cartucho","Joystick","Headset","Teclado","Mouse","Mousepad","Monitor","Notebook","Smartphone","Tablet","Carregador","Power bank","Relógio de pulso","Relógio de parede","Despertador","Óculos escuros","Óculos de grau","Estojo","Canivete","Lanterna tática","Chave inglesa","Alicate","Martelo","Serrote","Furadeira","Parafusadeira","Trena","Nível",
+  "Capacete","Luvas","Cinto","Carteira","Porta-moedas","Chapéu","Boné","Cachecol","Casaco","Jaqueta","Tênis","Bota","Chinelo","Sapato social","Meias","Mala","Etiqueta","Cadeado","Corrente","Fecho",
+  "Copo térmico","Garrafa térmica","Caneca","Xícara","Prato","Talheres","Panela","Frigideira","Tampa","Escorredor",
+  "Liquidificador","Batedeira","Cafeteira","Chaleira","Torradeira","Micro-ondas","Forno","Fogão","Geladeira","Freezer",
+  "Vassoura","Rodo","Pá","Balde","Aspirador","Ventilador","Ar-condicionado","Aquecedor","Umidificador","Desumidificador",
+  "Abajur","Luminária","Lâmpada","Interruptor","Extensão elétrica","Filtro de linha","Tomada","Adaptador","Cabo USB","Cabo HDMI",
+  "Quadro","Porta-retrato","Espelho","Tapete","Cortina","Almofada","Travesseiro","Cobertor","Colcha","Lençol",
+  "Livro","Caderno","Agenda","Bloco de notas","Marcador","Marca-texto","Caneta","Lápis","Borracha","Apontador",
+  "Tesoura","Estilete","Cola","Fita adesiva","Grampeador","Clips","Envelope","Caixa","Pasta","Arquivo",
+  "Bola de futebol","Bola de basquete","Bola de tênis","Raquete","Rede","Apito","Cronômetro","Garrafa squeeze","Toalha","Protetor solar", "Skate","Longboard","Patins","Patinete elétrico","Bicicleta","Capacete de ciclismo","Cadeirinha de bicicleta","Bomba de ar","Câmara de ar","Corrente de bicicleta",
+  "Mochila térmica","Cooler","Isopor","Garrafa esportiva","Squeeze","Cantil","Lanterna de cabeça","Lanterna recarregável","Bateria portátil","Carregador veicular",
+  "Drone","Controle remoto","Baterias","Pilhas","Cartão de memória","Pendrive","HD externo","SSD","Leitor de cartão","Adaptador USB",
+  "Câmera de ação","Suporte de câmera","Estabilizador","Gimbal","Microfone de lapela","Gravador de áudio","Mesa de som","Mixer","Placa de áudio","Interface USB",
+  "Televisor","Projetor","Tela de projeção","Controle universal","Soundbar","Home theater","Subwoofer","Antena","Receptor","Decodificador",
+  "Máquina fotográfica analógica","Filme fotográfico","Lente","Filtro de lente","Flash","Difusor","Refletor","Tripé flexível","Monopé","Capa de câmera",
+  "Máquina de escrever","Calculadora","Relógio digital","Relógio analógico","Cronômetro esportivo","Bússola náutica","Mapa-múndi","Globo terrestre","Régua","Esquadro",
+  "Compasso","Transferidor","Prancheta","Clips colorido","Post-it","Etiqueta adesiva","Carimbo","Almofada de carimbo","Papel carbono","Papel vegetal",
+  "Pincel","Tinta","Paleta","Tela de pintura","Cavalete","Lápis de cor","Canetinha","Marcador permanente","Giz","Quadro branco",
+  "Apagador","Ímã","Quadro de avisos","Alfinete","Grampo","Furador","Encadernadora","Plastificadora","Laminadora","Tesoura de precisão",
+  "Máquina de costura","Linha","Agulha","Alfinete de costura","Dedal","Tesoura de tecido","Fita métrica","Zíper","Botão","Elástico",
+  "Mala de viagem","Etiqueta de bagagem","Cadeado TSA","Necessaire","Porta-passaporte","Carteira","Porta-cartões","Chaveiro","Relógio inteligente","Pulseira fitness",
+  "Escova de dentes elétrica","Aparador de barba","Máquina de barbear","Secador de cabelo","Chapinha","Modelador","Espelho de aumento","Necessaire masculina","Necessaire feminina","Perfume",
+  "Sabonete líquido","Shampoo","Condicionador","Creme hidratante","Protetor labial","Protetor solar","Toalha de rosto","Toalha de banho","Tapete de banheiro","Cortina de box",
+  "Panela de pressão","Panela elétrica","Air fryer","Grill elétrico","Sanduicheira","Máquina de pão","Moedor","Balança de cozinha","Termômetro","Timer","Churrasqueira","Grelha","Espeto","Carvão","Acendedor","Isqueiro","Fósforo","Pinça","Pegador","Tábua de corte",
+  "Faca do chef","Faca serrilhada","Cutelo","Afiador","Descascador","Ralador","Espremedor","Coador","Peneira","Medidor",
+  "Copo medidor","Balança digital","Balança analógica","Timer de cozinha","Termômetro culinário","Forma","Assadeira","Papel alumínio","Papel manteiga","Filme plástico",
+  "Garrafa de vidro","Garrafa plástica","Copo descartável","Prato descartável","Guardanapo","Porta-guardanapo","Saleiro","Pimenteiro","Moedor de pimenta","Azeiteira",
+  "Lata","Abridor de lata","Saca-rolhas","Rolha","Tampa","Funil","Garrafa térmica","Cantil metálico","Marmita","Lancheira",
+  "Fogareiro","Botijão de gás","Mangueira","Registro","Válvula","Filtro de água","Purificador","Bebedouro","Cooler portátil","Bolsa térmica",
+  "Cadeira dobrável","Mesa dobrável","Banco","Escada","Escada articulada","Escada extensível","Ferramenta multifuncional","Caixa de ferramentas","Organizador","Maleta de ferramentas",
+  "Parafuso","Porca","Arruela","Prego","Bucha","Broca","Serra copo","Disco de corte","Lixa","Esmeril",
+  "Ferro de solda","Estanho","Multímetro","Alicate de corte","Alicate de pressão","Chave Philips","Chave de fenda","Chave Allen","Chave Torx","Chave de boca",
+  "Extintor","Detector de fumaça","Alarme","Câmera de segurança","Fechadura eletrônica","Interfone","Campainha sem fio","Sensor de presença","Controle de portão","Motor de portão",
+  "Portão","Grade","Cerca","Tranca","Cadeado reforçado","Corrente metálica","Mosquetão","Gancho","Suporte","Prateleira",
+  "Estante","Nichos","Armário","Gaveta","Puxador","Dobradiça","Trilho","Rodízio","Pé de mesa","Pé de cadeira",
+  "Colchão","Colchonete","Colchonete inflável","Inflador","Bomba manual","Bomba elétrica","Piscina inflável","Boia","Prancha","Óculos de natação",
+  "Touca de natação","Nadadeira","Prancha de bodyboard","Prancha de surfe","Leash","Capa de prancha","Saco estanque","Bolsa impermeável","Protetor de celular","Capa à prova d’água",
+  "Binóculo compacto","Telescópio","Luneta","Tripé telescópico","Monóculo","Bússola de bolso","Altímetro","Barômetro","Anemômetro","Cronógrafo"],
+    A: [ "Correr","Caminhar","Marchar","Pular","Saltar","Agachar","Levantar","Sentar","Deitar","Rolar",
+  "Escalar","Descer","Subir","Equilibrar","Balançar","Girar","Rodopiar","Deslizar","Escorregar","Desviar",
+  "Arremessar","Chutar","Empurrar","Puxar","Segurar","Soltar","Apertar","Torcer","Dobrar","Esticar",
+  "Carregar","Transportar","Arrastar","Empilhar","Derrubar","Montar","Desmontar","Construir","Consertar","Quebrar",
+  "Abrir","Fechar","Trancar","Destrancar","Apontar","Mirar","Atirar (arremesso)","Lançar","Rebater","Bloquear",
+  "Bater palmas","Estalar dedos","Assobiar","Soprar","Inspirar","Expirar","Gritar","Sussurrar","Cantar","Dançar",
+  "Imitar pessoa","Imitar animal","Fazer careta","Fingir dormir","Fingir chorar","Fingir rir","Atuar","Interpretar","Encenar","Congelar",
+  "Caminhar em câmera lenta","Mover em câmera rápida","Mover em silêncio","Mover pesado","Mover leve","Tropeçar","Cair","Levantar rápido","Parar de repente","Acelerar",
+  "Pedalar","Frear","Virar à esquerda","Virar à direita","Dar meia-volta","Contornar","Ziguezaguear","Deslocar lateral","Saltitar","Pular obstáculo",
+  "Nadar","Mergulhar","Boiar","Remar","Braçar","Chapar água","Respirar fundo","Prender a respiração","Flutuar","Afundar",
+  "Desenhar","Escrever","Rasgar","Dobrar","Recortar","Colar","Pintar","Colorir","Apagar","Rabiscar",
+  "Fotografar","Filmar","Gravar áudio","Ajustar foco","Enquadrar","Zoom","Estabilizar","Editar","Reproduzir","Pausar",
+  "Cozinhar","Mexer","Misturar","Cortar alimento","Temperar","Fritar","Assar","Ferver","Grelhar","Servir",
+  "Limpar","Var rer","Passar pano","Lavar","Secar","Organizar","Guardar","Procurar","Encontrar","Alongar","Espreguiçar","Ajoelhar","Deitar de lado","Virar de costas","Virar de frente","Inclinar","Curvar","Endireitar","Balancear",
+  "Pisar","Bater o pé","Arrastar o pé","Deslizar o pé","Trocar de direção","Avançar","Recuar","Aproximar","Afastar","Circular",
+  "Escapar","Perseguir","Alcançar","Ultrapassar","Interceptar","Contornar obstáculo","Passar por baixo","Passar por cima","Passar ao redor","Desviar rapidamente",
+  "Agarrar","Segurar firme","Soltar devagar","Apertar forte","Esmagar","Amassar","Modelar","Moldar","Enrolar","Desenrolar",
+  "Empurrar com força","Puxar com cuidado","Levantar peso","Abaixar peso","Equilibrar objeto","Trocar de mão","Usar as duas mãos","Usar uma mão","Usar os pés","Usar a cabeça",
+  "Apontar para cima","Apontar para baixo","Apontar para os lados","Sinalizar","Acenar lentamente","Acenar rápido","Cumprimentar","Despedir-se","Chamar alguém","Mandar embora",
+  "Coordenar movimentos","Sincronizar","Desincronizar","Repetir movimento","Variar movimento","Inverter movimento","Copiar movimento","Espelhar movimento","Criar sequência","Memorizar sequência",
+  "Congelar movimento","Descongelar","Reiniciar","Acelerar ritmo","Diminuir ritmo","Manter ritmo","Quebrar ritmo","Marcar tempo","Contar tempo","Seguir batida",
+  "Dançar livre","Dançar em dupla","Dançar em grupo","Improvisar dança","Criar coreografia","Repetir coreografia","Errar passo","Corrigir passo","Trocar passo","Finalizar dança",
+  "Atacar simbolicamente","Defender simbolicamente","Esquivar","Bloquear movimento","Simular luta","Simular briga","Simular queda","Simular dor","Simular alegria","Simular medo",
+  "Respirar rápido","Respirar devagar","Suspirar","Ofegar","Bocejar","Cansar","Recuperar fôlego","Descansar","Relaxar","Tensionar",
+  "Empilhar objetos","Desempilhar","Organizar por tamanho","Organizar por cor","Organizar por forma","Separar","Agrupar","Classificar","Misturar tudo","Espalhar",
+  "Explorar espaço","Limitar espaço","Marcar território","Entrar","Sair","Voltar","Atravessar","Contornar área","Explodir movimento","Finalizar ação","Esconder"],
+    D: [ "Invisibilidade","Gravidade","Equilíbrio","Reflexo","Sombra","Eco","Silêncio","Vibração","Oscilação","Distorção",
+  "Congelamento","Loop","Repetição","Inversão","Espelhamento","Perspectiva","Escala","Proporção","Simetria","Assimetria",
+  "Flutuação","Suspensão","Deslizamento","Travamento","Instabilidade","Peso","Leveza","Fragilidade","Rigidez","Elasticidade",
+  "Atrito","Pressão","Tensão","Compressão","Expansão","Contração","Resistência","Impulso","Impacto","Colisão",
+  "Trajetória","Desvio","Interferência","Sobreposição","Camadas","Transparência","Opacidade","Refração","Difração","Reflexão",
+  "Fragmentação","Reconstrução","Montagem","Desmontagem","Transformação","Metamorfose","Mutação","Adaptação","Transição","Evolução",
+  "Caos","Ordem","Sequência","Ritmo","Cadência","Padrão","Irregularidade","Aleatoriedade","Sincronização","Descompasso",
+  "Bloqueio","Barreira","Limite","Fronteira","Passagem","Portal","Labirinto","Obstáculo","Armadilha","Desnível",
+"Verticalidade","Horizontalidade","Inclinação","Rotação","Translação","Orbita","Centrífuga","Centrípeta","Gravitação","Vácuo","Presságio","Ilusão","Miragem","Camuflagem","Disfarce","Ocultação","Revelação","Duplicação","Multiplicação","Redução","Ilusão","Miragem","Camuflagem","Disfarce","Ocultação","Revelação","Duplicação","Multiplicação","Redução","Expansão",
+  "Transformação","Metamorfose","Mudança","Transição","Troca","Inversão","Reverso","Espelhamento","Distorção","Fragmentação",
+  "Reconstrução","Montagem","Desmontagem","Colapso","Equilíbrio","Desequilíbrio","Instabilidade","Tensão","Pressão","Impacto",
+  "Peso","Leveza","Rigidez","Elasticidade","Fragilidade","Resistência","Atrito","Deslizamento","Queda","Suspensão",
+  "Flutuação","Afundamento","Desvio","Trajetória","Caminho","Percurso","Labirinto","Obstáculo","Barreira","Passagem",
+  "Portal","Limite","Fronteira","Encontro","Separação","Conexão","Desconexão","Junção","Ruptura","Vínculo",
+  "Ritmo","Cadência","Sequência","Repetição","Padrão","Variação","Aleatoriedade","Ordem","Caos","Sincronia",
+  "Descompasso","Ciclo","Retorno","Progresso","Avanço","Retrocesso","Aproximação","Distanciamento","Sobreposição","Camadas",
+  "Profundidade","Superfície","Interior","Exterior","Centro","Borda","Extremo","Meio","Altura","Distância",
+  "Sombra","Luz","Brilho","Escuridão","Contraste","Reflexo","Transparência","Opacidade","Textura","Forma"],
+    L: ["Brasil","Estados Unidos","Japão","França","Itália","Espanha","Inglaterra","Alemanha","Canadá","Austrália",
+  "Egito","Grécia","China","Índia","Rússia","México","Argentina","Chile","Portugal","Holanda",
+  "Paris","Londres","Nova York","Los Angeles","Roma","Veneza","Tóquio","Quioto","Seul","Pequim",
+  "Rio de Janeiro","São Paulo","Brasília","Salvador","Recife","Fortaleza","Curitiba","Porto Alegre","Belo Horizonte","Manaus",
+  "Las Vegas","Miami","Orlando","Chicago","San Francisco","Seattle","Toronto","Vancouver","Montreal","Sydney",
+  "Pirâmides do Egito","Torre Eiffel","Estátua da Liberdade","Big Ben","Coliseu","Muralha da China","Cristo Redentor","Machu Picchu","Stonehenge","Monte Fuji",
+  "Hogwarts (Harry Potter)","Terra Média (Senhor dos Anéis)","Mordor (Senhor dos Anéis)","Nárnia (As Crônicas de Nárnia)",
+  "Gotham City (DC Comics)","Metrópolis (DC Comics)","Wakanda (Marvel)","Asgard (Marvel)",
+  "Tatooine (Star Wars)","Hoth (Star Wars)","Endor (Star Wars)",
+  "Raccoon City (Resident Evil)","Silent Hill (Silent Hill)","Vice City (GTA)","Liberty City (GTA)",
+  "Los Santos (GTA)","Hyrule (The Legend of Zelda)","Kanto (Pokémon)","Johto (Pokémon)",
+  "Mushroom Kingdom (Super Mario)","Bowser Castle (Super Mario)",
+  "Skyrim (The Elder Scrolls)","Tamriel (The Elder Scrolls)","Midgard (God of War)",
+  "Pandora (Avatar)","Arrakis (Duna)","Matrix (Matrix)",
+  "Springfield (Os Simpsons)","South Park (South Park)",
+  "Neverland (Peter Pan)","Brasil","Estados Unidos","Japão","França","Itália","Espanha","Inglaterra","Alemanha","Portugal","Argentina",
+  "Canadá","Austrália","México","Egito","Grécia","China","Índia",
+  "Rio de Janeiro","São Paulo","Nova York","Los Angeles","Las Vegas","Miami","Orlando",
+  "Paris","Londres","Roma","Veneza","Barcelona","Madri","Lisboa",
+  "Tóquio","Quioto","Pequim","Seul",
+  "Disneyland (parques Disney)","Hollywood (cinema)","Times Square (Nova York)","Central Park (Nova York)","Broadway (teatro)",
+  "Torre Eiffel (Paris)","Big Ben (Londres)","Coliseu (Roma)","Cristo Redentor (Rio de Janeiro)",
+  "Estátua da Liberdade (Nova York)","Pirâmides do Egito","Muralha da China","Machu Picchu (Peru)",
+  "Hogwarts (Harry Potter)","Hogsmeade (Harry Potter)","Diagon Alley (Harry Potter)",
+  "Terra Média (O Senhor dos Anéis)","Mordor (O Senhor dos Anéis)","Condado (O Senhor dos Anéis)",
+  "Gotham City (DC Comics)","Metrópolis (DC Comics)","Wakanda (Marvel)",
+  "Asgard (Marvel)","Tatooine (Star Wars)","Endor (Star Wars)",
+  "Jurassic Park (Jurassic Park)","Pandora (Avatar)","Arrakis (Duna)",
+  "Vice City (GTA)","Liberty City (GTA)","Los Santos (GTA)",
+  "Hyrule (The Legend of Zelda)","Kakariko (The Legend of Zelda)",
+  "Mushroom Kingdom (Super Mario)",
+  "Neverland (Peter Pan)","Nárnia (As Crônicas de Nárnia)",
+  "Springfield (Os Simpsons)","Bikini Bottom (Bob Esponja)",
+   "Ilha do Tesouro (Ilha do Tesouro)","Castelo do Drácula (Drácula)",
+  "Casa Branca (Washington DC)","Pentágono (Estados Unidos)","Área 51 (Estados Unidos)",
+  "Biblioteca","Castelo","Caverna","Floresta","Deserto","Ilha","Praia","Montanha","Vulcão","Cidade subterrânea"],
+    M: ["Detetive","Bombeiro","Astronauta","Batman (DC Comics)","Homem-Aranha (Marvel)",
+  "Harry Potter (Harry Potter)","Gandalf (O Senhor dos Anéis)","Darth Vader (Star Wars)",
+  "Goku (Dragon Ball)","Kratos (God of War)",
+
+  "Guarda-chuva","Lanterna","Bússola","Mapa","Binóculo",
+  "Câmera fotográfica","Microfone","Violão","Controle de videogame","Notebook",
+  "Smartphone","Relógio","Óculos","Mochila","Maleta",
+
+  "Correr","Pular","Escalar","Equilibrar","Desviar",
+  "Arremessar","Empurrar","Puxar","Segurar","Soltar",
+  "Girar","Rodopiar","Deslizar","Agachar","Levantar",
+  "Esconder","Procurar","Apontar","Imitar","Congelar",
+
+  "Ilusão","Reflexo","Sombra","Invisibilidade","Gravidade",
+  "Equilíbrio","Transformação","Metamorfose","Espelhamento","Fragmentação",
+  "Peso","Leveza","Barreira","Labirinto","Obstáculo",
+  "Trajetória","Desvio","Camuflagem","Duplicação","Transição",
+
+  "Brasil","Estados Unidos","Japão","França","Itália",
+  "Paris","Londres","Nova York","Roma","Veneza",
+  "Rio de Janeiro","São Paulo","Las Vegas","Miami","Orlando",
+  "Torre Eiffel","Cristo Redentor","Pirâmides do Egito","Muralha da China","Machu Picchu",
+
+  "Hogwarts (Harry Potter)","Terra Média (O Senhor dos Anéis)","Mordor (O Senhor dos Anéis)",
+  "Gotham City (DC Comics)","Wakanda (Marvel)","Asgard (Marvel)",
+  "Tatooine (Star Wars)","Endor (Star Wars)",
+  "Jurassic Park (Jurassic Park)","Pandora (Avatar)",
+
+  "Vice City (GTA)","Liberty City (GTA)","Los Santos (GTA)",
+  "Hyrule (The Legend of Zelda)","Mushroom Kingdom (Super Mario)",
+  "Neverland (Peter Pan)","Nárnia (As Crônicas de Nárnia)",
+  "Springfield (Os Simpsons)","Bikini Bottom (Bob Esponja)",
+
+  "Skate","Bicicleta","Capacete","Cadeado","Chave",
+  "Bola de futebol","Raquete","Cronômetro","Garrafa","Lanterna",
+  "Abrir","Fechar","Escapar","Perseguir","Proteger", "Indiana Jones (Indiana Jones)","Lara Croft (Tomb Raider)","Neo (Matrix)","Trinity (Matrix)",
+  "Jack Sparrow (Piratas do Caribe)","Geralt de Rívia (The Witcher)","Link (The Legend of Zelda)",
+  "Zelda (The Legend of Zelda)","Mario (Super Mario)","Luigi (Super Mario)",
+
+  "Amplificador","Caixa de som","Headset","Tripé","Drone",
+  "Pendrive","HD externo","Carregador portátil","Cabo HDMI","Câmera de ação",
+
+  "Escorregar","Tropeçar","Rolar","Abaixar","Avançar",
+  "Recuar","Ziguezaguear","Contornar","Frear","Acelerar",
+  "Apanhar","Lançar","Rebater","Bloquear","Esquivar",
+
+  "Opacidade","Transparência","Contraste","Profundidade","Camadas",
+  "Ritmo","Sequência","Padrão","Variação","Caos",
+  "Ordem","Limite","Passagem","Portal","Colapso",
+
+  "Alemanha","Espanha","Portugal","Holanda","Canadá",
+  "Barcelona","Madri","Lisboa","Toronto","Vancouver",
+  "Sydney","Chicago","San Diego","Boston","Washington DC",
+
+  "Central Park (Nova York)","Times Square (Nova York)","Broadway (teatro)",
+  "Big Ben (Londres)","Coliseu (Roma)","Monte Fuji (Japão)",
+
+  "Hogsmeade (Harry Potter)","Diagon Alley (Harry Potter)",
+  "Condado (O Senhor dos Anéis)","Isengard (O Senhor dos Anéis)",
+
+  "Raccoon City (Resident Evil)","Silent Hill (Silent Hill)",
+  "Kanto (Pokémon)","Johto (Pokémon)",
+
+  "Prancha","Patinete","Capacete de ciclismo","Bola de tênis","Rede",
+  "Abridor","Saca-rolhas","Copo térmico","Garrafa térmica"]
+  },
+  hardcore: {
+    P: ["Napoleão Bonaparte","Cleópatra","Júlio César","Alexandre, o Grande","Joana d’Arc",
+  "Leonardo da Vinci","Michelangelo","Galileu Galilei","Isaac Newton","Albert Einstein",
+  "Charles Darwin","Nikola Tesla","Sigmund Freud","Stephen Hawking","Marie Curie",
+
+  "William Shakespeare","Edgar Allan Poe","Franz Kafka","George Orwell","J. R. R. Tolkien",
+  "Agatha Christie","Arthur Conan Doyle","H. P. Lovecraft","Mary Shelley","Jules Verne",
+
+  "Michael Jackson","Freddie Mercury","David Bowie","Prince","Elvis Presley",
+  "Bob Marley","Kurt Cobain","John Lennon","Paul McCartney","Amy Winehouse",
+
+  "Bruce Lee","Jackie Chan","Arnold Schwarzenegger","Sylvester Stallone","Chuck Norris",
+  "Keanu Reeves","Al Pacino","Robert De Niro","Leonardo DiCaprio","Johnny Depp",
+
+  "Darth Vader (Star Wars)","Yoda (Star Wars)","Gandalf (O Senhor dos Anéis)",
+  "Sauron (O Senhor dos Anéis)","Thanos (Marvel)",
+  "Coringa (DC Comics)","Batman (DC Comics)",
+  "Kratos (God of War)","Geralt de Rívia (The Witcher)",
+  "Ezio Auditore (Assassin’s Creed)",
+
+  "Alien (Alien)","Predador (Predator)","T-800 (Exterminador do Futuro)",
+  "Neo (Matrix)","Morpheus (Matrix)",
+  "Rick Sanchez (Rick and Morty)","Walter White (Breaking Bad)",
+
+  "Dragão-de-komodo","Polvo-gigante","Tubarão-branco","Baleia-azul",
+  "Águia-real","Lobo-guará","Pantera-negra","Gorila","Orangotango","Camaleão"],
+    O: ["Ampulheta","Bússola náutica","Astrolábio","Sextante","Mapa antigo",
+  "Pergaminho","Códice","Manuscrito","Selo de cera","Sinete",
+  "Relicário","Caixa de música","Autômato","Boneco mecânico","Engrenagem",
+  "Relógio de bolso","Cronômetro antigo","Cofre","Cadeado antigo","Chave mestra",
+  "Máscara teatral","Máscara veneziana","Elmo medieval","Armadura","Escudo",
+  "Espada longa","Adaga","Cajado","Tocha","Lanterna a óleo",
+  "Candelabro","Castiçal","Vela derretida","Cálice","Taça",
+  "Anel com selo","Pingente","Broche","Medalhão","Bracelete",
+  "Pergaminho selado","Mapa do tesouro","Bússola quebrada","Ampola","Frasco",
+  "Vidro fosco","Espelho rachado","Espelho oval","Moldura vazia","Quadro antigo",
+  "Estátua quebrada","Busto","Coluna","Pedestal","Baú",
+  "Caixa trancada","Caixa secreta","Gaveta falsa","Livro antigo","Livro proibido",
+  "Marca-páginas","Pluma","Tinteiro","Pena","Canivete",
+  "Navalha","Luneta","Monóculo","Telescópio antigo","Binóculo antigo",
+  "Globo terrestre","Mapa-múndi","Compasso","Régua de metal","Trena antiga",
+  "Saco de couro","Bolsa de viagem antiga","Mochila de couro","Alforge","Cantil"],
+    A: [ "Forjar","Lapidar","Entalhar","Gravar","Cinzelar",
+  "Fundir","Moldar","Temperar","Polir","Afiar",
+
+  "Selar","Lacrar","Carimbar","Sinetar","Encadernar",
+  "Caligrafar","Iluminar manuscrito","Copiar manuscrito","Raspar pergaminho","Restaurar página",
+
+  "Arrombar","Destrancar","Chavear","Trancar","Lacrar cofre",
+  "Decifrar","Descriptografar","Codificar","Recodificar","Criptografar",
+
+  "Desarmar","Armar","Rearmar","Neutralizar","Sabotar",
+  "Sincronizar","Desalinhar","Recalibrar","Ajustar","Desajustar",
+
+  "Equilibrar em fio","Equilibrar em borda","Contrabalançar","Estabilizar","Desestabilizar",
+  "Suspender","Içar","Baixar","Contrapesar","Oscilar",
+
+  "Esgrimir","Duelo","Estocar","Aparar","Bloquear",
+  "Investir","Recuar","Flanquear","Cercar","Desarmar adversário",
+
+  "Escalar muro","Escalar torre","Escalar fachada","Escalar rocha","Escalar corda",
+  "Rapelar","Descer em rapel","Pendurar-se","Transpor obstáculo","Vencer desnível",
+
+  "Camuflar","Disfarçar","Ocultar","Revelar","Expor",
+  "Rastrear","Seguir rastros","Apagar rastros","Despistar","Encurralar",
+
+  "Iludir","Confundir","Provocar","Intimidar","Blefar",
+  "Testar limites","Forçar limite","Romper limite","Ultrapassar limite","Restringir movimento",
+
+  "Montar armadilha","Ativar armadilha","Desativar armadilha","Evitar armadilha","Escapar armadilha"],
+    D: ["Paradoxo","Ilusão","Miragem","Distorção","Inversão",
+  "Simetria","Assimetria","Equilíbrio","Desequilíbrio","Instabilidade",
+  "Fragmentação","Reconstrução","Colapso","Transição","Metamorfose",
+  "Duplicação","Multiplicação","Redução","Expansão","Contração",
+
+  "Peso","Leveza","Suspensão","Queda","Flutuação",
+  "Trajetória","Desvio","Impacto","Colisão","Atrito",
+
+  "Sombra","Reflexo","Transparência","Opacidade","Contraste",
+  "Luz","Escuridão","Brilho","Penumbra","Silhueta",
+
+  "Ritmo","Cadência","Sequência","Repetição","Loop",
+  "Caos","Ordem","Padrão","Variação","Aleatoriedade",
+
+  "Barreira","Limite","Fronteira","Passagem","Portal",
+  "Labirinto","Obstáculo","Armadilha","Desnível","Abismo",
+
+  "Centro","Borda","Extremo","Meio","Vazio",
+  "Cheio","Interior","Exterior","Superfície","Profundidade",
+
+  "Convergência","Divergência","Aproximação","Distanciamento","Encontro",
+  "Separação","Junção","Ruptura","Vínculo","Isolamento",
+
+  "Persistência","Resistência","Fragilidade","Elasticidade","Rigidez"],
+    L: ["Vaticano","Jerusalém","Meca","Pompeia","Versalhes",
+  "Monte Everest","Deserto do Saara","Floresta Amazônica","Pantanal","Antártida",
+  "Ilha de Páscoa","Galápagos","Groenlândia","Mar Morto","Área 51",
+
+  "Hogwarts (Harry Potter)","Azkaban (Harry Potter)","Ministério da Magia (Harry Potter)",
+  "Hogsmeade (Harry Potter)",
+
+  "Terra Média (O Senhor dos Anéis)","Mordor (O Senhor dos Anéis)",
+  "Condado (O Senhor dos Anéis)","Moria (O Senhor dos Anéis)",
+
+  "King’s Landing (Game of Thrones)","Winterfell (Game of Thrones)",
+  "The Wall (Game of Thrones)","Dragonstone (Game of Thrones)",
+
+  "Gotham City (DC Comics)","Metrópolis (DC Comics)",
+  "Wakanda (Marvel)","Asgard (Marvel)",
+
+  "Tatooine (Star Wars)","Endor (Star Wars)",
+  "Hoth (Star Wars)","Dagobah (Star Wars)",
+
+  "Jurassic Park (Jurassic Park)","Ilha Nublar (Jurassic Park)",
+
+  "Silent Hill (Silent Hill)",
+  "Raccoon City (Resident Evil)",
+
+  "Neverland (Peter Pan)",
+  "Nárnia (As Crônicas de Nárnia)",
+
+  "Castelo do Drácula (Drácula)",
+  "Ilha do Tesouro (Ilha do Tesouro)",
+
+  "Matrix (Matrix)",
+  "Zion (Matrix)",
+
+  "Springfield (Os Simpsons)",
+  "South Park (South Park)",
+  "Bikini Bottom (Bob Esponja)",
+
+  "Casa Branca (Estados Unidos)",
+  "Pentágono (Estados Unidos)",
+
+  "Disneyland (parques Disney)",
+  "Hollywood (cinema)",
+
+  "Central Park (Nova York)",
+  "Times Square (Nova York)"],
+    M: ["Napoleão Bonaparte","Cleópatra","Leonardo da Vinci","Albert Einstein","Marie Curie",
+  "Freddie Mercury","David Bowie","Michael Jackson","Bruce Lee","Keanu Reeves",
+
+  "Darth Vader (Star Wars)","Gandalf (O Senhor dos Anéis)","Thanos (Marvel)",
+  "Coringa (DC Comics)","Kratos (God of War)","Neo (Matrix)",
+  "Walter White (Breaking Bad)","Rick Sanchez (Rick and Morty)",
+
+  "Ampulheta","Astrolábio","Relógio de bolso","Mapa antigo","Espelho rachado",
+  "Baú","Cadeado antigo","Chave mestra","Lanterna a óleo","Pergaminho",
+
+  "Forjar","Lapidar","Entalhar","Decifrar","Desarmar",
+  "Camuflar","Disfarçar","Ocultar","Rastrear","Despistar",
+  "Escalar muro","Pendurar-se","Rapelar","Contrabalançar","Oscilar",
+
+  "Paradoxo","Ilusão","Espelhamento","Fragmentação","Metamorfose",
+  "Equilíbrio","Instabilidade","Trajetória","Barreira","Labirinto",
+
+  "Vaticano","Jerusalém","Área 51","Antártida","Floresta Amazônica",
+  "Hogwarts (Harry Potter)","Azkaban (Harry Potter)",
+  "Terra Média (O Senhor dos Anéis)","Mordor (O Senhor dos Anéis)",
+  "King’s Landing (Game of Thrones)","Winterfell (Game of Thrones)",
+
+  "Gotham City (DC Comics)","Wakanda (Marvel)",
+  "Tatooine (Star Wars)","Endor (Star Wars)",
+
+  "Jurassic Park (Jurassic Park)",
+  "Silent Hill (Silent Hill)",
+  "Raccoon City (Resident Evil)",
+
+  "Neverland (Peter Pan)",
+  "Nárnia (As Crônicas de Nárnia)",
+
+  "Casa Branca (Estados Unidos)",
+  "Pentágono (Estados Unidos)",
+
+  "Disneyland (parques Disney)",
+  "Hollywood (cinema)"]
+  }
+};
+
+
+// ===== JOGO =====
+let nivelAtual = "medio";
+let pools = {};
+
+function resetPools(){
+  pools = JSON.parse(JSON.stringify(dicionarios[nivelAtual]));
+}
+
+function shuffle(arr){
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+function pickUnique(cat){
+  if(!pools[cat] || pools[cat].length === 0){
+    pools[cat] = [...(dicionarios[nivelAtual][cat] || [])];
+  }
+  if(pools[cat].length === 0) return "---";
+  const i = Math.floor(Math.random() * pools[cat].length);
+  return pools[cat].splice(i,1)[0];
+}
+
+function setNivel(n){
+  nivelAtual = n;
+  document.querySelectorAll('.levels button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-'+n).classList.add('active');
+  resetPools();
+  gerarCarta();
+}
+
+function gerarCarta(){
+  resetTimer();
+  const categorias = ['P','O','A','D','L','M'];
+  const pontos = shuffle([1,2,3,4,5,6]);
+  const carta = document.getElementById('carta');
+  carta.innerHTML = '';
+  categorias.forEach((cat,i)=>{
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `
+      <div class="circle">${cat}</div>
+      <div class="word">${pickUnique(cat)}</div>
+      <div class="circle small">${pontos[i]}</div>
+    `;
+    carta.appendChild(row);
+  });
+}
+
+// ===== TIMER (CONTAGEM REGRESSIVA) =====
+let timeLeft = TEMPO_INICIAL;
+let timerInterval = null;
+
+function beep(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = 880;
+    osc.connect(ctx.destination);
+    osc.start();
+    setTimeout(()=>osc.stop(),200);
+  }catch(e){}
+}
+
+function vibrar(){
+  if(navigator.vibrate){
+    navigator.vibrate([200,100,200]);
+  }
+}
+
+function startTimer(){
+  if(timerInterval) return;
+  timerInterval = setInterval(()=>{
+    timeLeft--;
+    document.getElementById('timer').textContent = timeLeft;
+    if(timeLeft <= 0){
+      clearInterval(timerInterval);
+      timerInterval = null;
+      document.getElementById('timer').textContent = '0';
+      beep();
+      vibrar();
+    }
+  },1000);
+}
+
+function resetTimer(){
+  if(timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  timeLeft = TEMPO_INICIAL;
+  document.getElementById('timer').textContent = TEMPO_INICIAL;
+}
+
+// INIT
+resetPools();
+gerarCarta();
+</script>
+</body>
+</html>
