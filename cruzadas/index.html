@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Cruzadas Diretas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@500;600;700&display=swap">
+<style>
+/* Layout: cabeçalho compacto · barra da dica ativa · grade de revistinha · ações; teclado na tela em toque */
+:root {
+  --bg: #e8edf2; --surface: #ffffff; --fg: #15202b; --muted: #5a6876; --line: #c9d3dc;
+  --ink: #1b232b; --clue: #dbe8f3; --clue-fg: #12202c; --void: #a3b6c7;
+  --accent: #1d6496; --accent-fg: #ffffff; --sel-word: #fff1b8; --sel-cell: #ffd34d;
+  --bad: #c62f2f; --good: #1d7a47; --rev: #7a4fc4;
+  --f-ui: "Barlow", "Segoe UI", Arial, sans-serif;
+  --f-clue: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --cs: clamp(32px, calc((100vw - 36px) / 10), 60px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #10171e; --surface: #18222c; --fg: #e3e9ef; --muted: #93a2b0; --line: #2c3a47;
+    --ink: #9fb2c3; --clue: #22384b; --clue-fg: #e3edf6; --void: #0b1117; --accent: #6db3e6; --accent-fg: #0b1824;
+    --sel-word: #3d3a1f; --sel-cell: #8a6d12; --bad: #ff7b7b; --good: #5fd394; --rev: #b99cf0; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #10171e; --surface: #18222c; --fg: #e3e9ef; --muted: #93a2b0; --line: #2c3a47;
+  --ink: #9fb2c3; --clue: #22384b; --clue-fg: #e3edf6; --void: #0b1117; --accent: #6db3e6; --accent-fg: #0b1824;
+  --sel-word: #3d3a1f; --sel-cell: #8a6d12; --bad: #ff7b7b; --good: #5fd394; --rev: #b99cf0; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-ui); font-size: 15px; }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 16px 32px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 12px; }
+
+header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; }
+h1 { font-family: var(--f-clue); font-weight: 800; font-size: 26px; text-transform: uppercase; letter-spacing: .02em; margin: 0; line-height: 1; }
+h1 span { color: var(--accent); }
+.meta { display: flex; gap: 14px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; align-items: baseline; }
+.meta b { color: var(--fg); font-weight: 700; }
+
+.cluebar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 4; background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: 9px 12px; display: flex; gap: 10px; align-items: center; min-height: 46px; }
+.cluebar .dir { font-family: var(--f-clue); font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: .06em;
+  background: var(--accent); color: var(--accent-fg); border-radius: 4px; padding: 2px 7px; flex: none; }
+.cluebar .txt { font-weight: 600; font-size: 16px; min-width: 0; }
+.cluebar .len { color: var(--muted); font-size: 13px; flex: none; margin-left: auto; font-variant-numeric: tabular-nums; }
+
+.board { overflow-x: auto; padding: 2px; }
+.grid { display: grid; grid-template-columns: repeat(var(--cols), var(--cs)); grid-auto-rows: var(--cs);
+  border: 2px solid var(--ink); background: var(--surface); width: max-content; margin: 0 auto; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+.c { position: relative; border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.c.vd { background: var(--void); }
+.c.cl { background: var(--clue); display: flex; flex-direction: column; cursor: pointer; }
+.c.cl .h { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; position: relative; padding: 1px 2px; }
+.c.cl .h + .h { border-top: 1px solid var(--ink); }
+.c.cl .h.on { background: color-mix(in srgb, var(--sel-cell) 45%, var(--clue)); }
+.tx { font-family: var(--f-clue); font-weight: 600; line-height: 1.02; text-align: center; color: var(--clue-fg); width: 100%; max-height: 100%;
+  overflow: hidden; hyphens: manual; overflow-wrap: normal; word-break: normal; }
+.tx.brk { overflow-wrap: anywhere; hyphens: auto; -webkit-hyphens: auto; }
+.ar { position: absolute; width: 0; height: 0; z-index: 2; pointer-events: none; }
+.ar.r { right: -6px; top: 50%; margin-top: -4px; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 5px solid var(--ink); }
+.ar.d { bottom: -6px; left: 50%; margin-left: -4px; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid var(--ink); }
+.c.lt { cursor: pointer; display: flex; align-items: center; justify-content: center; background: var(--surface);
+  font-weight: 700; font-size: calc(var(--cs) * .52); color: var(--fg); }
+.c.lt.word { background: var(--sel-word); }
+.c.lt.cur { background: var(--sel-cell); }
+.c.lt.bad { color: var(--bad); }
+.c.lt.bad::after { content: ""; position: absolute; left: 12%; right: 12%; top: 50%; height: 2px; background: var(--bad); transform: rotate(-35deg); opacity: .7; }
+.c.lt.rev { color: var(--rev); }
+.c.lt.ok { color: var(--good); }
+
+.actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+button { font: inherit; font-weight: 700; font-size: 14px; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--fg); cursor: pointer; }
+button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+button:hover { border-color: var(--accent); }
+button:focus-visible, .c:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button:disabled { opacity: .5; cursor: default; }
+.msg { text-align: center; font-weight: 700; min-height: 22px; font-size: 15px; }
+.msg.good { color: var(--good); }
+.msg.bad { color: var(--bad); }
+.help { font-size: 13px; color: var(--muted); text-align: center; margin: 0; text-wrap: balance; }
+
+.kbd { display: none; flex-direction: column; gap: 6px; position: sticky; bottom: 0; z-index: 6; background: var(--bg);
+  padding-block: 8px calc(8px + env(safe-area-inset-bottom, 0px)); }
+.kbd .row { display: flex; gap: 4px; justify-content: center; }
+.kbd button { flex: 1 1 0; max-width: 44px; padding: 9px 0; font-size: 17px; }
+.kbd button.wide { max-width: 72px; flex-grow: 1.6; font-size: 14px; }
+@media (pointer: coarse) { .kbd { display: flex; } .help .desk { display: none; } }
+
+.loading { padding: 80px 0; text-align: center; color: var(--muted); font-weight: 600; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Cruzadas <span>Diretas</span></h1>
+    <div class="meta"><span>Nível <b>médio</b></span><span>Grade <b id="num">—</b></span><span>⏱ <b id="clock">0:00</b></span></div>
+  </header>
+
+  <div class="cluebar" id="cluebar"><span class="dir" id="cdir">→</span><span class="txt" id="ctxt">Toque numa casa para começar</span><span class="len" id="clen"></span></div>
+
+  <div class="board"><div id="grid" class="grid" role="grid" aria-label="Grade de palavras cruzadas"><div class="loading">Montando a grade…</div></div></div>
+
+  <div class="msg" id="msg" aria-live="polite"></div>
+
+  <div class="actions">
+    <button id="bCheck" type="button">Conferir</button>
+    <button id="bLetter" type="button">Revelar letra</button>
+    <button id="bWord" type="button">Revelar palavra</button>
+    <button id="bAll" type="button">Revelar tudo</button>
+    <button id="bNew" class="primary" type="button">Nova grade</button>
+  </div>
+  <p class="help"><span class="desk">Digite as letras direto no teclado. Setas movem, espaço troca a direção, Tab pula para a próxima palavra. </span>Toque de novo na mesma casa para trocar entre horizontal e vertical. Sem acentos nem Ç.</p>
+
+  <div class="kbd" id="kbd"></div>
+</div>
+
+<script>
+/* ===== Gerador de palavras cruzadas diretas ===== */
+const PCD = (function () {
+  function norm(w) {
+    return w.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z]/g, '');
+  }
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      let t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  const UN = ['', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'];
+  const DZ = ['', '', 'vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'];
+  function numName(n) {
+    if (n === 100) return 'cem';
+    if (n === 500) return 'quinhentos';
+    if (n === 1000) return 'mil';
+    if (n === 200) return 'duzentos';
+    if (n === 2000) return 'dois mil';
+    if (n < 20) return UN[n];
+    const d = Math.floor(n / 10), u = n % 10;
+    return DZ[d] + (u ? ' e ' + UN[u] : '');
+  }
+  function roman(n) {
+    const t = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+    let s = ''; for (const [v, r] of t) while (n >= v) { s += r; n -= v; } return s;
+  }
+
+  const ELEM = 'HE:hélio;LI:lítio;BE:berílio;NE:neônio;NA:sódio;MG:magnésio;AL:alumínio;SI:silício;CL:cloro;AR:argônio;CA:cálcio;TI:titânio;CR:cromo;MN:manganês;FE:ferro;CO:cobalto;NI:níquel;CU:cobre;ZN:zinco;GA:gálio;GE:germânio;AS:arsênio;SE:selênio;BR:bromo;KR:criptônio;SR:estrôncio;AG:prata;SN:estanho;SB:antimônio;TE:telúrio;XE:xenônio;BA:bário;PT:platina;AU:ouro;HG:mercúrio;PB:chumbo;BI:bismuto;RN:radônio;RA:rádio;PU:plutônio;IR:irídio;OS:ósmio;PD:paládio;CD:cádmio;ER:érbio;CE:cério;TA:tântalo;LA:lantânio;AM:amerício;NO:nobélio;PO:polônio;RE:rênio;RH:ródio;RU:rutênio;TH:tório;CS:césio;RB:rubídio;FR:frâncio;IN:índio;TL:tálio;MO:molibdênio;NB:nióbio;ZR:zircônio;SM:samário;ES:einstênio;EU:európio;HO:hólmio;ND:neodímio';
+  const UF = 'AC:do Acre;AL:de Alagoas;AP:do Amapá;AM:do Amazonas;BA:da Bahia;CE:do Ceará;DF:do Distrito Federal;ES:do Espírito Santo;GO:de Goiás;MA:do Maranhão;MT:de Mato Grosso;MS:de Mato Grosso do Sul;MG:de Minas Gerais;PA:do Pará;PB:da Paraíba;PR:do Paraná;PE:de Pernambuco;PI:do Piauí;RJ:do Rio de Janeiro;RN:do Rio Grande do Norte;RS:do Rio Grande do Sul;RO:de Rondônia;RR:de Roraima;SC:de Santa Catarina;SP:de São Paulo;SE:de Sergipe;TO:do Tocantins';
+
+  function buildDict(text) {
+    const D = new Map(); // word -> {real:[], art:[]}
+    const add = (w, clue, kind) => {
+      const k = norm(w); if (k.length < 2) return;
+      if (!D.has(k)) D.set(k, { real: [], alt: {}, kinds: [] });
+      const e = D.get(k);
+      let arr;
+      if (!kind) arr = e.real;
+      else { if (!e.alt[kind]) { e.alt[kind] = []; e.kinds.push(kind); } arr = e.alt[kind]; }
+      if (!arr.includes(clue)) arr.push(clue);
+    };
+    const sources = [];
+    for (const line of text.split('\n')) {
+      const i = line.indexOf(':'); if (i < 1) continue;
+      const w = line.slice(0, i).trim();
+      const clues = line.slice(i + 1).split(';').map(s => s.trim()).filter(Boolean);
+      for (const c of clues) add(w, c, null);
+      sources.push(w);
+    }
+    for (const p of ELEM.split(';')) { const [s, n] = p.split(':'); add(s, 'Símbolo ' + (/^(prata|platina)$/.test(n) ? 'da ' : 'do ') + n, 'elem'); }
+    for (const p of UF.split(';')) { const [s, n] = p.split(':'); add(s, 'Sigla ' + n, 'uf'); }
+    const nums = []; for (let n = 2; n <= 30; n++) nums.push(n); nums.push(40, 50, 60, 90, 100, 200, 500, 1000, 2000);
+    for (const n of nums) { const r = roman(n); if (r.length >= 2 && r.length <= 4) add(r, numName(n)[0].toUpperCase() + numName(n).slice(1) + ', em romanos', 'roman'); }
+    // entradas "de revistinha": vogais / consoantes de uma palavra
+    const V = /[AEIOU]/;
+    for (const w of sources) {
+      const k = norm(w); if (k.length < 3 || k.length > 8) continue;
+      const vs = [...k].filter(ch => V.test(ch)).join('');
+      const cs = [...k].filter(ch => !V.test(ch)).join('');
+      const low = w.toLowerCase();
+      if (vs.length >= 2 && vs.length <= 3) add(vs, 'Vogais de "' + low + '"', 'art');
+      if (cs.length >= 2 && cs.length <= 3) add(cs, 'Consoantes de "' + low + '"', 'art');
+    }
+    return D;
+  }
+
+  function buildTrie(D) {
+    const root = { ch: {}, term: false, min: Infinity, cnt: 0, d: 0 };
+    for (const k of D.keys()) {
+      let n = root;
+      const rw = D.get(k).real.length ? (k.length === 2 ? 1 : 3) : 0.15; for (const ch of k) { if (!n.ch[ch]) n.ch[ch] = { ch: {}, term: false, min: Infinity, cnt: 0, d: n.d + 1 }; n = n.ch[ch]; n.cnt += rw; }
+      n.term = true;
+    }
+    (function fix(n) {
+      let m = Infinity;
+      for (const c of Object.values(n.ch)) { fix(c); m = Math.min(m, 1 + c.min); }
+      n.min = (n.term && n.d >= 2) ? 0 : m;
+    })(root);
+    return root;
+  }
+
+  function create(text) {
+    const D = buildDict(text);
+    const root = buildTrie(D);
+    const isReal = k => D.get(k) && D.get(k).real.length > 0;
+
+    function attempt(R, C, rng, opt) {
+      const cell = Array.from({ length: R }, (_, r) => Array.from({ length: C }, (_, c) => (r === 0 || c === 0) ? '#' : null));
+      const singleA = Array.from({ length: R }, () => Array(C).fill(false));
+      const dNode = Array(C).fill(root), dLen = Array(C).fill(0), dStr = Array(C).fill('');
+      let aNode = root, aLen = 0, aStr = '';
+      const used = new Set();
+      let art = 0, steps = 0, clues = 0;
+      const caps = opt.caps, budget = opt.budget, cnt = {}, kindOf = new Map(); let n2 = 0; const max2 = opt.max2;
+      const interior = (R - 1) * (C - 1);
+      const maxClues = Math.round(interior * opt.maxClueFrac);
+      const FAIL = {};
+
+      function useWord(w) {
+        if (used.has(w)) return false;
+        if (w.length === 2 && n2 >= max2) return false;
+        if (!isReal(w)) {
+          const ks = D.get(w).kinds.filter(k => (cnt[k] || 0) < (caps[k] ?? 2));
+          if (!ks.length) return false;
+          const k = ks[Math.floor(rng() * ks.length)]; cnt[k] = (cnt[k] || 0) + 1; kindOf.set(w, k); art++;
+        }
+        if (w.length === 2) n2++;
+        used.add(w); return true;
+      }
+      function unuseWord(w) { used.delete(w); if (w.length === 2) n2--; if (!isReal(w)) { art--; cnt[kindOf.get(w)]--; kindOf.delete(w); } }
+
+      function go(r, c) {
+        if (++steps > budget) throw FAIL;
+        if (c === C) { r++; c = 1; aNode = root; aLen = 0; aStr = ''; }
+        if (r === R) return true;
+        const remA = C - 1 - c, remD = R - 1 - r;
+        const aN = aLen === 0 ? root : aNode, dN = dLen[c] === 0 ? root : dNode[c];
+        const opts = [];
+        for (const L in aN.ch) {
+          const na = aN.ch[L], nd = dN.ch[L]; if (!nd) continue;
+          const nA = aLen + 1, nD = dLen[c] + 1;
+          if (remA === 0) { if (nA > 1 && (!na.term)) continue; }
+          else if (nA > 1 && na.min > remA) continue;
+          if (remD === 0) { if (nD > 1 && !nd.term) continue; if (nD === 1 && cell[r - 1][c] === '#' && nA === 1 && (remA === 0)) continue; }
+          else if (nD > 1 && nd.min > remD) continue;
+          opts.push({ L, na, nd, w: (Math.log(2 + na.cnt) * Math.log(2 + nd.cnt)) * (0.25 + rng()) });
+        }
+        opts.sort((a, b) => b.w - a.w);
+        // opção de casa-dica
+        let clueOk = !(r === R - 1 && c === C - 1) && clues < maxClues;
+        if (clueOk && cell[r - 1][c - 1] === '#' && cell[r - 1][c] === '#' && cell[r][c - 1] === '#') clueOk = false;
+        if (clueOk && r === R - 1 && cell[r][c - 1] === '#') clueOk = false; // dica inútil na última linha
+        if (clueOk && c === C - 1 && cell[r - 1][c] === '#') clueOk = false; // dica inútil na última coluna
+        let clueAt = opts.length;
+        if (clueOk) {
+          const pr = [0.02, 0.06, 0.28, 0.45, 0.55, 0.62, 0.7][Math.min(aLen, 6)];
+          const edgeBias = (r === 1 || c === 1) ? 0.02 : 1;
+          if (rng() < pr * edgeBias) clueAt = Math.min(opts.length, Math.floor(rng() * 2));
+          else clueAt = opts.length >= 3 ? 2 + Math.floor(rng() * Math.max(1, opts.length - 2)) : opts.length;
+          clueAt = Math.min(clueAt, opts.length);
+          if (r === 1 || c === 1) clueAt = opts.length;
+        }
+        const order = opts.slice(); if (clueOk) order.splice(clueAt, 0, null);
+        for (const o of order) {
+          if (o === null) {
+            // fecha horizontal
+            const sA = aNode, sL = aLen, sS = aStr;
+            let wa = null, wd = null, okA = true, okD = true;
+            if (aLen >= 2) { if (!aNode.term || !useWord(aStr)) okA = false; else wa = aStr; }
+            else if (aLen === 1) { if (c === 2 || (r === R - 1 && cell[r - 1][c - 1] === '#')) okA = false; }
+            if (!okA) continue;
+            if (dLen[c] >= 2) { if (!dNode[c].term || !useWord(dStr[c])) okD = false; else wd = dStr[c]; }
+            else if (dLen[c] === 1) { if (r === 2 || singleA[r - 1][c]) okD = false; }
+            if (!okD) { if (wa) unuseWord(wa); continue; }
+            if (aLen === 1) singleA[r][c - 1] = true;
+            const sdN = dNode[c], sdL = dLen[c], sdS = dStr[c];
+            cell[r][c] = '#'; clues++;
+            aNode = root; aLen = 0; aStr = ''; dNode[c] = root; dLen[c] = 0; dStr[c] = '';
+            if (go(r, c + 1)) return true;
+            cell[r][c] = null; clues--;
+            if (sL === 1) singleA[r][c - 1] = false;
+            aNode = sA; aLen = sL; aStr = sS; dNode[c] = sdN; dLen[c] = sdL; dStr[c] = sdS;
+            if (wa) unuseWord(wa); if (wd) unuseWord(wd);
+            if (c === C - 1) { aNode = sA; aLen = sL; aStr = sS; }
+          } else {
+            const sA = aNode, sL = aLen, sS = aStr, sdN = dNode[c], sdL = dLen[c], sdS = dStr[c];
+            const nwA = aStr + o.L, nwD = dStr[c] + o.L;
+            let wa = null, wd = null;
+            if (remA === 0 && aLen + 1 >= 2) { if (!useWord(nwA)) continue; wa = nwA; }
+            if (remD === 0 && dLen[c] + 1 >= 2) { if (!useWord(nwD)) { if (wa) unuseWord(wa); continue; } wd = nwD; }
+            if (remA === 0 && aLen + 1 === 1) singleA[r][c] = true;
+            cell[r][c] = o.L;
+            aNode = o.na; aLen++; aStr = nwA; dNode[c] = o.nd; dLen[c]++; dStr[c] = nwD;
+            if (go(r, c + 1)) return true;
+            cell[r][c] = null; singleA[r][c] = false;
+            aNode = sA; aLen = sL; aStr = sS; dNode[c] = sdN; dLen[c] = sdL; dStr[c] = sdS;
+            if (wa) unuseWord(wa); if (wd) unuseWord(wd);
+          }
+        }
+        return false;
+      }
+      try { if (!go(1, 1)) return null; } catch (e) { if (e === FAIL) return null; throw e; }
+      return { cell, art, clues, kindOf: new Map(kindOf) };
+    }
+
+    function extract(cell, R, C) {
+      const words = [];
+      for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) {
+        if (cell[r][c] !== '#') continue;
+        if (c + 1 < C && cell[r][c + 1] !== '#') { let s = ''; let k = c + 1; while (k < C && cell[r][k] !== '#') s += cell[r][k++]; if (s.length >= 2) words.push({ r, c, dir: 'h', word: s }); }
+        if (r + 1 < R && cell[r + 1][c] !== '#') { let s = ''; let k = r + 1; while (k < R && cell[k][c] !== '#') s += cell[k++][c]; if (s.length >= 2) words.push({ r, c, dir: 'v', word: s }); }
+      }
+      return words;
+    }
+
+    function generate(R, C, seed, opt = {}) {
+      const rng = mulberry32(seed >>> 0);
+      const o = { max2: opt.max2 ?? 9, caps: Object.assign({ elem: 2, uf: 2, roman: 2, art: 3 }, opt.caps || {}), budget: opt.budget ?? 3000, maxClueFrac: opt.maxClueFrac ?? 0.30 };
+      let best = null, bestScore = Infinity, tries = 0, found = 0;
+      const t0 = Date.now();
+      while (tries < 3000 && found < (opt.candidates ?? 10) && Date.now() - t0 < (opt.timeMs ?? 3000)) {
+        tries++;
+        const res = attempt(R, C, rng, o);
+        if (!res) { if (tries % 400 === 0) { for (const k in o.caps) o.caps[k]++; o.max2 += 2; } continue; }
+        found++;
+        const words = extract(res.cell, R, C);
+        let useless = 0, shortW = 0;
+        for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) {
+          if (res.cell[r][c] !== '#' || (r === 0 && c === 0)) continue;
+          if (!words.some(w => w.r === r && w.c === c)) useless++;
+        }
+        for (const w of words) if (w.word.length === 2) shortW++;
+        const score = res.art * 3 + useless * 6 + shortW * 0.6 + res.clues * 0.4;
+        if (score < bestScore) { bestScore = score; best = { cell: res.cell.map(x => x.slice()), words, kindOf: res.kindOf }; }
+      }
+      if (!best) return null;
+      // escolhe as dicas
+      const usedClues = new Set();
+      for (const w of best.words) {
+        const e = D.get(w.word);
+        let pool = e.real.length ? e.real : e.alt[best.kindOf.get(w.word) || e.kinds[0]];
+        let cands = pool.filter(x => !usedClues.has(x)); if (!cands.length) cands = pool;
+        w.clue = cands[Math.floor(rng() * cands.length)];
+        w.art = !e.real.length;
+        usedClues.add(w.clue);
+      }
+      return { R, C, seed, cell: best.cell, words: best.words, tries };
+    }
+    return { generate, size: D.size, D };
+  }
+  return { create, norm };
+})();
+if (typeof module !== 'undefined') module.exports = PCD;
+
+const DICT_TXT = "AR:O que respiramos;Elemento do vento\nÁS:Carta de baralho;Craque, campeão\nEU:Pronome da 1ª pessoa\nTU:Pronome da 2ª pessoa\nOI:Saudação informal\nAI:Gemido de dor\nUI:Expressão de susto\nEI:Chamado informal\nOU:Conjunção alternativa\nEM:Preposição de lugar\nNU:Despido;Sem roupa\nPÉ:Calça o sapato;Unidade de medida inglesa\nFÉ:Crença religiosa;Confiança\nJÁ:Neste instante;Imediatamente\nLÁ:Naquele lugar;Nota musical\nCÁ:Neste lugar;Aqui\nPÁ:Ferramenta do pedreiro\nMÁ:Ruim (fem.);Malvada\nSÓ:Sozinho;Apenas\nNÓ:Laço apertado;Medida de velocidade náutica\nDÓ:Pena, compaixão;Nota musical\nRÉ:Marcha para trás;Nota musical\nMI:Nota musical\nFÁ:Nota musical\nSI:Nota musical;A si mesmo\nVÊ:Enxerga;Observa\nLÊ:Pratica a leitura\nDÁ:Oferece;Doa\nZÉ:Apelido de José\nUÉ:Expressão de surpresa\nOS:Artigo plural masculino\nAS:Artigo plural feminino\nAO:Preposição \"a\" + artigo \"o\"\nUM:Primeiro numeral;Artigo indefinido\nSE:Conjunção condicional\nME:Pronome oblíquo\nTE:Pronome oblíquo (2ª p.)\nHÁ:Existe (verbo haver)\nIR:Deslocar-se;Partir\nRI:Acha graça\nVI:Enxerguei;Avistei\nLI:Fiz a leitura\nAH:Interjeição de alívio\nOH:Interjeição de espanto\nOK:Tudo certo (ingl.)\nTV:Televisão (abrev.)\nDJ:Toca música na festa\nCD:Disco a laser (sigla)\nPC:Computador pessoal (sigla)\nQI:Medida de inteligência\nRG:Documento de identidade\nGE:Gênesis (abrev.)\nRA:Anfíbio saltador (rã);Deus-sol egípcio\nDE:Preposição de posse\nDO:Preposição \"de\" + \"o\"\nDA:Preposição \"de\" + \"a\"\nNO:Preposição \"em\" + \"o\"\nNA:Preposição \"em\" + \"a\"\nLA:Pronome oblíquo (ela)\nLO:Pronome oblíquo (ele)\nIA:Inteligência artificial (sigla)\nUE:União Europeia (sigla)\nEX:Antigo namorado\nZOO:Zoológico (abrev.)\nSOL:Astro-rei;Nota musical\nLUA:Satélite da Terra\nMAR:Grande extensão de água salgada;Oceano\nRIO:Curso de água;Corre para o mar\nCÉU:Firmamento\nMEL:Produto das abelhas\nSAL:Cloreto de sódio;Tempero básico\nCHÁ:Bebida de folhas em infusão\nPÃO:Feito na padaria\nOVO:Posto pela galinha\nLEI:Norma jurídica\nREI:Monarca;Peça do xadrez\nPAI:Genitor\nMÃE:Genitora\nAVÔ:Pai do pai\nAVÓ:Mãe da mãe\nTIO:Irmão do pai\nTIA:Irmã da mãe\nFIM:Término;Final\nLAR:Casa, moradia\nCOR:Azul ou vermelho\nDOR:Sofrimento físico\nARO:Anel, argola\nASA:Membro das aves;Parte da xícara\nBOI:Animal de carga;Do bumba meu ...\nBOA:Gentil (fem.);Cobra constritora\nCÃO:Melhor amigo do homem\nGNU:Antílope africano\nEMA:Ave corredora brasileira\nPERU:Ave da ceia de Natal;País de Machu Picchu\nALA:Fileira;Setor do hospital\nANO:Tem 12 meses\nATO:Ação;Parte de uma peça\nAVE:Animal com penas\nBAR:Boteco\nBEM:Patrimônio;Muito\nCAL:Pó branco da construção\nCEM:Uma centena\nCRU:Não cozido\nDIA:Oposto da noite\nDOM:Talento;Título de nobreza\nELA:Pronome feminino\nELE:Pronome masculino\nERA:Época;Período histórico\nGOL:Grito da torcida\nGIZ:Usado no quadro-negro\nLUZ:Claridade\nMAL:Oposto do bem\nMAU:Ruim;Malvado\nMEU:Pronome possessivo\nMIL:Dez centenas\nNÓS:Pronome da 1ª p. plural\nNEM:Conjunção negativa\nNÃO:Negação\nOCO:Vazio por dentro\nODE:Poema lírico\nOLÁ:Saudação\nONU:Organização das Nações Unidas\nORA:Reza;Agora\nPAR:Dupla;Número divisível por 2\nPAZ:Ausência de guerra\nPÓ:Poeira\nQUE:Pronome relativo\nROL:Lista, relação\nRUA:Via pública\nSEU:Pronome possessivo\nSIM:Afirmação\nSUL:Ponto cardeal\nTEU:Pronome possessivo (2ª p.)\nTOM:Altura do som;Matiz\nTRÊS:Número após o dois\nUVA:Fruta do vinho\nVAI:Parte;Segue\nVER:Enxergar\nVEZ:Ocasião;Turno\nVIA:Caminho;Estrada\nVOZ:Som da fala\nXÁ:Antigo soberano persa\nOBA:Interjeição de alegria\nUAU:Expressão de espanto\nECO:Repetição do som\nEGO:O \"eu\"\nELO:Anel de corrente\nFÃ:Admirador\nFIO:Linha;Cabo elétrico\nUSO:Emprego;Costume\nOCA:Casa indígena\nPIA:Lavatório\nRIM:Órgão que filtra o sangue\nIRA:Raiva;Fúria\nANA:Nome feminino palíndromo\nEVA:A primeira mulher\nNOÉ:Construiu a arca\nADÃO:O primeiro homem\nABEL:Irmão de Caim\nCAIM:Irmão de Abel\nARCA:Barco de Noé;Baú\nÉDEN:Paraíso bíblico\nDAVI:Venceu Golias\nJÓ:Personagem bíblico paciente\nIVO:Nome masculino\nRITA:Nome feminino;Santa das causas impossíveis\nLIA:Nome feminino bíblico\nASSA:Cozinha no forno\nAMA:Gosta muito;Babá\nAMO:Patrão;Gosto muito\nSOU:Verbo ser (1ª p.)\nTEM:Possui\nVOU:Verbo ir (1ª p.)\nDEU:Ofereceu\nLEU:Fez a leitura\nVIU:Enxergou\nRIU:Achou graça\nSAI:Deixa o lugar\nCAI:Despenca;Tomba\nROE:Faz como o rato\nDOE:Machuca\nSOA:Produz som\nVOA:Faz como o pássaro\nARA:Lavra a terra\nATA:Registro de reunião;Amarra\nUSA:Utiliza\nOUSA:Atreve-se\nNADA:Coisa nenhuma;Faz como o peixe\nCOME:Alimenta-se\nBEBE:Toma líquido\nLAVA:Rocha do vulcão;Limpa com água\nANDA:Caminha\nAMAR:Gostar muito\nSER:Existir\nTER:Possuir\nDAR:Oferecer\nLER:Praticar a leitura\nRIR:Achar graça\nVIR:Chegar\nPÔR:Colocar\nCRER:Acreditar\nSAIR:Deixar o local\nCAIR:Despencar\nORAR:Rezar\nNADAR:Mover-se na água\nCORRER:Andar muito rápido\nPULAR:Saltar\nSALTAR:Pular\nANDAR:Caminhar;Pavimento\nFALAR:Dizer\nCANTAR:Soltar a voz\nDANÇAR:Bailar\nCOMER:Alimentar-se\nBEBER:Tomar líquido\nDORMIR:Repousar à noite\nSONHAR:Fantasiar dormindo\nOLHAR:Fitar\nOUVIR:Escutar\nSENTIR:Perceber\nTOCAR:Encostar;Executar música\nPEGAR:Agarrar\nLAVAR:Limpar com água\nPASSAR:Alisar a roupa\nVOAR:Planar no ar\nREMAR:Mover o barco\nARAR:Lavrar a terra\nSOAR:Produzir som\nDOAR:Ofertar\nATAR:Amarrar\nUSAR:Utilizar\nODIAR:Detestar\nROER:Como faz o rato\nMOER:Triturar\nDOER:Machucar\nLUTAR:Combater\nJOGAR:Brincar;Arremessar\nGANHAR:Vencer\nPERDER:Não vencer\nACHAR:Encontrar\nBUSCAR:Procurar\nCAÇAR:Perseguir a presa\nPESCAR:Apanhar peixes\nPLANTAR:Semear\nREGAR:Molhar as plantas\nPINTAR:Colorir\nCONTAR:Narrar;Enumerar\nSOMAR:Adicionar\nPENSAR:Refletir\nESTUDAR:Aprender\nVENDER:Negociar por dinheiro\nPAGAR:Quitar a conta\nABRIR:Destrancar\nFECHAR:Trancar\nSUBIR:Ir para cima\nDESCER:Ir para baixo\nENTRAR:Passar para dentro\nCHORAR:Derramar lágrimas\nGRITAR:Berrar\nBEIJAR:Dar um beijo\nCASAR:Unir-se em matrimônio\nNASCER:Vir ao mundo\nVIVER:Existir\nMORAR:Residir\nCHEGAR:Aparecer\nPARTIR:Ir embora;Quebrar\nVOLTAR:Regressar\nFICAR:Permanecer\nAJUDAR:Auxiliar\nSALVAR:Resgatar\nCURAR:Sarar\nLIGAR:Telefonar\nNEGAR:Recusar\nROUBAR:Furtar\nMENTIR:Faltar com a verdade\nSORRIR:Mostrar alegria no rosto\nPISAR:Calcar com o pé\nMEXER:Agitar;Mover\nTECER:Fazer tecido\nASSAR:Cozinhar no forno\nFRITAR:Cozinhar no óleo\nSECAR:Enxugar\nAPAGAR:Extinguir\nACENDER:Ligar a luz\nAMOR:Afeto;Paixão\nGATO:Bichano;Felino doméstico\nPATO:Ave que grasna\nURSO:Animal hibernante\nONÇA:Felino brasileiro;Pintada\nLOBO:Uiva para a lua\nRATO:Roedor\nGALO:Canta ao amanhecer\nÉGUA:Fêmea do cavalo\nANTA:Tapir brasileiro\nTATU:Animal com carapaça\nBOTO:Golfinho amazônico\nSAPO:Anfíbio que coaxa\nPOLVO:Molusco de oito braços\nLULA:Molusco marinho\nOSTRA:Produz a pérola\nFOCA:Mamífero marinho\nZEBRA:Equino listrado\nTIGRE:Felino listrado\nLEÃO:Rei da selva\nMICO:Pequeno macaco;Vexame\nARARA:Ave colorida brasileira\nTUCANO:Ave de bico grande\nSABIÁ:Ave canora brasileira\nPAVÃO:Ave de cauda vistosa\nCISNE:Ave aquática elegante\nGARÇA:Ave pernalta branca\nCORUJA:Ave noturna\nÁGUIA:Ave de rapina\nCABRA:Fêmea do bode\nBODE:Macho da cabra\nOVELHA:Dá lã\nVACA:Dá leite\nPORCO:Suíno\nCOELHO:Orelhudo da Páscoa\nCAVALO:Equino;Peça do xadrez\nBURRO:Asno\nCAMELO:Animal do deserto\nGIRAFA:Animal de pescoço longo\nELEFANTE:Paquiderme\nTUBARÃO:Predador dos mares\nBALEIA:Maior mamífero marinho\nABELHA:Produz o mel\nFORMIGA:Inseto operário\nARANHA:Tece a teia\nGRILO:Inseto que cricrila\nPULGA:Parasita do cão\nMOSCA:Inseto chato\nVESPA:Inseto de ferrão\nRENA:Puxa o trenó\nPUMA:Felino americano\nLEBRE:Parente do coelho\nTOURO:Macho da vaca\nPOTRO:Cavalo jovem\nCORVO:Ave preta\nPOMBO:Ave das praças\nTATUÍ:Crustáceo de praia\nSIRI:Crustáceo de praia\nCARANGUEJO:Anda de lado\nCAMARÃO:Crustáceo da moqueca\nPIRANHA:Peixe voraz\nSALMÃO:Peixe rosado\nATUM:Peixe enlatado\nSARDINHA:Peixe enlatado\nBAGRE:Peixe de bigode\nRAIA:Peixe achatado;Faixa da piscina\nENGUIA:Peixe serpentiforme\nGAMBÁ:Animal fedorento\nPREÁ:Pequeno roedor\nCUTIA:Roedor brasileiro\nQUATI:Mamífero de focinho longo\nJACARÉ:Réptil do pantanal\nCOBRA:Serpente\nLAGARTO:Réptil;Corte de carne\nIGUANA:Réptil verde\nTARTARUGA:Réptil de casco\nOLHO:Órgão da visão\nBOCA:Abertura para comer\nNARIZ:Órgão do olfato\nDENTE:Fica na boca\nBRAÇO:Membro superior\nPERNA:Membro inferior\nMÃO:Tem cinco dedos\nDEDO:Fica na mão\nUNHA:Fica na ponta do dedo\nPELE:Maior órgão do corpo\nOSSO:Parte do esqueleto\nROSTO:Face\nTESTA:Fica acima dos olhos\nQUEIXO:Parte inferior do rosto\nOMBRO:Liga o braço ao tronco\nJOELHO:Articulação da perna\nPEITO:Tórax\nNUCA:Parte de trás do pescoço\nLÁBIO:Contorno da boca\nLÍNGUA:Órgão do paladar;Idioma\nCÍLIO:Pelo da pálpebra\nCABELO:Fica na cabeça\nSANGUE:Corre nas veias\nVEIA:Vaso sanguíneo\nFÍGADO:Órgão que produz bile\nPULMÃO:Órgão da respiração\nCORAÇÃO:Bombeia o sangue\nUMBIGO:Cicatriz na barriga\nPALMA:Parte da mão;Aplauso\nCINTURA:Meio do corpo\nARROZ:Grão do prato brasileiro\nFEIJÃO:Acompanha o arroz\nMILHO:Grão da pipoca\nTRIGO:Cereal da farinha\nAVEIA:Cereal do mingau\nBOLO:Doce de aniversário\nDOCE:Açucarado;Sobremesa\nLEITE:Produto da vaca\nQUEIJO:Derivado do leite\nCAFÉ:Bebida preta;Desjejum\nSUCO:Bebida de fruta\nVINHO:Bebida da uva\nSOPA:Prato servido em cumbuca\nCARNE:Proteína do churrasco\nPEIXE:Vive na água\nFRANGO:Galinha jovem\nALHO:Tempero de dentes\nCEBOLA:Faz chorar ao cortar\nFIGO:Fruta da figueira\nKIWI:Fruta de casca peluda\nCAJU:Fruta da castanha\nCOCO:Fruta do coqueiro\nLIMA:Fruta cítrica;Capital do Peru\nLIMÃO:Fruta da caipirinha\nMAÇÃ:Fruta da Branca de Neve\nPERA:Fruta;Interruptor de cama\nMANGA:Fruta tropical;Parte da camisa\nMAMÃO:Papaia\nBANANA:Fruta do macaco\nMELÃO:Fruta de casca dura\nABACAXI:Fruta de coroa\nAÇAÍ:Fruta roxa da Amazônia\nGOIABA:Fruta da goiabada\nAMORA:Fruta silvestre escura\nCEREJA:Enfeita o bolo\nAMEIXA:Fruta seca roxa\nNOZ:Fruto do Natal\nAZEITE:Óleo de oliva\nÓLEO:Usado para fritar\nMOLHO:Acompanha o macarrão\nPIMENTA:Tempero ardido\nCANELA:Especiaria em pau;Parte da perna\nCRAVO:Especiaria;Flor\nERVA:Planta rasteira\nCHUCHU:Legume sem gosto\nABÓBORA:Legume do Halloween\nNABO:Raiz comestível\nALFACE:Folha da salada\nCOUVE:Acompanha a feijoada\nTOMATE:Fruto do molho\nBATATA:Tubérculo da fritas\nAIPIM:Mandioca\nINHAME:Tubérculo\nPIPOCA:Petisco do cinema\nPUDIM:Sobremesa de leite condensado\nTORTA:Doce em fatias;Torcida (fem.)\nPIZZA:Prato italiano redondo\nMASSA:Macarrão;Quantidade de matéria\nFARINHA:Pó de trigo\nGELEIA:Doce de fruta\nAÇÚCAR:Adoça o café\nCALDO:Sopa rala\nANGU:Pirão de milho\nPAÇOCA:Doce de amendoim\nPASTEL:Salgado de feira\nCUSCUZ:Prato de milho\nFAROFA:Farinha temperada\nTAPIOCA:Feita de goma\nMESA:Móvel das refeições\nCAMA:Móvel para dormir\nSOFÁ:Assento da sala\nVASO:Recipiente de flores\nPRATO:Recipiente da comida\nCOPO:Recipiente de bebida\nGARFO:Talher de dentes\nFACA:Talher cortante\nCOLHER:Talher da sopa;Recolher a safra\nPANELA:Utensílio de cozinha\nLATA:Embalagem de metal\nCAIXA:Embalagem;Atendente de loja\nSACO:Embalagem flexível\nBOLSA:Carregada no ombro\nMALA:Bagagem\nCHAVE:Abre a fechadura\nPORTA:Entrada da casa\nJANELA:Abertura na parede\nPAREDE:Divide os cômodos\nTETO:Parte de cima do cômodo\nCHÃO:Piso\nMURO:Cerca de alvenaria\nTELHA:Cobre o telhado\nTIJOLO:Bloco de construção\nLÁPIS:Escreve com grafite\nCANETA:Escreve com tinta\nPAPEL:Folha para escrever\nLIVRO:Tem capa e páginas\nCADERNO:Material escolar\nRÉGUA:Mede e traça linhas\nTESOURA:Corta papel\nAGULHA:Usada na costura\nLINHA:Fio de costura;Traço\nBOTÃO:Fecha a camisa\nRELÓGIO:Marca as horas\nÓCULOS:Corrige a visão\nANEL:Joia do dedo\nBRINCO:Joia da orelha\nCOLAR:Joia do pescoço;Grudar\nCINTO:Segura a calça\nCHAPÉU:Cobre a cabeça\nBONÉ:Chapéu de aba\nMEIA:Vai dentro do sapato;Metade\nLUVA:Agasalho da mão\nSAIA:Peça feminina;Deixe o local\nBLUSA:Peça de vestir\nCAMISA:Peça de botões\nTERNO:Traje formal\nGRAVATA:Acessório do terno\nSAPATO:Calçado\nBOTA:Calçado de cano alto\nCHINELO:Calçado de praia\nTÊNIS:Calçado esportivo;Esporte de raquete\nVELA:Ilumina na falta de luz;Pano do barco\nLÂMPADA:Ilumina a casa\nESPELHO:Reflete a imagem\nPENTE:Arruma o cabelo\nESCOVA:Limpa os dentes\nSABÃO:Usado na lavagem\nTOALHA:Enxuga o corpo\nBALDE:Carrega água\nVASSOURA:Varre o chão\nRODO:Puxa a água\nCORDA:Usada para amarrar\nPREGO:Fixado com martelo\nMARTELO:Bate no prego\nSERROTE:Corta madeira\nLIXA:Desgasta a superfície\nTINTA:Usada para pintar\nPINCEL:Instrumento do pintor\nESCADA:Tem degraus\nCADEIRA:Assento com encosto\nBANCO:Assento;Guarda dinheiro\nARMÁRIO:Guarda roupas\nGAVETA:Compartimento do móvel\nTAPETE:Cobre o piso\nCORTINA:Cobre a janela\nROLHA:Tampa da garrafa\nTAMPA:Fecha a panela\nFUNIL:Ajuda a despejar líquidos\nPILHA:Bateria;Monte\nCABO:Fio;Patente militar\nREDE:Usada para pescar;Cama do Nordeste\nANZOL:Usado na pescaria\nREMO:Move o barco\nBARCO:Embarcação\nNAVIO:Grande embarcação\nCANOA:Barco indígena\nTREM:Anda nos trilhos\nAVIÃO:Voa com passageiros\nCARRO:Automóvel\nMOTO:Veículo de duas rodas\nÔNIBUS:Transporte coletivo\nPNEU:Fica na roda\nRODA:Gira no eixo\nVOLANTE:Direção do carro\nMOTOR:Faz o carro andar\nFAROL:Ilumina a costa\nSINO:Toca na igreja\nAPITO:Instrumento do juiz\nTAMBOR:Instrumento de percussão\nVIOLÃO:Instrumento de seis cordas\nPIANO:Instrumento de teclas\nFLAUTA:Instrumento de sopro\nHARPA:Instrumento dos anjos\nVIOLINO:Tocado com arco\nGAITA:Harmônica\nCUÍCA:Instrumento do samba\nPANDEIRO:Instrumento do chorinho\nTELA:Monitor;Quadro do pintor\nÍMÃ:Atrai o ferro\nBÚSSOLA:Aponta o norte\nMAPA:Representação do território\nGLOBO:Esfera terrestre\nDADO:Cubo de jogo;Informação\nBOLA:Esfera do futebol\nPIÃO:Brinquedo que gira\nPIPA:Papagaio de papel\nBONECA:Brinquedo de menina\nURNA:Recebe os votos\nÁRVORE:Tem tronco e galhos\nFLOR:Rosa ou margarida\nROSA:Flor com espinhos;Cor-de-...\nLÍRIO:Flor branca\nFOLHA:Parte verde da planta;Página\nGALHO:Ramo da árvore\nRAIZ:Parte subterrânea da planta\nTRONCO:Caule da árvore\nSEMENTE:Origem da planta\nFRUTO:Resultado da flor\nGRAMA:Relva;Unidade de massa\nMATO:Vegetação rasteira\nMATA:Floresta\nSELVA:Floresta densa\nBOSQUE:Pequena mata\nLAGO:Porção de água cercada de terra\nLAGOA:Pequeno lago\nILHA:Terra cercada de água\nPRAIA:Faixa de areia à beira-mar\nAREIA:Cobre a praia\nPEDRA:Rocha\nROCHA:Pedra grande\nMONTE:Elevação de terra\nSERRA:Cadeia de montanhas;Ferramenta de corte\nVALE:Terreno entre montanhas;Cupom\nGRUTA:Caverna\nVULCÃO:Expele lava\nGELO:Água congelada\nNEVE:Cai no inverno europeu\nCHUVA:Cai das nuvens\nVENTO:Ar em movimento\nNUVEM:Fica no céu\nRAIO:Descarga elétrica\nTROVÃO:Estrondo da tempestade\nORVALHO:Gotas da madrugada\nNEBLINA:Névoa\nBRISA:Vento suave\nONDA:Movimento do mar\nMARÉ:Sobe e desce no mar\nESTRELA:Brilha à noite\nPLANETA:A Terra é um\nCOMETA:Astro com cauda\nASTRO:Corpo celeste;Estrela de cinema\nÓRBITA:Trajetória do planeta\nTERRA:Nosso planeta;Solo\nMARTE:Planeta vermelho\nVÊNUS:Planeta mais quente\nSATURNO:Planeta dos anéis\nURANO:Sétimo planeta\nNETUNO:Oitavo planeta\nSOMBRA:Área sem luz\nNOITE:Oposto do dia\nTARDE:Depois do meio-dia\nMANHÃ:Início do dia\nAURORA:Amanhecer\nOURO:Metal precioso amarelo\nPRATA:Metal precioso branco\nCOBRE:Metal dos fios elétricos\nFERRO:Metal do aço;Passa a roupa\nZINCO:Metal das telhas\nCHUMBO:Metal pesado\nCARVÃO:Combustível do churrasco\nBARRO:Argila\nLAMA:Terra molhada\nFUMAÇA:Sai da chaminé\nFOGO:Labaredas\nBRASA:Carvão em chamas\nCINZA:Resto da queima;Cor\nÁGUA:H2O\nBOM:Ótimo\nBELO:Bonito\nFEIO:Sem beleza\nALTO:De grande estatura\nBAIXO:De pouca altura\nGORDO:Acima do peso\nMAGRO:Abaixo do peso\nNOVO:Recente\nVELHO:Antigo\nRICO:Endinheirado\nPOBRE:Sem dinheiro\nFRIO:Gelado\nQUENTE:Escaldante\nAZEDO:Ácido\nAMARGO:Sabor do jiló\nSALGADO:Com muito sal;Coxinha, por exemplo\nSÃO:Saudável;Santo\nSECO:Sem água\nCLARO:Iluminado;Evidente\nESCURO:Sem luz\nLIMPO:Asseado\nSUJO:Imundo\nCHEIO:Lotado\nVAZIO:Oco\nLEVE:Pouco pesado\nPESADO:Com muito peso\nFORTE:Robusto\nFRACO:Sem força\nRÁPIDO:Veloz\nLENTO:Vagaroso\nCARO:De alto preço;Querido\nBARATO:De baixo preço\nFÁCIL:Simples\nCALMO:Tranquilo\nBRAVO:Zangado;Valente\nFELIZ:Contente\nTRISTE:Melancólico\nSÉRIO:Sisudo\nTÍMIDO:Acanhado\nLOUCO:Maluco\nSÁBIO:Erudito\nTOLO:Bobo\nRUDE:Grosseiro\nMEIGO:Carinhoso\nÚTIL:Que serve\nFIEL:Leal\nLEAL:Fiel\nREAL:Moeda do Brasil;Verdadeiro\nIGUAL:Idêntico\nÚNICO:Exclusivo\nRARO:Incomum\nLISO:Sem rugas\nRETO:Sem curvas\nTORTO:Sem prumo\nFINO:Delgado;Elegante\nGROSSO:Espesso;Mal-educado\nLARGO:Amplo\nCURTO:Breve\nLONGO:Comprido\nROXO:Cor da uva\nAZUL:Cor do céu\nVERDE:Cor da grama;Não maduro\nPRETO:Cor da noite\nBRANCO:Cor da neve\nLILÁS:Tom de roxo\nBEGE:Cor de areia\nANIL:Azul intenso\nOCRE:Amarelo-terra\nVIOLETA:Cor e flor\nGUERRA:Conflito armado\nVIDA:Existência\nMORTE:Fim da vida\nSORTE:Boa fortuna\nAZAR:Má sorte\nÓDIO:Aversão\nMEDO:Temor\nRISO:Gargalhada\nCHORO:Pranto;Gênero musical\nSONO:Vontade de dormir\nFOME:Vontade de comer\nSEDE:Vontade de beber;Sede da empresa\nALMA:Espírito\nMENTE:Intelecto;Faltar com a verdade\nIDEIA:Pensamento\nPLANO:Projeto;Superfície lisa\nMETA:Objetivo\nERRO:Engano\nCULPA:Responsabilidade\nHONRA:Dignidade\nGLÓRIA:Fama;Triunfo\nFAMA:Celebridade\nLUXO:Ostentação\nARTE:Pintura ou escultura\nFILME:Exibido no cinema\nTEATRO:Palco das peças\nMÚSICA:Arte dos sons\nCANTO:Esquina;Ato de cantar\nPOEMA:Obra em versos\nVERSO:Linha do poema;Lado de trás\nRIMA:Som igual em versos\nPROSA:Texto sem versos;Conversa\nCONTO:Narrativa curta\nLENDA:História popular\nMITO:Lenda;Ídolo\nFÁBULA:História com moral\nSAGA:Epopeia\nNOVELA:Folhetim da TV\nJOGO:Partida\nTIME:Equipe\nCRAQUE:Ás do futebol\nJUIZ:Apita o jogo;Magistrado\nVÔLEI:Esporte da rede\nJUDÔ:Arte marcial japonesa\nCARATÊ:Arte marcial de golpes\nXADREZ:Jogo de reis e peões;Cadeia\nDAMA:Senhora;Peça do jogo\nPEÃO:Peça do xadrez;Trabalhador rural\nTORRE:Peça do xadrez;Construção alta\nBISPO:Peça do xadrez;Líder religioso\nXEQUE:Lance do xadrez\nCARTA:Correspondência\nNAIPE:Copas ou espadas\nCOPAS:Naipe vermelho\nOUROS:Naipe do baralho\nPAUS:Naipe do baralho\nVALETE:Carta do baralho\nCORINGA:Carta curinga\nMÉDICO:Doutor da saúde\nPADRE:Sacerdote\nFREI:Religioso\nMONGE:Vive no mosteiro\nFREIRA:Vive no convento\nPILOTO:Dirige o avião\nGARÇOM:Serve no restaurante\nPADEIRO:Faz o pão\nPEDREIRO:Constrói casas\nCARTEIRO:Entrega cartas\nPINTOR:Artista do pincel\nATOR:Artista do palco\nATRIZ:Artista do palco\nCANTOR:Artista da voz\nPOETA:Escreve versos\nAUTOR:Escritor\nARTISTA:Criador de arte\nMÚSICO:Toca instrumento\nSOLDADO:Militar\nGUARDA:Vigia\nPAJÉ:Líder espiritual indígena\nRAINHA:Mulher do rei\nCONDE:Título de nobreza\nDUQUE:Título de nobreza\nBARÃO:Título de nobreza\nPAPA:Líder da Igreja Católica\nALUNO:Estudante\nMESTRE:Professor\nROMA:Capital da Itália\nPARIS:Capital da França\nOSLO:Capital da Noruega\nBERNA:Capital da Suíça\nVIENA:Capital da Áustria\nATENAS:Capital da Grécia\nMADRI:Capital da Espanha\nLISBOA:Capital de Portugal\nLONDRES:Capital da Inglaterra\nTÓQUIO:Capital do Japão\nPEQUIM:Capital da China\nCAIRO:Capital do Egito\nMOSCOU:Capital da Rússia\nQUITO:Capital do Equador\nHAVANA:Capital de Cuba\nPRAGA:Capital tcheca\nSOFIA:Capital da Bulgária\nRIGA:Capital da Letônia\nSEUL:Capital da Coreia do Sul\nDUBLIN:Capital da Irlanda\nCHILE:País andino comprido\nCUBA:Ilha de Havana\nIRÃ:Antiga Pérsia\nÍNDIA:País do Taj Mahal\nCHINA:País mais populoso da Ásia oriental\nJAPÃO:Terra do Sol Nascente\nITÁLIA:País da bota\nFRANÇA:País da Torre Eiffel\nGRÉCIA:Berço da democracia\nEGITO:País das pirâmides\nMÉXICO:País dos mariachis\nCANADÁ:País do bordo\nBRASIL:País do futebol\nANGOLA:País africano lusófono\nCONGO:País africano\nQUÊNIA:País do safári\nCHADE:País africano\nMALI:País africano\nOMÃ:País árabe\nLAOS:País asiático\nNEPAL:País do Everest\nTOGO:País africano\nGANA:País africano;Vontade\nHAITI:País caribenho\nISRAEL:País de Jerusalém\nCOREIA:País dividido da Ásia\nBAHIA:Estado de Salvador\nPARÁ:Estado de Belém\nPIAUÍ:Estado de Teresina\nCEARÁ:Estado de Fortaleza\nGOIÁS:Estado de Goiânia\nACRE:Estado de Rio Branco\nAMAPÁ:Estado de Macapá\nPARANÁ:Estado de Curitiba\nSERGIPE:Estado de Aracaju\nRECIFE:Capital de Pernambuco\nNATAL:Capital potiguar;Festa de dezembro\nBELÉM:Capital do Pará\nMACEIÓ:Capital de Alagoas\nPALMAS:Capital do Tocantins;Aplausos\nMANAUS:Capital do Amazonas\nCUIABÁ:Capital de Mato Grosso\nVITÓRIA:Capital capixaba;Triunfo\nNILO:Rio do Egito\nTIETÊ:Rio paulista\nSENA:Rio de Paris\nRENO:Rio alemão\nTEJO:Rio de Lisboa\nVOLGA:Rio russo\nANDES:Cordilheira sul-americana\nALPES:Cordilheira europeia\nZEUS:Deus grego supremo\nHERA:Esposa de Zeus\nARES:Deus grego da guerra\nEROS:Deus grego do amor\nATENA:Deusa grega da sabedoria\nAPOLO:Deus grego do Sol\nTHOR:Deus nórdico do trovão\nODIN:Deus nórdico supremo\nÍSIS:Deusa egípcia\nNERO:Imperador romano\nCÉSAR:Imperador romano\nINCA:Povo de Machu Picchu\nMAIA:Povo mesoamericano\nTUPI:Povo indígena;Língua indígena\nÁTOMO:Partícula da matéria\nÍON:Átomo com carga\nGENE:Unidade da hereditariedade\nCÉLULA:Unidade da vida\nVÍRUS:Causa a gripe\nÁCIDO:Azedo;Tem pH baixo\nMETAL:Ferro ou cobre\nFORÇA:Vigor\nCALOR:Temperatura alta\nVOLT:Unidade de tensão elétrica\nMETRO:Unidade de comprimento;Trem subterrâneo\nLITRO:Unidade de volume\nQUILO:Mil gramas\nHORA:Sessenta minutos\nMINUTO:Sessenta segundos\nDÉCADA:Dez anos\nSÉCULO:Cem anos\nMÊS:Trinta dias\nSEMANA:Sete dias\nALFA:1ª letra grega\nBETA:2ª letra grega\nGAMA:3ª letra grega\nDELTA:Foz de rio;Letra grega\nSIGMA:Letra grega\nÔMEGA:Última letra grega\nPI:Vale 3,14\nMAIO:Mês das noivas\nJUNHO:Mês das festas juninas\nJULHO:Sétimo mês\nABRIL:Mês da Páscoa (geralmente)\nMARÇO:Terceiro mês\nAGOSTO:Oitavo mês\nDOIS:Um mais um\nSEIS:Meia dúzia\nSETE:Dias da semana\nOITO:Número do infinito deitado\nNOVE:Três vezes três\nDEZ:Uma dezena\nONZE:Jogadores de um time\nDOZE:Uma dúzia\nZERO:Nenhum\nDUO:Dupla\nTRIO:Grupo de três\nÍMPAR:Não par\nDÚZIA:Doze unidades\nERVA:Planta rasteira\nESSE:Pronome demonstrativo\nESTE:Ponto cardeal;Pronome demonstrativo\nGUIA:Cicerone\nHINO:Canto patriótico\nIATE:Barco de luxo\nÍDOLO:Pessoa admirada\nJATO:Avião veloz;Esguicho\nJUBA:Cabeleira do leão\nLAÇO:Nó de fita\nLIXO:Resíduo\nLUTO:Tristeza pela morte\nMODA:Tendência\nMOLA:Peça elástica\nNAVE:Espaçonave\nNOME:Como alguém se chama\nNORTE:Ponto cardeal\nOÁSIS:Água no deserto\nOBRA:Construção;Trabalho artístico\nÓPERA:Espetáculo cantado\nORLA:Beira-mar\nPALCO:Lugar do show\nPANO:Tecido\nPARDO:Cor parda\nPATA:Pé de animal;Fêmea do pato\nPENA:Pluma;Dó\nPIRES:Prato da xícara\nPISO:Chão\nPOÇO:Fonte de água subterrânea\nPOÇÃO:Bebida mágica\nPOLO:Extremidade da Terra\nPONTE:Liga duas margens\nPOTE:Recipiente\nPOVO:População\nRAMO:Galho;Área de atuação\nRODA:Círculo\nROTA:Caminho\nRUGA:Marca da idade\nRUÍDO:Barulho\nSACI:Perneta do folclore\nSELO:Vai na carta\nSOPA:Prato quente\nTACO:Peça do piso;Bastão\nTALO:Caule da folha\nTEMA:Assunto\nTIRO:Disparo\nTOCA:Buraco de animal\nTOGA:Veste do juiz\nTOPO:Cume\nTORA:Pedaço de tronco\nTRAMA:Enredo\nTREVO:Planta da sorte\nTUBO:Cano\nVAGA:Lugar livre\nVARA:Usada na pescaria\nVILA:Povoado\nVIOLA:Instrumento caipira\nVOTO:Escolha nas eleições\nXALE:Manto sobre os ombros\nXAROPE:Remédio para tosse\nXÍCARA:Recipiente do café\nZONA:Região;Bagunça\nÁREA:Superfície\nAULA:Lição escolar\nÁUDIO:Som gravado\nRÁDIO:Aparelho de som;Osso do braço\nAIPO:Salsão\nARAME:Fio metálico\nNAÇÃO:País\nPAÍS:Nação\nAMIGO:Companheiro\nINIMIGO:Rival\nCASA:Lar\nESCOLA:Lugar de estudo\nIGREJA:Templo cristão\nCIDADE:Município\nESTRADA:Via de terra ou asfalto\nPRAÇA:Espaço público\nFEIRA:Mercado ao ar livre\nLOJA:Estabelecimento comercial\nHOTEL:Hospedagem\nMUSEU:Guarda obras de arte\nCINEMA:Sala de filmes\nCIRCO:Tem palhaço e trapezista\nPALHAÇO:Artista do circo\nFESTA:Comemoração\nBAILE:Festa de dança\nSAMBA:Ritmo do carnaval\nFORRÓ:Dança nordestina\nFREVO:Dança pernambucana\nTANGO:Dança argentina\nVALSA:Dança de debutante\nROCK:Gênero musical\nJAZZ:Gênero musical americano\nBLUES:Gênero musical melancólico\nNOTA:Cédula;Avaliação escolar\nPROVA:Exame escolar\nLIÇÃO:Ensinamento\nTAREFA:Dever de casa\nLETRA:Parte da palavra\nPALAVRA:Conjunto de letras\nFRASE:Conjunto de palavras\nTEXTO:Conjunto de frases\nVERBO:Indica ação\nNOVA:Recente (fem.)\nVELA:Pano do barco\nOESTE:Ponto cardeal\nLESTE:Ponto cardeal\nINVERNO:Estação fria\nVERÃO:Estação quente\nOUTONO:Estação das folhas secas\nSÁBADO:Dia do fim de semana\nDOMINGO:Primeiro dia da semana\nFERIADO:Dia de folga\nNATAL:Festa de 25 de dezembro\nPÁSCOA:Festa do coelho\nCARNAVAL:Festa de fevereiro\nANEL:Aliança\nALIANÇA:Anel de casamento\nNOIVA:Usa véu no casamento\nVÉU:Cobre o rosto da noiva\nBEBÊ:Recém-nascido\nFILHO:Descendente\nNETO:Filho do filho\nPRIMO:Filho do tio;Número divisível só por si\nIRMÃO:Filho dos mesmos pais\nGENRO:Marido da filha\nNORA:Mulher do filho\nSOGRA:Mãe do cônjuge\nMOÇA:Jovem mulher\nRAPAZ:Jovem homem\nHOMEM:Ser humano\nMULHER:Ser humana\nGENTE:Pessoas\nTATO:Sentido do toque;Diplomacia\nOLFATO:Sentido do cheiro\nVISÃO:Sentido da vista\nCHEIRO:Odor\nGOSTO:Sabor\nSABOR:Gosto\nODOR:Cheiro\nSOM:Ruído\nEIXO:Centro de rotação\nÂNGULO:Formado por duas retas\nCÍRCULO:Figura redonda\nQUADRADO:Tem quatro lados iguais\nCUBO:Sólido de seis faces\nESFERA:Bola\nPONTO:Sinal de pontuação\nRETA:Linha sem curva\nSOMA:Adição\nCONTA:Cálculo;Fatura\nNÚMERO:Algarismo\nALVO:Objetivo;Branco\nARCO:Atira flechas\nFLECHA:Atirada pelo arco\nLANÇA:Arma de ponta\nESPADA:Arma de lâmina\nESCUDO:Defesa do guerreiro\nELMO:Capacete medieval\nCASTELO:Morada do rei\nTRONO:Cadeira do rei\nCOROA:Usada pelo rei\nCETRO:Bastão do rei\nREINO:Território do rei\nPIRATA:Ladrão dos mares\nTESOURO:Riqueza escondida\nMOEDA:Dinheiro metálico\nDÓLAR:Moeda americana\nEURO:Moeda europeia\nLIBRA:Moeda inglesa;Signo\nPESO:Moeda argentina;Massa\nIENE:Moeda japonesa\nRÚPIA:Moeda indiana\nÁRIES:Signo do carneiro\nTOURO:Signo zodiacal\nLEÃO:Signo zodiacal\nVIRGEM:Signo zodiacal\nPEIXES:Signo zodiacal\nCÂNCER:Signo do caranguejo\nGÊMEOS:Signo zodiacal\nROBÔ:Máquina autômata\nCHIP:Microcircuito\nSITE:Página da internet\nEMAIL:Correio eletrônico\nSENHA:Código secreto\nDISCO:Rodela;Álbum musical\nFOTO:Retrato\nVÍDEO:Filmagem\nCÂMERA:Tira fotos\nRADAR:Detecta objetos\nLASER:Feixe de luz concentrado\nTÁXI:Carro de aluguel\nMETRÔ:Trem urbano\nATLAS:Livro de mapas\nALUNA:Estudante (fem.)\nTIARA:Enfeite de cabelo\nBATOM:Pinta os lábios\nPERFUME:Fragrância\nSAPO:Vira príncipe com beijo\nFADA:Tem varinha mágica\nBRUXA:Voa de vassoura\nDRAGÃO:Monstro que cospe fogo\nGIGANTE:Enorme\nANÃO:Muito baixo\nHERÓI:Salvador\nVILÃO:Malvado da história\nMONSTRO:Criatura assustadora\nCUCA:Bruxa do folclore;Cabeça\nIARA:Sereia do folclore\nBOTO:Lenda amazônica\nCURUPIRA:Tem os pés virados\nLOBISOMEM:Vira lobo na lua cheia\nARRAIÁ:Festa junina\nQUADRILHA:Dança junina\nFOGUEIRA:Acesa na festa junina\nQUENTÃO:Bebida da festa junina\nPAMONHA:Doce de milho verde\nCANJICA:Doce de milho branco\nOCASO:Pôr do sol\nALVA:Branca;Amanhecer\nATEU:Não crê em Deus\nÁVIDO:Ansioso\nÁRIDO:Seco\nÁGIL:Ligeiro\nAC:Antes de Cristo (abrev.)\nDC:Depois de Cristo (abrev.)\nKM:Quilômetro (abrev.)\nCM:Centímetro (abrev.)\nMM:Milímetro (abrev.)\nKG:Quilograma (abrev.)\nML:Mililitro (abrev.)\nUV:Raio ultravioleta (sigla)\nET:Extraterrestre (sigla)\nPS:Pós-escrito (sigla)\nPM:Polícia Militar (sigla)\nTI:Tecnologia da informação\nRH:Recursos humanos (sigla)\nQG:Quartel-general (sigla)\nLP:Disco de vinil (sigla)\nHD:Disco rígido (sigla)\nVIP:Convidado especial\nSOS:Pedido de socorro\nBIS:Pedido de repetição no show\nONG:Entidade sem fins lucrativos\nPIB:Soma das riquezas de um país\nSUS:Sistema público de saúde\nCEP:Código postal brasileiro\nCPF:Cadastro de pessoa física\nCNH:Carteira de motorista\nOAB:Ordem dos advogados\nMEC:Ministério da Educação\nFIFA:Entidade do futebol mundial\nNASA:Agência espacial americana\nOTAN:Aliança militar ocidental\nEUA:Terra do Tio Sam (sigla)\nURSS:Antiga união soviética\nOVNI:Disco voador\nMP:Medida provisória (sigla)\nAPP:Aplicativo (abrev.)\nGIF:Imagem animada\nSMS:Mensagem de texto\nUSB:Entrada do pen drive\nTCC:Trabalho de fim de curso\nENEM:Exame do ensino médio\nANU:Ave preta brasileira\nCOA:Filtra o café\nDOU:Ofereço\nFEZ:Realizou\nHUM:Interjeição de dúvida\nJUS:Fazer ... (merecer)\nLÃ:Fio da ovelha\nNUA:Despida\nOPA:Interjeição de surpresa\nRIA:Achava graça\nSUA:Transpira;Pronome possessivo\nTUA:Pronome possessivo (2ª p.)\nUNO:Jogo de cartas coloridas\nVEM:Aproxima-se\nVIL:Desprezível\nXIS:Nome da letra X\nALI:Naquele lugar\nAQUI:Neste lugar\nATÉ:Preposição de limite\nAPÓS:Depois de\nANTES:Previamente\nCEDO:De manhãzinha\nLOGO:Em seguida;Marca de empresa\nNUNCA:Jamais\nSEMPRE:Eternamente\nAINDA:Até agora\nTALVEZ:Quem sabe\nISSO:Pronome demonstrativo\nNOSSO:Pronome possessivo\nFAZ:Realiza\nDIZ:Fala\nPÕE:Coloca\nTRAZ:Carrega para cá\nQUER:Deseja\nPODE:Tem permissão\nSABE:Conhece\nCABE:Tem espaço\nSOBE:Vai para cima\nÁLBUM:Coleção de figurinhas\nBANDA:Grupo musical\nBATERIA:Instrumento do baterista;Pilha\nGUITARRA:Instrumento do rock\nCORAL:Grupo de cantores;Recife marinho\nSHOW:Espetáculo\nOSCAR:Prêmio do cinema\nROTEIRO:Texto do filme\nCENA:Trecho do filme\nELENCO:Conjunto de atores\nDUBLÊ:Substitui o ator\nGOLFE:Esporte de tacos e buracos\nRÚGBI:Esporte da bola oval\nSURFE:Esporte das ondas\nSKATE:Prancha com rodinhas\nBOXE:Esporte de luvas\nESGRIMA:Luta de espadas\nRAQUETE:Usada no tênis\nCESTA:Ponto do basquete\nSAQUE:Início do ponto no vôlei;Retirada de dinheiro\nPÊNALTI:Cobrança da marca da cal\nTORCIDA:Fãs do time\nESTÁDIO:Arena do futebol\nTAÇA:Troféu\nMEDALHA:Prêmio olímpico\nPÓDIO:Lugar dos vencedores\nMARATONA:Corrida de 42 km\nTECLA:Botão do teclado\nCURSOR:Seta na tela\nARQUIVO:Documento do computador\nPASTA:Guarda arquivos;Creme dental\nLINK:Endereço clicável\nBLOG:Diário na internet\nBUG:Falha de programa\nPIXEL:Ponto da imagem digital\nCÓDIGO:Texto do programador\nDRONE:Aeronave sem piloto\nANTENA:Capta o sinal\nSATÉLITE:Gira em torno do planeta\nOMELETE:Prato de ovos batidos\nLASANHA:Massa em camadas\nSUSHI:Prato japonês de arroz e peixe\nKIBE:Salgado árabe\nESFIHA:Salgado árabe aberto\nMOQUECA:Ensopado de peixe baiano\nVATAPÁ:Prato baiano de dendê\nACARAJÉ:Bolinho baiano de feijão\nBAIÃO:Ritmo nordestino;Baião de dois\nTUTU:Feijão com farinha\nNHOQUE:Massa de batata\nRISOTO:Arroz italiano cremoso\nSALADA:Prato de folhas\nASNO:Burro\nBAÚ:Arca\nBICO:Boca da ave\nBOIA:Flutua na água\nCAPA:Protege o livro\nCERA:Produzida pela abelha\nCOLA:Gruda papel\nCOPA:Torneio mundial;Parte da casa\nCUME:Topo da montanha\nDUNA:Monte de areia\nFARDA:Uniforme militar\nFENO:Capim seco\nFOCO:Ponto de atenção\nFUGA:Escapada\nGAIOLA:Prende o pássaro\nGOLA:Parte da camisa\nGRUA:Guindaste\nHASTE:Mastro\nJARRA:Serve o suco\nJAULA:Prende a fera\nLEQUE:Abana o rosto\nLIGA:Associação;Torneio\nLONA:Cobertura do circo\nLOUSA:Quadro-negro\nLUPA:Lente de aumento\nMALHA:Tecido de tricô\nMANTO:Capa longa\nNINHO:Casa do passarinho\nPALHA:Haste seca de cereal\nPEÇA:Obra de teatro;Componente\nPOMAR:Plantação de frutas\nRAMPA:Plano inclinado\nRÉDEA:Guia o cavalo\nSELA:Assento do cavaleiro\nSETA:Flecha;Pisca-pisca do carro\nSOLA:Parte de baixo do sapato\nTOCHA:Chama olímpica\nTRAVE:Parte do gol\nTRILHO:Caminho do trem\nTUBA:Instrumento de sopro grave\nVACINA:Previne doenças\nVAGÃO:Carro do trem\nVIGA:Barra de sustentação\nXERIFE:Autoridade do faroeste\nSEDA:Tecido do bicho-da-seda\nLINHO:Tecido fresco\nJEANS:Tecido da calça azul\nCOURO:Pele curtida\nVIDRO:Material da janela\nPAPEL:Feito de celulose\nBORRACHA:Apaga o lápis\nCLIPE:Prende papéis;Vídeo musical\nMOCHILA:Bolsa das costas\nAGENDA:Caderno de compromissos\nCARIMBO:Marca documentos\nENVELOPE:Guarda a carta\nMOTEL:Hospedagem de estrada\nCAMPO:Gramado;Zona rural\nSÍTIO:Pequena propriedade rural\nFAZENDA:Grande propriedade rural\nCURRAL:Lugar do gado\nCELEIRO:Guarda os grãos\nARADO:Lavra a terra\nENXADA:Ferramenta de capina\nFOICE:Ferramenta curva\nSAFRA:Colheita\nGADO:Rebanho bovino\nSELVA:Mata densa\nTUNDRA:Vegetação ártica\nSAVANA:Paisagem do leão\nCERRADO:Bioma do Centro-Oeste\nCAATINGA:Bioma do sertão\nPAMPA:Bioma gaúcho\nPANTANAL:Bioma alagado\nMANGUE:Vegetação costeira\nGEADA:Gelo no gramado\nGRANIZO:Chuva de pedra\nTUFÃO:Tempestade asiática\nCICLONE:Tempestade giratória\nECLIPSE:Lua cobre o Sol\nGALÁXIA:Via Láctea, por exemplo\nSÍRIO:Estrela mais brilhante\nÓRION:Constelação do caçador\nCRATERA:Buraco lunar\nLUPA:Aumenta a imagem\nPRISMA:Decompõe a luz\nÍMPETO:Impulso\nÉTICA:Conduta moral\nLÓGICA:Raciocínio\nDOGMA:Verdade indiscutível\nUTOPIA:Sociedade ideal\nSAUDADE:Palavra sem tradução\nCANSAÇO:Fadiga\nPREGUIÇA:Moleza;Bicho lento\nCORAGEM:Bravura\nCIÚME:Zelo excessivo\nINVEJA:Cobiça\nORGULHO:Brio\nESPERANÇA:Última que morre\nALEGRIA:Contentamento\nSURPRESA:Susto bom\nPIADA:Anedota\nCHARADA:Enigma\nENIGMA:Mistério\nSEGREDO:Coisa escondida\nBOATO:Fofoca\nNOTÍCIA:Novidade\nJORNAL:Diário de notícias\nREVISTA:Publicação periódica\nGIBI:Revista em quadrinhos\nCRÔNICA:Texto do cotidiano\nROMANCE:Livro longo;Namoro\nSONETO:Poema de 14 versos\nHAICAI:Poema japonês curto\nESTROFE:Grupo de versos\nAUTOR:Escreveu o livro\nEDITORA:Publica livros\nESTANTE:Prateleira de livros\nTINTEIRO:Pote de tinta\nARTE:Expressão criativa\nMURAL:Painel na parede\nGRAFITE:Arte de rua;Ponta do lápis\nESCULTURA:Arte de Rodin\nTELA:Pintura a óleo\nMOLDURA:Borda do quadro\nRETRATO:Pintura de rosto\nÓPERA:Drama cantado\nBALÉ:Dança clássica\nSAPATILHA:Calçado da bailarina\nCIRANDA:Roda infantil\nFREVO:Dança de sombrinha\nMARACATU:Ritmo pernambucano\nCAPOEIRA:Luta e dança afro-brasileira\nBERIMBAU:Instrumento da capoeira\nATABAQUE:Tambor afro-brasileiro\nAXÉ:Música baiana\nCHORINHO:Gênero instrumental carioca\nBOSSA:Bossa ... (estilo musical)\nMPB:Música popular brasileira\nFUNK:Gênero musical dançante\nRAP:Gênero de rima falada\nREGGAE:Ritmo jamaicano\nSALSA:Dança cubana;Tempero verde\nROMA:Cidade eterna\nVENEZA:Cidade dos canais\nMILÃO:Cidade da moda italiana\nNÁPOLES:Cidade da pizza\nSEVILHA:Cidade espanhola do flamenco\nPORTO:Cidade do vinho português;Cais\nGENEBRA:Cidade suíça\nDUBAI:Cidade dos arranha-céus árabes\nBOMBAIM:Metrópole indiana\nSYDNEY:Cidade da ópera australiana\nTEXAS:Estado americano do petróleo\nALASCA:Estado americano gelado\nHAVAÍ:Arquipélago americano\nSAARA:Maior deserto quente\nATACAMA:Deserto chileno\nEVEREST:Monte mais alto\nAMAZÔNIA:Maior floresta tropical\nARAGUAIA:Rio do Centro-Oeste\nIGUAÇU:Cataratas do Paraná\nNORONHA:Fernando de ... (ilha)\nOLINDA:Cidade histórica pernambucana\nPARATY:Cidade colonial fluminense\nGRAMADO:Cidade gaúcha do Natal Luz\nBONITO:Cidade das águas cristalinas;Belo\nTA:Está (coloq.)\nES:És (verbo ser, 2ª p.)\nTO:Estou (coloq.)\nIN:Prefixo de negação\nRE:Prefixo de repetição\n";
+</script>
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const G = PCD.create(DICT_TXT);
+  const R = 14, C = 10;
+  let P = null, cellsW = null, entry = null, state = null, sel = null, t0 = 0, tick = null, done = false, seed = 0, confirmAll = false;
+
+  const store = {
+    get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+
+  function el(tag, cls, txt) { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+
+  function wordCells(w) {
+    const out = [];
+    if (w.dir === 'h') for (let c = w.c + 1; c < w.c + 1 + w.word.length; c++) out.push([w.r, c]);
+    else for (let r = w.r + 1; r < w.r + 1 + w.word.length; r++) out.push([r, w.c]);
+    return out;
+  }
+
+  function build(p) {
+    P = p; done = false; confirmAll = false;
+    cellsW = Array.from({ length: R }, () => Array.from({ length: C }, () => ({})));
+    P.words.forEach((w, i) => { w.cells = wordCells(w); for (const [r, c] of w.cells) cellsW[r][c][w.dir] = i; });
+    const saved = store.get('pcd2-' + seed);
+    state = saved && saved.v ? saved : { v: Array.from({ length: R }, () => Array(C).fill('')), rev: [], t: 0 };
+    const g = $('grid'); g.innerHTML = ''; g.style.setProperty('--cols', C);
+    entry = Array.from({ length: R }, () => Array(C).fill(null));
+    const at = {}; P.words.forEach((w, i) => at[w.r + ',' + w.c + w.dir] = i);
+    for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) {
+      const v = P.cell[r][c];
+      if (v !== '#') {
+        const d = el('div', 'c lt'); d.dataset.r = r; d.dataset.c = c; d.setAttribute('role', 'gridcell');
+        d.textContent = state.v[r][c] || '';
+        if (state.rev.includes(r + ',' + c)) d.classList.add('rev');
+        d.addEventListener('click', () => tapCell(r, c));
+        g.appendChild(d); entry[r][c] = d; continue;
+      }
+      const hi = at[r + ',' + c + 'h'], vi = at[r + ',' + c + 'v'];
+      if (hi == null && vi == null) { g.appendChild(el('div', 'c vd')); continue; }
+      const d = el('div', 'c cl');
+      for (const [wi, dir] of [[hi, 'r'], [vi, 'd']]) {
+        if (wi == null) continue;
+        const half = el('div', 'h'); half.dataset.w = wi;
+        half.appendChild(el('div', 'tx', P.words[wi].clue));
+        half.appendChild(el('span', 'ar ' + dir));
+        half.addEventListener('click', e => { e.stopPropagation(); selectWord(wi); });
+        d.appendChild(half); P.words[wi].half = half;
+      }
+      g.appendChild(d);
+    }
+    $('num').textContent = '#' + seed;
+    fit();
+    sel = null;
+    const first = P.words.find(w => w.dir === 'h') || P.words[0];
+    selectWord(P.words.indexOf(first));
+    t0 = Date.now() - (state.t || 0) * 1000;
+    clearInterval(tick); tick = setInterval(clock, 1000); clock();
+    $('msg').textContent = ''; $('msg').className = 'msg';
+    if (isSolved()) finish(true);
+  }
+
+  function fit() {
+    document.querySelectorAll('.c.cl .tx').forEach(t => {
+      const box = t.parentElement; t.classList.remove('brk');
+      let fs = box.parentElement.clientWidth >= 50 ? 13.5 : 11;
+      const over = () => t.scrollHeight > box.clientHeight - 1 || t.scrollWidth > t.clientWidth + .5;
+      t.style.fontSize = fs + 'px';
+      while (fs > 6 && over()) { fs -= .5; t.style.fontSize = fs + 'px'; }
+      if (over()) { t.classList.add('brk'); fs = 9; t.style.fontSize = fs + 'px'; while (fs > 5 && over()) { fs -= .5; t.style.fontSize = fs + 'px'; } }
+    });
+  }
+
+  function clock() {
+    if (done) return;
+    const s = Math.floor((Date.now() - t0) / 1000); state.t = s;
+    $('clock').textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+    if (s % 5 === 0) save();
+  }
+  function save() { store.set('pcd2-' + seed, state); }
+
+  function tapCell(r, c) {
+    const cw = cellsW[r][c];
+    let dir = sel && sel.r === r && sel.c === c ? (sel.dir === 'h' ? 'v' : 'h') : (sel ? sel.dir : 'h');
+    if (cw[dir] == null) dir = dir === 'h' ? 'v' : 'h';
+    setSel(r, c, dir);
+  }
+  function selectWord(wi) {
+    const w = P.words[wi];
+    const empty = w.cells.find(([r, c]) => !state.v[r][c]) || w.cells[0];
+    setSel(empty[0], empty[1], w.dir);
+  }
+  function setSel(r, c, dir) {
+    if (cellsW[r][c][dir] == null) dir = dir === 'h' ? 'v' : 'h';
+    sel = { r, c, dir, w: cellsW[r][c][dir] };
+    paint();
+  }
+  function paint() {
+    document.querySelectorAll('.c.lt.word, .c.lt.cur').forEach(e => e.classList.remove('word', 'cur'));
+    document.querySelectorAll('.c.cl .h.on').forEach(e => e.classList.remove('on'));
+    if (!sel) return;
+    const w = sel.w != null ? P.words[sel.w] : null;
+    if (w) { for (const [r, c] of w.cells) entry[r][c].classList.add('word'); w.half.classList.add('on');
+      $('cdir').textContent = w.dir === 'h' ? '→ Horizontal' : '↓ Vertical'; $('ctxt').textContent = w.clue; $('clen').textContent = w.word.length + ' letras'; }
+    else { $('cdir').textContent = '·'; $('ctxt').textContent = 'Esta letra só cruza numa direção'; $('clen').textContent = ''; }
+    entry[sel.r][sel.c].classList.add('cur');
+  }
+
+  function put(ch) {
+    if (!sel || done) return;
+    const { r, c } = sel;
+    if (state.rev.includes(r + ',' + c)) { advance(1); return; }
+    state.v[r][c] = ch; const e = entry[r][c]; e.textContent = ch; e.classList.remove('bad', 'ok');
+    save(); advance(1); confirmAll = false;
+    if (isFull()) { if (isSolved()) finish(false); else { $('msg').textContent = 'Grade cheia, mas tem letra errada. Use “Conferir”.'; $('msg').className = 'msg bad'; } }
+  }
+  function erase() {
+    if (!sel || done) return;
+    const has = (r, c) => state.v[r][c] && !state.rev.includes(r + ',' + c);
+    if (!has(sel.r, sel.c)) advance(-1);
+    const { r, c } = sel;
+    if (!has(r, c)) return;
+    state.v[r][c] = ''; entry[r][c].textContent = ''; entry[r][c].classList.remove('bad', 'ok'); save();
+  }
+  function advance(d) {
+    if (sel.w == null) return;
+    const cells = P.words[sel.w].cells; const i = cells.findIndex(([r, c]) => r === sel.r && c === sel.c);
+    const j = i + d; if (j >= 0 && j < cells.length) setSel(cells[j][0], cells[j][1], sel.dir);
+  }
+  function move(dr, dc) {
+    if (!sel) return; let r = sel.r + dr, c = sel.c + dc;
+    while (r > 0 && r < R && c > 0 && c < C) { if (P.cell[r][c] !== '#') { setSel(r, c, dc ? 'h' : 'v'); return; } r += dr; c += dc; }
+  }
+  function nextWord(d) {
+    const n = P.words.length; let i = sel && sel.w != null ? sel.w : -1;
+    for (let k = 0; k < n; k++) { i = (i + d + n) % n; const w = P.words[i]; if (w.cells.some(([r, c]) => !state.v[r][c])) { selectWord(i); return; } }
+    if (sel && sel.w != null) selectWord((sel.w + d + n) % n);
+  }
+
+  function isFull() { for (let r = 1; r < R; r++) for (let c = 1; c < C; c++) if (P.cell[r][c] !== '#' && !state.v[r][c]) return false; return true; }
+  function isSolved() { for (let r = 1; r < R; r++) for (let c = 1; c < C; c++) if (P.cell[r][c] !== '#' && state.v[r][c] !== P.cell[r][c]) return false; return true; }
+
+  function reveal(list) {
+    for (const [r, c] of list) { state.v[r][c] = P.cell[r][c]; const e = entry[r][c]; e.textContent = P.cell[r][c]; e.classList.remove('bad'); e.classList.add('rev');
+      const k = r + ',' + c; if (!state.rev.includes(k)) state.rev.push(k); }
+    save(); if (isSolved()) finish(false);
+  }
+  function check() {
+    let bad = 0, empty = 0;
+    for (let r = 1; r < R; r++) for (let c = 1; c < C; c++) {
+      if (P.cell[r][c] === '#') continue; const v = state.v[r][c]; const e = entry[r][c];
+      if (!v) { empty++; continue; }
+      if (v !== P.cell[r][c]) { e.classList.add('bad'); bad++; }
+    }
+    const m = $('msg');
+    if (bad) { m.textContent = bad === 1 ? '1 letra errada, marcada em vermelho.' : bad + ' letras erradas, marcadas em vermelho.'; m.className = 'msg bad'; }
+    else { m.textContent = empty ? 'Tudo certo até aqui. Faltam ' + empty + ' casas.' : 'Tudo certo!'; m.className = 'msg good'; }
+  }
+  function finish(silent) {
+    done = true; clearInterval(tick); save();
+    for (let r = 1; r < R; r++) for (let c = 1; c < C; c++) if (entry[r][c] && !state.rev.includes(r + ',' + c)) entry[r][c].classList.add('ok');
+    const s = state.t; const helped = state.rev.length;
+    $('msg').textContent = 'Grade completa em ' + Math.floor(s / 60) + ' min ' + (s % 60) + ' s' + (helped ? ' (' + helped + ' letras reveladas)' : '') + '.';
+    $('msg').className = 'msg good';
+  }
+
+  function newGrid(s) {
+    seed = s || (1 + Math.floor(Math.random() * 999998));
+    store.set('pcd2-last', seed);
+    $('grid').innerHTML = '<div class="loading">Montando a grade…</div>';
+    $('bNew').disabled = true; $('msg').textContent = '';
+    setTimeout(() => {
+      let p = null, k = 0;
+      while (!p && k < 6) { p = G.generate(R, C, seed * 7919 + k * 13, { timeMs: 2500, max2: 11 }); k++; }
+      $('bNew').disabled = false;
+      if (!p) { $('grid').innerHTML = '<div class="loading">Não consegui montar esta grade. Toque em “Nova grade”.</div>'; return; }
+      const go = () => { build(p); setTimeout(() => P === p && fit(), 800); };
+      const fl = document.fonts && document.fonts.load ? Promise.all([document.fonts.load('600 12px "Barlow Condensed"'), document.fonts.load('700 12px "Barlow"')]) : Promise.resolve();
+      Promise.race([fl, new Promise(r => setTimeout(r, 2500))]).then(go, go);
+    }, 30);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (!P || e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key;
+    if (/^[a-zA-ZçÇáàâãéêíóôõúÁÀÂÃÉÊÍÓÔÕÚ]$/.test(k)) { e.preventDefault(); put(PCD.norm(k)); }
+    else if (k === 'Backspace' || k === 'Delete') { e.preventDefault(); erase(); }
+    else if (k === 'ArrowRight') { e.preventDefault(); move(0, 1); }
+    else if (k === 'ArrowLeft') { e.preventDefault(); move(0, -1); }
+    else if (k === 'ArrowDown') { e.preventDefault(); move(1, 0); }
+    else if (k === 'ArrowUp') { e.preventDefault(); move(-1, 0); }
+    else if (k === ' ') { e.preventDefault(); if (sel) setSel(sel.r, sel.c, sel.dir === 'h' ? 'v' : 'h'); }
+    else if (k === 'Tab' || k === 'Enter') { e.preventDefault(); nextWord(e.shiftKey ? -1 : 1); }
+  });
+
+  // teclado na tela
+  const kb = $('kbd');
+  ['QWERTYUIOP', 'ASDFGHJKL', '⇥ZXCVBNM⌫'].forEach(row => {
+    const d = el('div', 'row');
+    for (const ch of row) {
+      const b = el('button', ch === '⌫' || ch === '⇥' ? 'wide' : '', ch === '⇥' ? 'Próx.' : ch); b.type = 'button';
+      b.setAttribute('aria-label', ch === '⌫' ? 'Apagar' : ch === '⇥' ? 'Próxima palavra' : ch);
+      b.addEventListener('click', () => { if (ch === '⌫') erase(); else if (ch === '⇥') nextWord(1); else put(ch); });
+      d.appendChild(b);
+    }
+    kb.appendChild(d);
+  });
+
+  $('bCheck').addEventListener('click', () => P && check());
+  $('bLetter').addEventListener('click', () => { if (P && sel && !done) { reveal([[sel.r, sel.c]]); advance(1); } });
+  $('bWord').addEventListener('click', () => { if (P && sel && sel.w != null && !done) reveal(P.words[sel.w].cells); });
+  $('bAll').addEventListener('click', () => {
+    if (!P || done) return;
+    if (!confirmAll) { confirmAll = true; $('msg').textContent = 'Toque em “Revelar tudo” de novo para confirmar.'; $('msg').className = 'msg bad'; return; }
+    const all = []; for (let r = 1; r < R; r++) for (let c = 1; c < C; c++) if (P.cell[r][c] !== '#' && state.v[r][c] !== P.cell[r][c]) all.push([r, c]);
+    reveal(all);
+  });
+  $('bNew').addEventListener('click', () => newGrid());
+  let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => P && fit(), 150); });
+
+  newGrid(store.get('pcd2-last'));
+})();
+</script>
+
+</body>
+</html>
